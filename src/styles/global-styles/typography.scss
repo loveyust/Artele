@@ -1,0 +1,60 @@
+@import '../params/variables';
+
+@font-face {
+    font-family: $font-name-quarto;
+    font-weight: $font-weight-bold;
+    src: url('./assets/fonts/Quarto-Bold.otf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-bentonsans-book;
+    src: url('./assets/fonts/BentonSansF-Book.otf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-bentonsans-bold;
+    src: url('./assets/fonts/BentonSansF-Bold.otf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-bentonsans-light;
+    src: url('./assets/fonts/BentonSansF-ExtraLight.otf') format('truetype');
+}
+
+h1 {
+    font-size: 100px;
+    font-family:  $font-name-quarto;
+    font-weight: $font-weight-bold;
+    margin: 0;
+}
+
+h3 {
+    font-size: 48px;
+    font-family:  $font-name-quarto;
+    font-weight: $font-weight-bold;
+    margin: 0;
+}
+
+h3 {
+    font-size: 48px;
+    font-family:  $font-name-quarto;
+    font-weight: $font-weight-bold;
+    margin: 0;
+}
+
+h6 {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-family:  $font-name-bentonsans-bold;
+    font-weight: $font-weight-bold;
+    margin: 0;
+}
+h5 {
+    font-size: 24px;
+    font-family:  $font-name-bentonsans-book;
+}
+
+p {
+    font-family: $font-name-bentonsans-book;
+    font-size: 16px;
+}
