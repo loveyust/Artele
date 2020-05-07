@@ -26,7 +26,7 @@ class Display extends Component {
   }
 
   getData = artItems => {
-    console.log(artItems);
+//    console.log(artItems);
     this.setState({ art_data: artItems }); // from original
   };
 
@@ -42,14 +42,17 @@ class Display extends Component {
     this.imageInterval = setInterval(function(){
     }, 5000);
     clearInterval(this.imageInterval);
-    this.startTimer();
+    //this.startTimer();
 
     this.fadeInterval = setInterval(function(){
     }, this.fadeTime);
     clearInterval(this.fadeInterval);
-    //this.fade();
 
-    dataService.loadAirTableData();
+    dataService.loadAirTableData(this.airTableLoaded);
+  }
+
+  airTableLoaded () {
+    console.log('Display: ' + JSON.stringify(dataService.airTableData));
   }
 
   componentWillUnmount() {
@@ -99,7 +102,6 @@ class Display extends Component {
     clearInterval(that.fadeInterval);
     that.fadeInterval = setInterval(function(){
       if (that.state.fadeClass === "fade fade-in") that.showNextImage();
-      // else that.startTimer();
     }, this.fadeTime); 
   }
 
