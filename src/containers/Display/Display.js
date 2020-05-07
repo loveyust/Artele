@@ -5,10 +5,9 @@ import { socket } from "../../global/header";
 // Styles
 import './style.scss';
 
-// Airtable
-import Airtable from 'airtable';
-import { environment } from '../../environment.js';
-const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
+// Socket Service Layer
+import DataService from '../../services/data.service';
+const dataService = new DataService();
 
 class Display extends Component {
   constructor() {
@@ -28,7 +27,7 @@ class Display extends Component {
 
   getData = artItems => {
     console.log(artItems);
-    this.setState({ art_data: artItems });
+    this.setState({ art_data: artItems }); // from original
   };
 
   changeData = () => socket.emit("initial_data");
@@ -50,51 +49,12 @@ class Display extends Component {
     clearInterval(this.fadeInterval);
     //this.fade();
 
-    this.loadAirTableBase('ArtSources');
+    dataService.loadAirTableData();
   }
 
   componentWillUnmount() {
     socket.off("get_data");
     socket.off("change_data");
-  }
-
-  loadAirTableBase = (baseName) => {
-    var that = this;
-    base(baseName).select({
-        // Selecting the first 3 records in Grid view:
-        maxRecords: 100,
-        view: "Grid view"
-      }).eachPage(function page(records, fetchNextPage) {
-        // This function (`page`) will get called for each page of records.
-        var newState = records.map(r => { 
-          console.log(JSON.stringify(r.get('Name')));
-          /*var bg_img = (r.get('Background Image') && r.get('Background Image')[0]) || {};
-          var media = (r.get('Media')) || [];
-          var eyebrow = (r.get('Eyebrow') === undefined) ? '' : r.get('Eyebrow'); 
-          return { 
-            title: r.get('Title'), 
-            key: r.get('Identifier')[0], 
-            eyebrow: r.get('Eyebrow'), // eyebrow,
-            subtitle: r.get('Subtitle'),
-            description: r.get('Description'),
-            bg_color: r.get('Background Color'),
-            media: media,
-            bg_img: bg_img.url || 'https://placehold.it/1080x1920',
-           } */
-        })
-        /*
-        if (baseName === 'CaseStudies') {
-          that.casestudies = newState;
-          // Load the SFStudio content
-          that.loadAirTableBase('SFStudio');
-        } else if (baseName === 'SFStudio') {
-          that.sfstudio = newState;
-          // Load the Story content
-          that.loadAirTableBaseStories();
-        } */
-    }, function done(err) {
-        if (err) { console.error(err); return; }
-    });
   }
 
   markDone = id => {
