@@ -48,11 +48,12 @@ class Display extends Component {
     }, this.fadeTime);
     clearInterval(this.fadeInterval);
 
-    dataService.loadAirTableData(this.airTableLoaded);
+    dataService.loadData(this, this.museumDataLoaded);
   }
 
-  airTableLoaded () {
-    console.log('Display: ' + JSON.stringify(dataService.airTableData));
+  museumDataLoaded (self) {
+    console.log('Display: ALL DATA LOADED');
+    self.showNextImage();
   }
 
   componentWillUnmount() {
@@ -107,14 +108,20 @@ class Display extends Component {
 
   showNextImage() {
     console.log("showNextImage() " + this.state.currentImage);
-    var curImg = this.state.currentImage;
+    /*var curImg = this.state.currentImage;
     if (this.state.currentImage === "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg") {
       curImg = "https://images.metmuseum.org/CRDImages/as/original/DP123730.jpg";
     } else {
       curImg = "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg";
     }
-    this.setState({currentImage: curImg});
-    // this.fade();
+    this.setState({currentImage: curImg});*/
+
+    dataService.getRandomImage(this.onObjectLoaded);
+    //this.fade();
+  }
+
+  onObjectLoaded(self, obj) {
+    console.log(JSON.stringify(obj));
   }
 
   onImgLoad({target:img}) {
