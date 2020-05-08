@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
 import FrameMat from "../../components/FrameMat/FrameMat";
+import ArtInfo from "../../components/ArtInfo/ArtInfo";
 
 // Styles
 import './style.scss';
@@ -116,14 +117,12 @@ class Display extends Component {
 
   fade() {
     console.log("fade() " + this.state.fadeClass);
-    // var fadeStr = (this.state.fadeClass === "fade fade-in") ? "fade fade-out" : "fade fade-in";
-    this.setState({fadeClass: "fadedIn fade-in"}); // fadeStr});
+    this.setState({fadeClass: "fadedIn fade-in"});
     var that = this;
     that.stopTimers();
     that.fadeInterval = setInterval(function(){
       console.log('fadeTimer Complete');
       that.stopTimers();
-      //if (that.state.fadeClass === "fadedIn fade-in") 
       that.showNextImage();
     }, this.fadeTime); 
   }
@@ -141,7 +140,7 @@ class Display extends Component {
   onImageRendered(){
     console.log('onImageRendered');
     this.setState({fadeClass: "fadedOut fade-out"});
-    this.startTimer();
+    // TEMP remove for debuggin to limit API calls this.startTimer();
   }
 
   render() {
@@ -149,14 +148,9 @@ class Display extends Component {
       <>
         <div className="img-parent">
           <div className={this.state.fadeClass}></div>
+          
           <FrameMat data={this.state.currentImageData} callback={this.onImageRendered} />
-         {/*<div className="frame">
-            <div className="mat">
-              <div className="art" style={this.state.matStyle}>
-                <img onLoad={this.onImgLoad} src={this.state.currentImage}></img> 
-              </div>
-            </div>
-          </div>*/}
+          <ArtInfo data={this.state.currentImageData} />
         </div>
       </>
     );

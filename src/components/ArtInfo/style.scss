@@ -1,0 +1,14 @@
+@import '../../styles/params/variables';
+
+.art-block {
+  position: absolute;
+  height: 500px;
+  width: 500px;
+  bottom: 0px;
+  z-index: 1;
+  text-align: left;
+}
+
+.art-text {
+  font-family: $font-name-montserrat-reg;
+}

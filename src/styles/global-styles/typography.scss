@@ -1,43 +1,65 @@
 @import '../params/variables';
 
+/*
 @font-face {
     font-family: $font-name-quarto;
     font-weight: $font-weight-bold;
     src: url('./assets/fonts/Quarto-Bold.otf') format('truetype');
 }
+*/
 
 @font-face {
-    font-family: $font-name-bentonsans-book;
-    src: url('./assets/fonts/BentonSansF-Book.otf') format('truetype');
+    font-family: $font-name-montserrat-reg;
+    src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: $font-name-bentonsans-bold;
-    src: url('./assets/fonts/BentonSansF-Bold.otf') format('truetype');
+    font-family: $font-name-montserrat-med;
+    src: url('./assets/fonts/Montserrat-Medium.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: $font-name-bentonsans-light;
-    src: url('./assets/fonts/BentonSansF-ExtraLight.otf') format('truetype');
+    font-family: $font-name-montserrat-med-italic;
+    src: url('./assets/fonts/Montserrat-MediumItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-montserrat-semibold;
+    src: url('./assets/fonts/Montserrat-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-montserrat-semibold-italic;
+    src: url('./assets/fonts/Montserrat-SemiBoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-montserrat-bold;
+    src: url('./assets/fonts/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: $font-name-montserrat-black;
+    src: url('./assets/fonts/Montserrat-Black.ttf') format('truetype');
 }
 
 h1 {
     font-size: 100px;
-    font-family:  $font-name-quarto;
+    font-family:  $font-name-montserrat-black;
     font-weight: $font-weight-bold;
     margin: 0;
 }
 
 h3 {
     font-size: 48px;
-    font-family:  $font-name-quarto;
+    font-family:  $font-name-montserrat-bold;
     font-weight: $font-weight-bold;
     margin: 0;
 }
 
 h3 {
     font-size: 48px;
-    font-family:  $font-name-quarto;
+    font-family:  $font-name-montserrat-bold;
     font-weight: $font-weight-bold;
     margin: 0;
 }
@@ -45,16 +67,16 @@ h3 {
 h6 {
     font-size: 14px;
     text-transform: uppercase;
-    font-family:  $font-name-bentonsans-bold;
+    font-family:  $font-name-montserrat-semibold;
     font-weight: $font-weight-bold;
     margin: 0;
 }
 h5 {
     font-size: 24px;
-    font-family:  $font-name-bentonsans-book;
+    font-family:  $font-name-montserrat-med;
 }
 
 p {
-    font-family: $font-name-bentonsans-book;
+    font-family: $font-name-montserrat-reg;
     font-size: 16px;
 }

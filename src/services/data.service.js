@@ -243,6 +243,9 @@ export default class DataService {
 
         // Artist
         var artist = data[that.airTableData[curMuseumNum].artistField];
+        if (artist === '' || artist === undefined) {
+          artist = 'Unknown';
+        }
 
         // Date
         var date = data[that.airTableData[curMuseumNum].dateField];
@@ -259,8 +262,8 @@ export default class DataService {
           artist: artist,
           date: date,
           medium: medium,
-          museumName: data[that.airTableData[curMuseumNum].name],
-          objectName: tempObjectID
+          museumName: that.airTableData[curMuseumNum].name,
+          objectID: tempObjectID
         };
        
         that.imageCallback(that.callbackSelf);
