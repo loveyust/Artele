@@ -24,8 +24,8 @@ class ArtInfo extends Component {
   render() {
     return (
       <div className="art-block">
-        <p className="art-text">{this.props.data.museumName}</p>
-        <p className="art-text">{this.props.data.title}</p>
+        <p className="art-text art-museum">{this.props.data.museumName}</p>
+        <p className="art-text art-title">{this.props.data.title}</p>
         <p className="art-text">{this.props.data.artist}</p>
         <p className="art-text">{this.props.data.date}</p>
         <p className="art-text">{this.props.data.medium}</p>

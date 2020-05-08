@@ -2,13 +2,26 @@
 
 .art-block {
   position: absolute;
-  height: 500px;
-  width: 500px;
+  height: 130px;
+  width: 400px;
   bottom: 0px;
   z-index: 1;
   text-align: left;
+  color:#ddd;
+  margin-left: 30px;
 }
 
 .art-text {
   font-family: $font-name-montserrat-reg;
+  margin-bottom: 0px;
+  font-size: 14px;
+
+  &.art-museum {
+    font-family: $font-name-montserrat-bold;
+  }
+
+  &.art-title {
+    font-family: $font-name-montserrat-semibold-italic;
+  }
 }
+
