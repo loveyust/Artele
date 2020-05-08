@@ -28,7 +28,7 @@ class ArtInfo extends Component {
         <p className="art-text art-title">{this.props.data.title}</p>
         <p className="art-text">{this.props.data.artist}</p>
         <p className="art-text">{this.props.data.date}</p>
-        <p className="art-text">{this.props.data.medium}</p>
+        <p className="art-text art-medium">{this.props.data.medium}</p>
       </div>
     );
   }

@@ -140,7 +140,8 @@ class Display extends Component {
   onImageRendered(){
     console.log('onImageRendered');
     this.setState({fadeClass: "fadedOut fade-out"});
-    // TEMP remove for debuggin to limit API calls this.startTimer();
+    // TEMP remove for debuggin to limit API calls 
+    this.startTimer();
   }
 
   render() {

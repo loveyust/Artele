@@ -3,7 +3,7 @@
 .art-block {
   position: absolute;
   height: 130px;
-  width: 400px;
+  width: 600px;
   bottom: 0px;
   z-index: 1;
   text-align: left;
@@ -22,6 +22,10 @@
 
   &.art-title {
     font-family: $font-name-montserrat-semibold-italic;
+  }
+
+  &.art-medium {
+    font-size: 12px;
   }
 }
 
