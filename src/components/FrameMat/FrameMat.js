@@ -32,6 +32,7 @@ class FrameMat extends Component {
     var matWidth = (this.screenWidth - (imgScale * img.width)) / 2;
     matWidth = (matWidth < this.minMat) ? this.minMat : matWidth;
     this.setState({matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: matWidth, right: matWidth}, fadeClass: "fade fade-out"});
+    this.props.callback();
   }
 
   render() {

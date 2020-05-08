@@ -33,6 +33,8 @@ class Display extends Component {
     this.screenWidth = 1920;
     this.fadeTime = 1000;
     this.artTime = 10000;
+
+    this.onImageRendered= this.onImageRendered.bind(this);
   }
 
   getData = artItems => {
@@ -95,7 +97,6 @@ class Display extends Component {
     });
   }
 
-
   // Timer to keep track of when to load next screen.
   startTimer = () => {
     console.log('startTimer');
@@ -129,39 +130,26 @@ class Display extends Component {
 
   showNextImage() {
     console.log("showNextImage() " + this.state.currentImage);
-    /*var curImg = this.state.currentImage;
-    if (this.state.currentImage === "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg") {
-      curImg = "https://images.metmuseum.org/CRDImages/as/original/DP123730.jpg";
-    } else {
-      curImg = "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg";
-    }
-    this.setState({currentImage: curImg});*/
-
     dataService.getRandomImage(this, this.onObjectLoaded);
-    //this.fade();
   }
 
   onObjectLoaded(self) {
     console.log("onObjectLoaded: " + JSON.stringify(dataService.curImageObject));
-    self.setState({currentImage: dataService.curImageObject.image, currentImageData: dataService.curImageObject, fadeClass: "fadedOut fade-out"});
-    //self.fade();
-    self.startTimer();
+    self.setState({currentImage: dataService.curImageObject.image, currentImageData: dataService.curImageObject});
   }
-/*
-  onImgLoad({target:img}) {
-    console.log('onImgLoad');
-    var imgScale = (1080.0 - (this.minMat * 2)) / img.height;
-    var matWidth = (this.screenWidth - (imgScale * img.width)) / 2;
-    matWidth = (matWidth < this.minMat) ? this.minMat : matWidth;
-    this.setState({matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: matWidth, right: matWidth}, fadeClass: "fade fade-out"});
+
+  onImageRendered(){
+    console.log('onImageRendered');
+    this.setState({fadeClass: "fadedOut fade-out"});
+    this.startTimer();
   }
-*/
+
   render() {
     return (
       <>
         <div className="img-parent">
           <div className={this.state.fadeClass}></div>
-          <FrameMat data={this.state.currentImageData} />
+          <FrameMat data={this.state.currentImageData} callback={this.onImageRendered} />
          {/*<div className="frame">
             <div className="mat">
               <div className="art" style={this.state.matStyle}>
