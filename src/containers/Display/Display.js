@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
+import FrameMat from "../../components/FrameMat/FrameMat";
 
 // Styles
 import './style.scss';
@@ -15,14 +16,23 @@ class Display extends Component {
     this.minMat = 150;
     this.state = {
       art_data: [],
-      fadeClass: "fade fade-out",
+      fadeClass: "fadedIn",
       currentImage: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
+      currentImageData: {
+        image: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
+        title: "title",
+        artist: "artist",
+        date: "date",
+        medium: "medium",
+        museumName: "Met",
+        objectName: "0000"
+      },
       // this is where we are connecting to with sockets,
       matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: this.minMat, right: this.minMat}
     };
-    this.onImgLoad = this.onImgLoad.bind(this);
     this.screenWidth = 1920;
     this.fadeTime = 1000;
+    this.artTime = 10000;
   }
 
   getData = artItems => {
@@ -33,6 +43,7 @@ class Display extends Component {
   changeData = () => socket.emit("initial_data");
 
   componentDidMount() {
+    console.log ('componente did mount');
     var state_current = this;
     socket.emit("initial_data");
     socket.on("get_data", this.getData);
@@ -40,9 +51,8 @@ class Display extends Component {
 
     // Timer
     this.imageInterval = setInterval(function(){
-    }, 5000);
+    }, this.artTime);
     clearInterval(this.imageInterval);
-    //this.startTimer();
 
     this.fadeInterval = setInterval(function(){
     }, this.fadeTime);
@@ -54,6 +64,7 @@ class Display extends Component {
   museumDataLoaded (self) {
     console.log('Display: ALL DATA LOADED');
     self.showNextImage();
+    // self.startTimer();
   }
 
   componentWillUnmount() {
@@ -89,20 +100,30 @@ class Display extends Component {
   startTimer = () => {
     console.log('startTimer');
     var that = this;
-    clearInterval(that.imageInterval);
+    that.stopTimers();
     that.imageInterval = setInterval(function(){
+      console.log('startTimer complete');
+      that.stopTimers();
       that.fade();
-    }, 5000);
+    }, this.artTime);
+  }
+
+  stopTimers() {
+    clearInterval(this.fadeInterval);
+    clearInterval(this.imageInterval);
   }
 
   fade() {
     console.log("fade() " + this.state.fadeClass);
-    var fadeStr = (this.state.fadeClass === "fade fade-in") ? "fade fade-out" : "fade fade-in";
-    this.setState({fadeClass: fadeStr});
+    // var fadeStr = (this.state.fadeClass === "fade fade-in") ? "fade fade-out" : "fade fade-in";
+    this.setState({fadeClass: "fadedIn fade-in"}); // fadeStr});
     var that = this;
-    clearInterval(that.fadeInterval);
+    that.stopTimers();
     that.fadeInterval = setInterval(function(){
-      if (that.state.fadeClass === "fade fade-in") that.showNextImage();
+      console.log('fadeTimer Complete');
+      that.stopTimers();
+      //if (that.state.fadeClass === "fadedIn fade-in") 
+      that.showNextImage();
     }, this.fadeTime); 
   }
 
@@ -116,14 +137,17 @@ class Display extends Component {
     }
     this.setState({currentImage: curImg});*/
 
-    dataService.getRandomImage(this.onObjectLoaded);
+    dataService.getRandomImage(this, this.onObjectLoaded);
     //this.fade();
   }
 
-  onObjectLoaded(self, obj) {
-    console.log(JSON.stringify(obj));
+  onObjectLoaded(self) {
+    console.log("onObjectLoaded: " + JSON.stringify(dataService.curImageObject));
+    self.setState({currentImage: dataService.curImageObject.image, currentImageData: dataService.curImageObject, fadeClass: "fadedOut fade-out"});
+    //self.fade();
+    self.startTimer();
   }
-
+/*
   onImgLoad({target:img}) {
     console.log('onImgLoad');
     var imgScale = (1080.0 - (this.minMat * 2)) / img.height;
@@ -131,19 +155,20 @@ class Display extends Component {
     matWidth = (matWidth < this.minMat) ? this.minMat : matWidth;
     this.setState({matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: matWidth, right: matWidth}, fadeClass: "fade fade-out"});
   }
-
+*/
   render() {
     return (
       <>
         <div className="img-parent">
           <div className={this.state.fadeClass}></div>
-          <div className="frame">
+          <FrameMat data={this.state.currentImageData} />
+         {/*<div className="frame">
             <div className="mat">
               <div className="art" style={this.state.matStyle}>
-                <img onLoad={this.onImgLoad} src={this.state.currentImage}></img> {/*https://images.metmuseum.org/CRDImages/as/original/DP123730.jpg */}
+                <img onLoad={this.onImgLoad} src={this.state.currentImage}></img> 
               </div>
             </div>
-          </div>
+          </div>*/}
         </div>
       </>
     );

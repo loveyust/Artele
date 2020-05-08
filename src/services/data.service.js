@@ -14,7 +14,9 @@ export default class DataService {
     this.curDepartmentNum = 0;
     this.curObjectString = "";
     this.callback = null;
+    this.imageCallback = null;
     this.callbackSelf = null;
+    this.curImageObject = null;
   }
 
   loadData (self, callback) {
@@ -173,8 +175,11 @@ export default class DataService {
   }
 
   // Request for a random image and information to display
-  getRandomImage(imageCallback) {
+  getRandomImage(self, imageCallback) {
     
+    this.callbackSelf = self;
+    this.imageCallback = imageCallback;
+
     // Select a random museum
     var curMuseumNum = 0; // Math.floor(Math.random() * this.airTableData.length);
 
@@ -248,7 +253,7 @@ export default class DataService {
         // Department Name
         // TODO
 
-        var obj = {
+        that.curImageObject = {
           image: image,
           title: title,
           artist: artist,
@@ -258,7 +263,7 @@ export default class DataService {
           objectName: tempObjectID
         };
        
-        imageCallback(this.callbackSelf, obj);
+        that.imageCallback(that.callbackSelf);
 
       } else {
         console.log('error')
