@@ -17,7 +17,6 @@ class FrameMat extends Component {
     this.onImgLoad = this.onImgLoad.bind(this);
   }
 
-
   componentDidMount() {
     
   }

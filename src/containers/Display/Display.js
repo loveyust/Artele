@@ -140,8 +140,7 @@ class Display extends Component {
   onImageRendered(){
     console.log('onImageRendered');
     this.setState({fadeClass: "fadedOut fade-out"});
-    // TEMP remove for debuggin to limit API calls 
-    this.startTimer();
+    // TEMP remove for debuggin to limit API calls this.startTimer();
   }
 
   render() {
@@ -149,7 +148,6 @@ class Display extends Component {
       <>
         <div className="img-parent">
           <div className={this.state.fadeClass}></div>
-          
           <FrameMat data={this.state.currentImageData} callback={this.onImageRendered} />
           <ArtInfo data={this.state.currentImageData} />
         </div>

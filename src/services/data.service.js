@@ -181,18 +181,16 @@ export default class DataService {
     this.imageCallback = imageCallback;
 
     // Select a random museum
-    var curMuseumNum = 0; // Math.floor(Math.random() * this.airTableData.length);
-
-    console.log('getRandomImage: ' + curMuseumNum);
+    var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
 
     // Select a random object from that museum's collection (from pre-filled object )
-
     var randomObjectNum = 0;
     var tempObjectID = '';
     while(tempObjectID === '' || tempObjectID === undefined) {
       randomObjectNum = Math.floor(Math.random() * this.airTableData[curMuseumNum].objectIDsArray.length);
       tempObjectID = this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum];
     }
+    // Cooper Hewitt, Object with only video, no images '68268677'
     var url = this.airTableData[curMuseumNum].objectAPI.replace("ObjectID", this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum]);
     if (this.airTableData[curMuseumNum].accessToken !== undefined) {
       // Swap in the access token for this API if it is defined
@@ -208,50 +206,32 @@ export default class DataService {
       var data = JSON.parse(this.response);
       if (request.status >= 200 && request.status < 400) {
 
-
-        /*
-        // The object terms that get us to the Object ID. 
-        var nameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
-
-        imageField:
-        titleField:
-        artistField:
-        dateField: 
-        mediumField:
-        
-        //console.log('data: ' + JSON.stringify(data[nameArray[0]]));
-        // Save the ObjectIDs
-        var tempArray = [];
-        tempArray = data[nameArray[0]];
-        //console.log('tempArray: ' + tempArray);
-        if (nameArray.length > 1) {
-          for (var i = 0; i < tempArray.length; i++) {
-            if (nameArray.length == 2) {
-              if (tempArray[i][nameArray[1]] !== undefined && tempArray[i][nameArray[1]] !== '') {
-                tempArray[i] = tempArray[i][nameArray[1]];
-              }
-            }
-          }
-        }
-        */
+        console.log(JSON.stringify(data));
       
+        // After object has been found, reconcile differences between museum APIs
         // Image
-        var image = data[that.airTableData[curMuseumNum].imageField];
+        var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
+        var image = that.processElementArray(that, data, imagePathArray, 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg');
+        console.log('derived image: ' + image);
 
         // Title
-        var title = data[that.airTableData[curMuseumNum].titleField];
+        var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
+        var title = that.processElementArray(that, data, titlePathArray, '');
 
         // Artist
-        var artist = data[that.airTableData[curMuseumNum].artistField];
+        var artistPathArray = that.airTableData[curMuseumNum].artistField.split(',');
+        var artist = that.processElementArray(that, data, artistPathArray, ''); // data[that.airTableData[curMuseumNum].artistField];
         if (artist === '' || artist === undefined) {
           artist = 'Unknown';
         }
 
         // Date
-        var date = data[that.airTableData[curMuseumNum].dateField];
+        var datePathArray = that.airTableData[curMuseumNum].dateField.split(',');
+        var date = that.processElementArray(that, data, datePathArray, ''); // var date = data[that.airTableData[curMuseumNum].dateField];
 
         // Medium
-        var medium = data[that.airTableData[curMuseumNum].mediumField];
+        var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
+        var medium = that.processElementArray(that, data, mediumPathArray, ''); // var medium = data[that.airTableData[curMuseumNum].mediumField];
 
         // Department Name
         // TODO
@@ -266,19 +246,43 @@ export default class DataService {
           objectID: tempObjectID
         };
        
+        // Send the image back to the Display through its callback function
         that.imageCallback(that.callbackSelf);
 
       } else {
         console.log('error')
       }
     }
-
     request.send()
+  }
 
-    // After object has been found, reconcile differences between museum APIs
+  processElementArray(that, data, elementArray, defaultElement) {
+    var endpointReturn = defaultElement;
+    var endpoint = data;
+    elementArray.forEach(element => {
+      endpoint = that.returnElement(endpoint, element);
+      if (element === elementArray[elementArray.length - 1] && endpoint !== undefined) {
+        endpointReturn = endpoint;
+      }
+    });
+    return endpointReturn;
+  }
 
-    // Send the image back to the Display through its callback function
-
+  returnElement(data, element) {
+    if (element.substr(-1) === 's') {
+      // This is an array, send the first element for now
+      if (data === undefined){
+        return;
+      } else {
+        return data[element][0];
+      }
+    } else {
+      if (data === undefined){
+        return;
+      } else {
+        return data[element];
+      }
+    }
   }
 }
 
