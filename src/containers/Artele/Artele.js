@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
-
+import TriggerButton from "../../components/TriggerButton/TriggerButton";
 
 // Styles
 import './style.scss';
@@ -113,6 +113,10 @@ class Artele extends Component {
     });
   }
 
+  onUpdateImages() {
+    console.log('Update Images');
+  }
+
   render() {
     return (
       <div className="artele-container">
@@ -121,6 +125,16 @@ class Artele extends Component {
               <p className="title">Artele</p>
             </div>
             <div className="col-12">
+              <Table className="table-trigger">
+                <tr>
+                  <td className="description-col">
+                    <p className="description">Update the stored image IDs for the museums.</p>
+                  </td>
+                  <td className="button-col">
+                    <TriggerButton action={this.onUpdateImages()} label={"Update Images"} />
+                  </td>
+                </tr>
+              </Table>
               <Table className="table">
                 <thead>
                   <tr>

@@ -34,10 +34,25 @@
       //text-align: right;
       padding-left: 10px;
     }
+  }
 
-    button {
-      background-color: #333333;
+  .table-trigger {
+    
+    .description {
       color: white;
+      font-size: 12px;
+      font-family: $font-name-montserrat-reg;
+      text-align: left;
+      padding-left: 10px;
+      text-transform: none;
+    }
+
+    .descriotion-col{
+      width: 75%;
+    }
+
+    .button-col {
+      padding-right: 10px;
     }
   }
 }
