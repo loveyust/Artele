@@ -8,8 +8,8 @@ import ArtInfo from "../../components/ArtInfo/ArtInfo";
 import './style.scss';
 
 // Socket Service Layer
-import DataService from '../../services/data.service';
-const dataService = new DataService();
+// import DataService from '../../services/data.service';
+//const dataService = new DataService();
 
 class Display extends Component {
   constructor() {
@@ -17,7 +17,7 @@ class Display extends Component {
     this.minMat = 150;
     this.state = {
       art_data: [],
-      fadeClass: "fadedIn",
+      fadeClass: "fadedIn fade-out",
       currentImage: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
       currentImageData: {
         image: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
@@ -61,7 +61,8 @@ class Display extends Component {
     }, this.fadeTime);
     clearInterval(this.fadeInterval);
 
-    dataService.loadData(this, this.museumDataLoaded);
+    // this.props.data.loadData(this, this.museumDataLoaded);
+    this.props.data.registerDataLoadCallback(this, this.museumDataLoaded);
   }
 
   museumDataLoaded (self) {
@@ -129,12 +130,12 @@ class Display extends Component {
 
   showNextImage() {
     console.log("showNextImage() " + this.state.currentImage);
-    dataService.getRandomImage(this, this.onObjectLoaded);
+    this.props.data.getRandomImage(this, this.onObjectLoaded);
   }
 
   onObjectLoaded(self) {
-    console.log("onObjectLoaded: " + JSON.stringify(dataService.curImageObject));
-    self.setState({currentImage: dataService.curImageObject.image, currentImageData: dataService.curImageObject});
+    console.log("onObjectLoaded: " + JSON.stringify(self.props.data.curImageObject));
+    self.setState({currentImage: self.props.data.curImageObject.image, currentImageData: self.props.data.curImageObject});
   }
 
   onImageRendered(){

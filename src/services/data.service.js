@@ -17,13 +17,21 @@ export default class DataService {
     this.imageCallback = null;
     this.callbackSelf = null;
     this.curImageObject = null;
+    this.dataLoaded = false;
+    this.callbacks = [];
+
+    this.loadData();
   }
 
-  loadData (self, callback) {
+  registerDataLoadCallback(self, callback) {
+    this.callbacks.push({self:self, callback:callback});
+  }
+
+  loadData () { // (self, callback) {
     this.numMuseums = 0;
     this.curMuseumNum = 0;
-    this.callback = callback;
-    this.callbackSelf = self;
+    // this.callback = callback;
+    // this.callbackSelf = self;
     this.loadAirTableBase('ArtSources');
   } 
 
@@ -82,7 +90,11 @@ export default class DataService {
       this.loadMuseum(this.curMuseumNum);
     } else {
       // All museum data is loaded 
-      this.callback(this.callbackSelf);
+      // this.callback(this.callbackSelf);
+      this.callbacks.forEach(registree => {
+        console.log('dataService callbacks: ' + registree);
+        registree.callback(registree.self);
+      });
     }
   }
 

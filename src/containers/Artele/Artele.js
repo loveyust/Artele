@@ -1,14 +1,24 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
+import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
+
+
+// Styles
+import './style.scss';
+
+//const [value, setValue] = useState(false);
 
 class Artele extends Component {
   constructor() {
     super();
     this.state = {
-      food_data: []
+      food_data: [],
+      value: false,
       // this is where we are connecting to with sockets,
     };
+    //const [value, setValue] = useState(false);
+    
   }
   getData = foodItems => {
     console.log(foodItems);
@@ -57,6 +67,10 @@ class Artele extends Component {
     this.setState({ food_data: new_array });
   };
   // To get the initial data
+
+
+ 
+
   getFoodData() {
     return this.state.food_data.map(food => {
       return (
@@ -77,21 +91,57 @@ class Artele extends Component {
       );
     });
   }
+
+  toggleActive = (id) => {
+    console.log('setmuseumactive: ' + id);
+    this.setState({value: !this.state.value});
+  }
+
+  getMuseumData() {
+    return this.props.data.airTableData.map(museum => {
+      return (
+        <tr key={museum.id}>
+          <td className="left"> {museum.name} </td>
+          {/*<td>
+            <input
+              onChange={e => this.toggleActive(e, museum.id)}
+              value={food.order}
+              type="number"
+              placeholder="Quantity"
+            />
+          </td>*/}
+          <td className="right">
+            <ToggleSwitch
+              isOn={this.state.value}
+              handleToggle={() => this.toggleActive(museum.id)}
+            />
+           {/* <button onClick={() => this.toggleActive(museum.id)}>Active</button>*/}
+          </td>
+        </tr>
+      );
+    });
+  }
+
   render() {
     return (
-      <Container>
-        <h2 className="h2Class">Order Menu</h2>
-        <Table striped>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Order</th>
-            </tr>
-          </thead>
-          <tbody>{this.getFoodData()}</tbody>
-        </Table>
-      </Container>
+      <div className="artele-container">
+          <div className="grid">
+            <div className="artele-header col-12">
+              <p className="title">Artele</p>
+            </div>
+            <div className="col-12">
+              <Table className="table">
+                <thead>
+                  <tr>
+                    <th className="left">Museum</th>
+                    <th className="right">Active</th>
+                  </tr>
+                </thead>
+                <tbody>{this.getMuseumData()}</tbody>
+              </Table>
+            </div>
+          </div>
+      </div>
     );
   }
 }
