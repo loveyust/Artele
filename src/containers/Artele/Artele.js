@@ -102,20 +102,11 @@ class Artele extends Component {
       return (
         <tr key={museum.id}>
           <td className="left"> {museum.name} </td>
-          {/*<td>
-            <input
-              onChange={e => this.toggleActive(e, museum.id)}
-              value={food.order}
-              type="number"
-              placeholder="Quantity"
-            />
-          </td>*/}
           <td className="right">
             <ToggleSwitch
               isOn={this.state.value}
               handleToggle={() => this.toggleActive(museum.id)}
             />
-           {/* <button onClick={() => this.toggleActive(museum.id)}>Active</button>*/}
           </td>
         </tr>
       );
