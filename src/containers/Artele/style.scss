@@ -11,7 +11,7 @@
     padding-bottom: 0;
   }
 
-  .table {
+  table {
     color: white;
     font-family: $font-name-montserrat-med;
     font-size: 14px;
@@ -19,21 +19,6 @@
     text-align: left;
     background-color: #333;
     width: 100%;
-
-    td, th {
-      padding-bottom: 10px;
-      padding-top: 10px;
-    }
-
-    .right {
-      //text-align: right;
-      width: 90px;
-    }
-
-    .left {
-      //text-align: right;
-      padding-left: 10px;
-    }
   }
 
   .table-trigger {
@@ -43,17 +28,34 @@
       font-size: 12px;
       font-family: $font-name-montserrat-reg;
       text-align: left;
-      padding-left: 10px;
+      padding-left: 0px;
       text-transform: none;
     }
 
-    .descriotion-col{
-      width: 75%;
+    input {
+      width: 100px;
     }
 
-    .button-col {
-      padding-right: 10px;
+    .header {
+      padding-top: 20px;
+      padding-bottom: 15px;
+      font-family: $font-name-montserrat-semibold;
     }
+
+    .museum {
+      padding-bottom: 10px;
+    }
+  }
+
+  .left {
+    // width: 80%;
+    padding-left: 10px;
+  }
+
+  .right {
+    //text-align: right;
+    padding-right: 10px;
+    text-align: center;
   }
 }
 

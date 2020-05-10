@@ -15,10 +15,12 @@ class Artele extends Component {
     this.state = {
       food_data: [],
       value: false,
+      timeSecs: 10,
+      museumData: []
       // this is where we are connecting to with sockets,
     };
     //const [value, setValue] = useState(false);
-    
+    this.museumDataLoaded = this.museumDataLoaded.bind(this);
   }
   getData = foodItems => {
     console.log(foodItems);
@@ -32,7 +34,15 @@ class Artele extends Component {
     socket.emit("initial_data");
     var state_current = this;
     socket.on("get_data", state_current.getData);
+
+    this.props.data.registerDataLoadCallback(this, this.museumDataLoaded);
   }
+
+  museumDataLoaded(self) {
+    console.log('Artele musuemDataLoaded: ' + self.airTableData);
+    this.setState({museumData: this.props.data.airTableData});
+  }
+
   componentWillUnmount() {
     socket.off("get_data", this.getData);
   }
@@ -98,23 +108,49 @@ class Artele extends Component {
   }
 
   getMuseumData() {
-    return this.props.data.airTableData.map(museum => {
-      return (
-        <tr key={museum.id}>
-          <td className="left"> {museum.name} </td>
-          <td className="right">
-            <ToggleSwitch
-              isOn={this.state.value}
-              handleToggle={() => this.toggleActive(museum.id)}
-            />
-          </td>
-        </tr>
-      );
-    });
+    console.log('getMuseumData: ' + this.state.museumData);
+    if (this.state.museumData !== undefined) {
+      return this.state.museumData.map(museum => {
+        return (
+          <tr key={museum.id}>
+            <td className="left museum"> {museum.name} </td>
+            <td className="right museum">
+              <ToggleSwitch
+                isOn={this.state.value}
+                handleToggle={() => this.toggleActive(museum.id)}
+              />
+            </td>
+          </tr>
+        );
+      });
+    } else {
+      return;
+    }
   }
 
   onUpdateImages() {
     console.log('Update Images');
+  }
+
+  onChangeSecs = (event) =>  {
+    
+    if (parseInt(event.target.value) < 0) {
+      event.target.value = 0;
+    }
+
+    console.log('Change Seconds: ' + event.target.value);
+
+    this.setState({timeSecs: event.target.value});
+
+    /*
+    var new_array = this.state.food_data.map(food => {
+      if (food._id == foodid) {
+        food.predQty = parseInt(event.target.value);
+      }
+      return food;
+    });
+    this.setState({ food_data: new_array });
+    */
   }
 
   render() {
@@ -126,23 +162,39 @@ class Artele extends Component {
             </div>
             <div className="col-12">
               <Table className="table-trigger">
-                <tr>
-                  <td className="description-col">
-                    <p className="description">Update the stored image IDs for the museums.</p>
-                  </td>
-                  <td className="button-col">
-                    <TriggerButton action={this.onUpdateImages()} label={"Update Images"} />
-                  </td>
-                </tr>
-              </Table>
-              <Table className="table">
-                <thead>
+                <tbody>
                   <tr>
-                    <th className="left">Museum</th>
-                    <th className="right">Active</th>
+                    <td className="left">
+                      <p className="description">Update the stored image IDs for the museums.</p>
+                    </td>
+                    <td className="right">
+                    <input
+                      onChange={e => this.onChangeSecs(e)}
+                      value={this.state.timeSecs}
+                      type="number"
+                      placeholder="Time in Secs"
+                      min="0"
+                    />
+                    </td>
                   </tr>
-                </thead>
-                <tbody>{this.getMuseumData()}</tbody>
+                  <tr>
+                    <td className="left">
+                      <p className="description">Change the number of seconds each artwork is visible.</p>
+                    </td>
+                    <td className="right">
+                      <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
+                    </td>
+                  </tr>
+                {/*</tbody>
+              </Table>
+              <Table className="table-museum">
+              <thead>*/}
+                  <tr>
+                    <td className="left header">Museum</td>
+                    <td className="right header">Active</td>
+                  </tr>
+                {/*</thead>
+                <tbody>*/}{this.getMuseumData()}</tbody>
               </Table>
             </div>
           </div>

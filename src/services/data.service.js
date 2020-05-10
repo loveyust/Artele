@@ -19,12 +19,21 @@ export default class DataService {
     this.curImageObject = null;
     this.dataLoaded = false;
     this.callbacks = [];
-
     this.loadData();
   }
 
   registerDataLoadCallback(self, callback) {
     this.callbacks.push({self:self, callback:callback});
+    if (this.dataLoaded) {
+      this.makeRegisteredCallbacks();
+    }
+  }
+
+  makeRegisteredCallbacks() {
+    this.callbacks.forEach(registree => {
+      console.log('dataService callbacks: ' + registree);
+      registree.callback(registree.self);
+    });
   }
 
   loadData () { // (self, callback) {
@@ -91,10 +100,8 @@ export default class DataService {
     } else {
       // All museum data is loaded 
       // this.callback(this.callbackSelf);
-      this.callbacks.forEach(registree => {
-        console.log('dataService callbacks: ' + registree);
-        registree.callback(registree.self);
-      });
+      this.dataLoaded = true;
+      this.makeRegisteredCallbacks();
     }
   }
 
