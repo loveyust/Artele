@@ -21,6 +21,9 @@ export default class DataService {
     this.callbacks = [];
     this.loadData();
     this.test = true;
+    this.timePerArtworkMS = 10000;
+    this.matColor = '#333333';
+    this.settings = {};
   }
 
   registerDataLoadCallback(self, callback) {
@@ -42,9 +45,10 @@ export default class DataService {
     this.curMuseumNum = 0;
     // this.callback = callback;
     // this.callbackSelf = self;
-    this.loadAirTableBase('ArtSources');
+    this.loadAirTableBase('ArtControl');
   } 
 
+  // Load Museum API data
   loadAirTableBase = (baseName) => {
     var that = this;
     base(baseName).select({
@@ -52,30 +56,45 @@ export default class DataService {
       maxRecords: 100,
       view: "Grid view"
     }).eachPage(function page(records, fetchNextPage) {
-      // This function (`page`) will get called for each page of records.
-      var newState = records.map(r => { 
-        console.log(JSON.stringify(r));
-        return { 
-          id: r.id,
-          name: r.get('Name'), 
-          active: r.get('Active'),
-          accessToken: r.get('AccessToken'), 
-          departmentIDs: r.get('DepartmentIDs'), // eyebrow,
-          departmentObjectAPI: r.get('DepartmentObjectAPI'),
-          departmentObjectField: r.get('DepartmentObjectField'),
-          objectAPI: r.get('ObjectAPI'),
-          objectIDs: r.get('ObjectIDs'),
-          imageField: r.get('ImageField'),
-          titleField: r.get('TitleField'),
-          artistField: r.get('ArtistField'),
-          dateField: r.get('DateField'),
-          mediumField: r.get('MediumField'),
-          objectIDsArray: []
+      if (baseName === 'ArtControl') {
+        var settings = records.map(r => { 
+          console.log(JSON.stringify(r));
+          return { 
+            id: r.id,
+            timePerArtwork: r.get('TimePerArtworkSecs'),
+            matColor: r.get('MatColor')
+          }
+        });
+        if (settings.length > 0) {
+          that.settings = settings[0];
         }
-      })
-      that.airTableData = newState;
-      that.numMuseums = that.airTableData.length;
-      that.loadMuseum(that.curMuseumNum);
+        that.loadAirTableBase('ArtSources');
+      } else if (baseName === 'ArtSources') {
+        // This function (`page`) will get called for each page of records.
+        var newState = records.map(r => { 
+          console.log(JSON.stringify(r));
+          return { 
+            id: r.id,
+            name: r.get('Name'), 
+            active: r.get('Active'),
+            accessToken: r.get('AccessToken'), 
+            departmentIDs: r.get('DepartmentIDs'), // eyebrow,
+            departmentObjectAPI: r.get('DepartmentObjectAPI'),
+            departmentObjectField: r.get('DepartmentObjectField'),
+            objectAPI: r.get('ObjectAPI'),
+            objectIDs: r.get('ObjectIDs'),
+            imageField: r.get('ImageField'),
+            titleField: r.get('TitleField'),
+            artistField: r.get('ArtistField'),
+            dateField: r.get('DateField'),
+            mediumField: r.get('MediumField'),
+            objectIDsArray: []
+          }
+        })
+        that.airTableData = newState;
+        that.numMuseums = that.airTableData.length;
+        that.loadMuseum(that.curMuseumNum);
+      }
     }, function done(err) {
         if (err) { console.error(err); return; }
     });
@@ -335,12 +354,26 @@ export default class DataService {
     }
     console.log('setActive: ' + this.airTableData[0].active);
   }
+
+  // Set art time
+  setArtTime(timeSecs) {
+    console.log('setTimeSecs: ' + timeSecs);
+    this.settings.timePerArtwork = timeSecs;
+    base('ArtControl').update([
+      {
+        "id": this.settings.id,
+        "fields": {
+          "TimePerArtworkSecs": parseInt(timeSecs)
+        }
+      }
+    ], function(err, records) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
 }
-
-
-
-
-
 
 
 /*fetch(url)

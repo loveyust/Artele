@@ -43,8 +43,8 @@ class Artele extends Component {
     this.state = {
       food_data: [],
       value: false,
-      timeSecs: 10,
-      museumData: []
+      museumData: [],
+      timeSecs: 10
       // this is where we are connecting to with sockets
     };
     //const [value, setValue] = useState(false);
@@ -68,7 +68,7 @@ class Artele extends Component {
 
   museumDataLoaded(self) {
     console.log('Artele musuemDataLoaded: ' + self.airTableData);
-    this.setState({museumData: this.props.data.airTableData});
+    this.setState({museumData: this.props.data.airTableData, timeSecs: this.props.data.settings.timePerArtwork});
   }
 
   componentWillUnmount() {
@@ -159,19 +159,17 @@ class Artele extends Component {
 
   onUpdateImages() {
     console.log('Update Images: ' + this.props.data.test);
-    
-    //TODO send flag to update images from Air Table in data service
+    // TODO send flag to update images from Air Table in data service
   }
 
   onChangeSecs = (event) =>  {
-    if (parseInt(event.target.value) < 0) {
-      event.target.value = 0;
+    if (parseInt(event.target.value) <= 5) {
+      event.target.value = 5;
     }
     console.log('Change Seconds: ' + event.target.value);
-   
-    // TODO Add seconds to Airtable
-
+    this.props.data.setArtTime(event.target.value);
     this.setState({timeSecs: event.target.value});
+    // TODO Add seconds to Airtable
   }
 
   render() {

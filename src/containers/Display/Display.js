@@ -33,7 +33,7 @@ class Display extends Component {
     };
     this.screenWidth = 1920;
     this.fadeTime = 1000;
-    this.artTime = 10000;
+    ///// this.artTime = 10000;
 
     this.onImageRendered = this.onImageRendered.bind(this);
     this.museumDataLoaded = this.museumDataLoaded.bind(this);
@@ -55,7 +55,7 @@ class Display extends Component {
 
     // Timer
     this.imageInterval = setInterval(function(){
-    }, this.artTime);
+    }, this.props.data.settings.timePerArtwork * 1000);
     clearInterval(this.imageInterval);
 
     this.fadeInterval = setInterval(function(){
@@ -67,10 +67,12 @@ class Display extends Component {
   }
 
   museumDataLoaded (self) {
-    console.log('Display: ALL DATA LOADED');
+
+    // Grab some settings
+    ///// self.artTime = this.props.data.timePerArtworkMS;
+    console.log('Display: ALL DATA LOADED ');
     self.showNextImage();
     // self.startTimer();
-
     this.props.data.test = false;
   }
 
@@ -109,7 +111,7 @@ class Display extends Component {
       console.log('startTimer complete');
       that.stopTimers();
       that.fade();
-    }, this.artTime);
+    }, this.props.data.settings.timePerArtwork * 1000);
   }
 
   stopTimers() {
