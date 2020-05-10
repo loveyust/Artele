@@ -35,7 +35,8 @@ class Display extends Component {
     this.fadeTime = 1000;
     this.artTime = 10000;
 
-    this.onImageRendered= this.onImageRendered.bind(this);
+    this.onImageRendered = this.onImageRendered.bind(this);
+    this.museumDataLoaded = this.museumDataLoaded.bind(this);
   }
 
   getData = artItems => {
@@ -69,6 +70,8 @@ class Display extends Component {
     console.log('Display: ALL DATA LOADED');
     self.showNextImage();
     // self.startTimer();
+
+    this.props.data.test = false;
   }
 
   componentWillUnmount() {
@@ -80,8 +83,6 @@ class Display extends Component {
     // console.log(predicted_details);
     socket.emit("mark_done", id);
   };
-
-
 
   getArtData() {
     return this.state.art_data.map(art => {

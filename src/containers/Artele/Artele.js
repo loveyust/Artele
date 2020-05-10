@@ -3,11 +3,39 @@ import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
 import TriggerButton from "../../components/TriggerButton/TriggerButton";
+import styled from "styled-components";
+import Toggle from 'react-toggle'
 
 // Styles
 import './style.scss';
 
-//const [value, setValue] = useState(false);
+// const [value, setValue] = useState(false);
+
+const Label = styled.label`
+  font-weight: bold;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  white-space: nowrap;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const Sample = styled.div`
+  padding: 16px;
+`;
+
+const Root = styled.div`
+  font-family: Arial, Helvetica, sans-serif;
+  h1 {
+    text-align: center;
+  }
+
+  h2 {
+    padding-bottom: 4px;
+    border-bottom: 1px solid #ccc;
+  }
+`;
 
 class Artele extends Component {
   constructor() {
@@ -17,7 +45,7 @@ class Artele extends Component {
       value: false,
       timeSecs: 10,
       museumData: []
-      // this is where we are connecting to with sockets,
+      // this is where we are connecting to with sockets
     };
     //const [value, setValue] = useState(false);
     this.museumDataLoaded = this.museumDataLoaded.bind(this);
@@ -78,9 +106,6 @@ class Artele extends Component {
   };
   // To get the initial data
 
-
- 
-
   getFoodData() {
     return this.state.food_data.map(food => {
       return (
@@ -102,23 +127,27 @@ class Artele extends Component {
     });
   }
 
-  toggleActive = (id) => {
-    console.log('setmuseumactive: ' + id);
-    this.setState({value: !this.state.value});
+  toggleActive = (active, id) => {
+    console.log('setmuseumactive: ' + id + ' ' + active);
+    this.props.data.setActive(active, id);
+    // this.setState({museumData: this.props.data.airTableData});
   }
 
   getMuseumData() {
-    console.log('getMuseumData: ' + this.state.museumData);
-    if (this.state.museumData !== undefined) {
-      return this.state.museumData.map(museum => {
+    console.log('getMuseumData: ' + this.props.data.airTableData);
+    if (this.props.data.airTableData !== undefined) {
+      return this.props.data.airTableData.map(museum => {
+        console.log('musum: ' + museum.active);
         return (
           <tr key={museum.id}>
-            <td className="left museum"> {museum.name} </td>
+            <td className="left museum">{museum.name}</td>
             <td className="right museum">
               <ToggleSwitch
-                isOn={this.state.value}
-                handleToggle={() => this.toggleActive(museum.id)}
-              />
+                active={museum.active}
+                aria-label='No label tag'
+                id={museum.id}
+                onChange={() => this.toggleActive(!museum.active, museum.id)}
+                label={""} />
             </td>
           </tr>
         );
@@ -129,28 +158,20 @@ class Artele extends Component {
   }
 
   onUpdateImages() {
-    console.log('Update Images');
+    console.log('Update Images: ' + this.props.data.test);
+    
+    //TODO send flag to update images from Air Table in data service
   }
 
   onChangeSecs = (event) =>  {
-    
     if (parseInt(event.target.value) < 0) {
       event.target.value = 0;
     }
-
     console.log('Change Seconds: ' + event.target.value);
+   
+    // TODO Add seconds to Airtable
 
     this.setState({timeSecs: event.target.value});
-
-    /*
-    var new_array = this.state.food_data.map(food => {
-      if (food._id == foodid) {
-        food.predQty = parseInt(event.target.value);
-      }
-      return food;
-    });
-    this.setState({ food_data: new_array });
-    */
   }
 
   render() {
@@ -165,7 +186,7 @@ class Artele extends Component {
                 <tbody>
                   <tr>
                     <td className="left">
-                      <p className="description">Update the stored image IDs for the museums.</p>
+                      <p className="description">Change the number of seconds each artwork is visible.</p>
                     </td>
                     <td className="right">
                     <input
@@ -179,22 +200,18 @@ class Artele extends Component {
                   </tr>
                   <tr>
                     <td className="left">
-                      <p className="description">Change the number of seconds each artwork is visible.</p>
+                      <p className="description">Update the stored image IDs for the museums.</p>
                     </td>
                     <td className="right">
                       <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
                     </td>
                   </tr>
-                {/*</tbody>
-              </Table>
-              <Table className="table-museum">
-              <thead>*/}
                   <tr>
                     <td className="left header">Museum</td>
                     <td className="right header">Active</td>
                   </tr>
-                {/*</thead>
-                <tbody>*/}{this.getMuseumData()}</tbody>
+                  {this.getMuseumData()}
+                </tbody>
               </Table>
             </div>
           </div>

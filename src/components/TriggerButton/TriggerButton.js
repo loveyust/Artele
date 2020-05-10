@@ -20,7 +20,7 @@ class TriggerButton extends Component {
   render() {
     return (
       <>
-        <button onClick={() => this.props.action}>{this.props.label}</button>
+        <button onClick={this.props.action}>{this.props.label}</button>
       </>
     );
   }

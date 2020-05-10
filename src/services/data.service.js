@@ -20,6 +20,7 @@ export default class DataService {
     this.dataLoaded = false;
     this.callbacks = [];
     this.loadData();
+    this.test = true;
   }
 
   registerDataLoadCallback(self, callback) {
@@ -57,6 +58,7 @@ export default class DataService {
         return { 
           id: r.id,
           name: r.get('Name'), 
+          active: r.get('Active'),
           accessToken: r.get('AccessToken'), 
           departmentIDs: r.get('DepartmentIDs'), // eyebrow,
           departmentObjectAPI: r.get('DepartmentObjectAPI'),
@@ -201,6 +203,10 @@ export default class DataService {
 
     // Select a random museum
     var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
+    // Make sure we choose an active Museum
+    while(!this.airTableData[curMuseumNum].active) {
+      curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
+    }
 
     // Select a random object from that museum's collection (from pre-filled object )
     var randomObjectNum = 0;
@@ -302,6 +308,32 @@ export default class DataService {
         return data[element];
       }
     }
+  }
+
+  // Set active
+  setActive(active, id) {
+    console.log('setActive: ' + active + ' ' + id);
+    for (var i = 0; i < this.airTableData.length; i++) {
+      console.log('setActive: ' + this.airTableData[i].id);
+      if (id === this.airTableData[i].id) {
+        this.airTableData[i].active = active;
+        // var tempStr = '' + active;
+        base('ArtSources').update([
+          {
+            "id": id,
+            "fields": {
+              "Active": active
+            }
+          }
+        ], function(err, records) {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
+      }
+    }
+    console.log('setActive: ' + this.airTableData[0].active);
   }
 }
 
