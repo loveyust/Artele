@@ -235,13 +235,13 @@ class DataService {
   }
 
   // Request for a random image and information to display
-  getRandomImage(imageCallback) { ///// self, imageCallback) {
+  getRandomImage(imageCallback) {
     
-/////     this.callbackSelf = self;
     this.imageCallback = imageCallback;
 
     // Select a random museum
     var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
+
     // Make sure we choose an active Museum
     while(!this.airTableData[curMuseumNum].active) {
       curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
@@ -265,11 +265,10 @@ class DataService {
     request.open('GET', url, true);
     request.responseType = "json";
     var that = this;
-
-    // xhr.onload = () => {
     request.onload = function() {
       // Begin accessing JSON data here
       console.log('JSON response: ' + JSON.stringify(this.responseText));
+
       var data = JSON.parse (this.responseText);
       if (request.status >= 200 && request.status < 400) {
 
@@ -314,7 +313,7 @@ class DataService {
         };
        
         // Send the image back to the Display through its callback function
-        that.imageCallback(); ///// that.callbackSelf);
+        that.imageCallback();
 
       } else {
         console.log('error')
@@ -399,26 +398,3 @@ class DataService {
 }
 
 module.exports = DataService;
-
-
-/*fetch(url)
-    .then(response => response.json())
-    .then(response => {
-      // Ensure service worker exists, and that we really are getting a JS file.
-      const contentType = response.headers.get('content-type');
-      if (response.status === 404) //|| (contentType != null && contentType.indexOf('javascript') === -1)
-      {
-        // No service worker found. Probably a different app. Reload the page.
-    
-        console.log('Error loading department API');
-      } else {
-        // Service worker found. Proceed as normal.
-        // registerValidSW(swUrl, config);
-        console.log('loadObjectsByDepartment: ' + JSON.stringify(response));
-      }
-    })
-    .catch(() => {
-      console.log(
-        'No internet connection found. App is running in offline mode.'
-      );
-    });*/
