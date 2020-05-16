@@ -10,6 +10,8 @@ import Kitchen from "./main/Kitchen";
 import Display from "./containers/Display/Display";
 import Artele from "./containers/Artele/Artele";
 
+// import DataService from './services/data.service';
+
 /*The <Route> component is the main part of React Router. 
 Anywhere that you want to only render content based on the location’s pathname, 
 you should use a <Route> element.
@@ -20,22 +22,36 @@ which is a string that describes the pathname that the route matches */
 
 /* The <Switch> will iterate over routes and only render the first one that matches the current pathname */
 
-// Airtable Data
-import DataService from './services/data.service';
-const dataService = new DataService();
 
 
 class App extends Component {
+  constructor() {
+    super();
+    // Airtable Data
+    // import DataService from './services/data.service';
+ //   this.dataService = new DataService();
+    ////this.dataService.loadData();
+    this.state = {
+      dataService: null // new DataService()
+    }
+  }
+
+  componentDidMount () {
+
+  }
+
   render() {
     return (
       <div className="App">
         <Header />
         <div className="app-contents">
         <Switch>
-          <Route exact path="/" render={(props) => <Artele {...props} data={dataService} />} />
+          <Route exact path="/" render={(props) => <Artele {...props} museumData={this.state.dataService} />} />
+          <Route path="/display" render={(props) => <Display {...props} museumData={this.state.dataService} />} />
           <Route path="/updatepredicted" component={UpdatePredicted} />  
           <Route path="/kitchen" component={Kitchen} />
-          <Route path="/display" render={(props) => <Display {...props} data={dataService} />} />
+          {/* <Route path="/display" component={Display} />*/}
+          
         </Switch>
         </div>
       </div>

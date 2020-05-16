@@ -24,10 +24,10 @@ const io = socketIO(server);
 
 io.on("connection", socket => {
   console.log("New client connected" + socket.id);
-  //console.log(socket);
+  // console.log(socket);
   // Returning the initial data of food menu from FoodItems collection
   socket.on("initial_data", () => {
-    //collection_foodItems.find({}).then(docs => {
+    // collection_foodItems.find({}).then(docs => {
     collection_artsource.find({}).then(docs => {
       console.log("docs: " + docs);
       io.sockets.emit("get_data", docs);
@@ -82,8 +82,8 @@ io.on("connection", socket => {
 
 /* Below mentioned steps are performed to return the Frontend build of create-react-app from build folder of backend */
 
-app.use(express.static("build"));
-app.use("/display", express.static("build"));
+/////app.use(express.static("build"));
+/////app.use("/display", express.static("build"));
 // app.use("/kitchen", express.static("build"));
 // app.use("/updatepredicted", express.static("build"));
 

@@ -1,10 +1,13 @@
 import React, { Component, useState } from "react";
 import { Button, Table, Container } from "reactstrap";
-import { socket } from "../../global/header";
+import { socket, data } from "../../global/header";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
 import TriggerButton from "../../components/TriggerButton/TriggerButton";
 import styled from "styled-components";
 import Toggle from 'react-toggle'
+
+// Airtable Data
+///// import DataService from '../../services/data.service';
 
 // Styles
 import './style.scss';
@@ -48,8 +51,10 @@ class Artele extends Component {
       // this is where we are connecting to with sockets
     };
     //const [value, setValue] = useState(false);
+/////    this.data = new DataService();
     this.museumDataLoaded = this.museumDataLoaded.bind(this);
   }
+/*
   getData = foodItems => {
     console.log(foodItems);
     foodItems = foodItems.map(food => {
@@ -58,24 +63,25 @@ class Artele extends Component {
     });
     this.setState({ food_data: foodItems });
   };
-  componentDidMount() {
-    socket.emit("initial_data");
-    var state_current = this;
-    socket.on("get_data", state_current.getData);
+*/
 
-    this.props.data.registerDataLoadCallback(this, this.museumDataLoaded);
+  componentDidMount() {
+/////    socket.emit("initial_data");
+/////    var state_current = this;
+/////    socket.on("get_data", state_current.getData);
+    this.props.museumData.registerDataLoadCallback(this, this.museumDataLoaded);
   }
 
   museumDataLoaded(self) {
-    console.log('Artele musuemDataLoaded: ' + self.airTableData);
-    this.setState({museumData: this.props.data.airTableData, timeSecs: this.props.data.settings.timePerArtwork});
+    console.log('Artele musuemDataLoaded: ' + this.props.museumData.airTableData);
+    this.setState({museumData: this.props.museumData.airTableData, timeSecs: this.props.museumData.settings.timePerArtwork});
   }
 
   componentWillUnmount() {
-    socket.off("get_data", this.getData);
+///    socket.off("get_data", this.getData);
   }
   //Function to place the order.
-  sendOrder = id => {
+/*  sendOrder = id => {
     var order_details;
     this.state.food_data.map(food => {
       if (food._id == id) {
@@ -126,17 +132,17 @@ class Artele extends Component {
       );
     });
   }
-
+*/
   toggleActive = (active, id) => {
     console.log('setmuseumactive: ' + id + ' ' + active);
-    this.props.data.setActive(active, id);
-    // this.setState({museumData: this.props.data.airTableData});
+    this.props.museumData.setActive(active, id);
+    // this.setState({museumData: this.data.airTableData});
   }
 
   getMuseumData() {
-    console.log('getMuseumData: ' + this.props.data.airTableData);
-    if (this.props.data.airTableData !== undefined) {
-      return this.props.data.airTableData.map(museum => {
+    console.log('getMuseumData: ' + this.props.museumData.airTableData);
+    if (this.props.museumData.airTableData !== undefined) {
+      return this.props.museumData.airTableData.map(museum => {
         console.log('musum: ' + museum.active);
         return (
           <tr key={museum.id}>
@@ -158,7 +164,7 @@ class Artele extends Component {
   }
 
   onUpdateImages() {
-    console.log('Update Images: ' + this.props.data.test);
+    console.log('Update Images: ' + this.props.museumData.test);
     // TODO send flag to update images from Air Table in data service
   }
 
@@ -167,7 +173,7 @@ class Artele extends Component {
       event.target.value = 5;
     }
     console.log('Change Seconds: ' + event.target.value);
-    this.props.data.setArtTime(event.target.value);
+    this.props.museumData.setArtTime(event.target.value);
     this.setState({timeSecs: event.target.value});
     // TODO Add seconds to Airtable
   }

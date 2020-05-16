@@ -1,15 +1,17 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
 import FrameMat from "../../components/FrameMat/FrameMat";
 import ArtInfo from "../../components/ArtInfo/ArtInfo";
+import { DataConsumer, DataContext } from '../../data.context';
 
 // Styles
 import './style.scss';
 
 // Socket Service Layer
 // import DataService from '../../services/data.service';
-//const dataService = new DataService();
+// const dataService = new DataService();
+
 
 class Display extends Component {
   constructor() {
@@ -31,31 +33,40 @@ class Display extends Component {
       // this is where we are connecting to with sockets,
       matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: this.minMat, right: this.minMat}
     };
+    //this.data = new DataService();
+    //this.data.loadData();
+    // this.data = this.context.data;
     this.screenWidth = 1920;
     this.fadeTime = 1000;
     ///// this.artTime = 10000;
 
     this.onImageRendered = this.onImageRendered.bind(this);
     this.museumDataLoaded = this.museumDataLoaded.bind(this);
+    //this.onObjectLoaded = this.onObjectLoaded(this);
   }
 
-  getData = artItems => {
-//    console.log(artItems);
-    this.setState({ art_data: artItems }); // from original
+  getMuseumData = museumItems => {
+    console.log(museumItems);
+    // this.setState({ art_data: artItems }); // from original
+    socket.emit("request_settings_data");
   };
 
-  changeData = () => socket.emit("initial_data");
+  getSettingsData = settingsData => {
+    console.log('settingsData: ' + JSON.stringify(settingsData));
+  }
 
   componentDidMount() {
     console.log ('componente did mount');
     var state_current = this;
-    socket.emit("initial_data");
-    socket.on("get_data", this.getData);
-    socket.on("change_data", this.changeData);
+    
+    socket.on("send_museum_data", this.getMuseumData);
+    socket.on("send_settings_data", this.getSettingsData);
+    socket.emit("request_museum_data");
+///    socket.on("change_data", this.changeData);
 
     // Timer
-    this.imageInterval = setInterval(function(){
-    }, this.props.data.settings.timePerArtwork * 1000);
+  /*/////  this.imageInterval = setInterval(function(){
+    }, this.props.museumData.settings.timePerArtwork * 1000); 
     clearInterval(this.imageInterval);
 
     this.fadeInterval = setInterval(function(){
@@ -63,27 +74,27 @@ class Display extends Component {
     clearInterval(this.fadeInterval);
 
     // this.props.data.loadData(this, this.museumDataLoaded);
-    this.props.data.registerDataLoadCallback(this, this.museumDataLoaded);
+    this.props.museumData.registerDataLoadCallback(this, this.museumDataLoaded);
+  */
   }
 
   museumDataLoaded (self) {
-
     // Grab some settings
     ///// self.artTime = this.props.data.timePerArtworkMS;
     console.log('Display: ALL DATA LOADED ');
     self.showNextImage();
     // self.startTimer();
-    this.props.data.test = false;
+    this.props.museumData.test = false;
   }
 
   componentWillUnmount() {
-    socket.off("get_data");
-    socket.off("change_data");
+///    socket.off("get_data");
+///    socket.off("change_data");
   }
 
   markDone = id => {
     // console.log(predicted_details);
-    socket.emit("mark_done", id);
+////    socket.emit("mark_done", id);
   };
 
   getArtData() {
@@ -104,14 +115,14 @@ class Display extends Component {
 
   // Timer to keep track of when to load next screen.
   startTimer = () => {
-    console.log('startTimer');
+    console.log('startTimer ' + this.props.museumData.settings.timePerArtwork);
     var that = this;
     that.stopTimers();
     that.imageInterval = setInterval(function(){
       console.log('startTimer complete');
       that.stopTimers();
       that.fade();
-    }, this.props.data.settings.timePerArtwork * 1000);
+    }, this.props.museumData.settings.timePerArtwork * 1000);
   }
 
   stopTimers() {
@@ -133,18 +144,21 @@ class Display extends Component {
 
   showNextImage() {
     console.log("showNextImage() " + this.state.currentImage);
-    this.props.data.getRandomImage(this, this.onObjectLoaded);
+    this.props.museumData.getRandomImage(this, this.onObjectLoaded);
   }
 
   onObjectLoaded(self) {
-    console.log("onObjectLoaded: " + JSON.stringify(self.props.data.curImageObject));
-    self.setState({currentImage: self.props.data.curImageObject.image, currentImageData: self.props.data.curImageObject});
+    if (self.props !== undefined) {
+    console.log("onObjectLoaded: " + JSON.stringify(self.props.museumData.curImageObject));
+    self.setState({currentImage: self.props.museumData.curImageObject.image, currentImageData: self.props.museumData.curImageObject});
+    }
   }
 
   onImageRendered(){
     console.log('onImageRendered');
     this.setState({fadeClass: "fadedOut fade-out"});
-    // TEMP remove for debuggin to limit API calls this.startTimer();
+    // TEMP remove for debuggin to limit API calls 
+    // this.startTimer();
   }
 
   render() {

@@ -1,32 +1,26 @@
 // Airtable
-import Airtable from 'airtable';
-import { environment } from '../environment.js';
+//import { Airtable } from 'airtable';
+//import { environment } from '../environment.js';
+const environment = require('../environment.js');
+const Airtable = require("airtable");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 
-export default class DataService {
+class DataService {
   constructor() {
-    const self = this;
-    this.objectIDs = [];
-    this.airTableData = [];
-    this.numMuseums = 0;
-    this.curMuseumNum = 0;
-    this.curDepartments = [];
-    this.curDepartmentNum = 0;
-    this.curObjectString = "";
-    this.callback = null;
-    this.imageCallback = null;
-    this.callbackSelf = null;
-    this.curImageObject = null;
-    this.dataLoaded = false;
-    this.callbacks = [];
-    this.loadData();
-    this.test = true;
-    this.timePerArtworkMS = 10000;
-    this.matColor = '#333333';
-    this.settings = {};
+    if (DataService.instance) {
+      return DataService.instance;
+    }
+    DataService.instance = this;
+     
+     this.loadingData = false;
+     this.callbacks = [];
+     console.log('DataService constructor');
+     this.loadData();
+    return this;
   }
 
   registerDataLoadCallback(self, callback) {
+    console.log('registerDataCallback: ' + this.callbacks.length);
     this.callbacks.push({self:self, callback:callback});
     if (this.dataLoaded) {
       this.makeRegisteredCallbacks();
@@ -41,15 +35,39 @@ export default class DataService {
   }
 
   loadData () { // (self, callback) {
-    this.numMuseums = 0;
-    this.curMuseumNum = 0;
-    // this.callback = callback;
-    // this.callbackSelf = self;
-    this.loadAirTableBase('ArtControl');
+    if (!this.loadingData) {
+      this.loadingData = true;
+
+      this.objectIDs = [];
+      this.airTableData = [];
+      this.numMuseums = 0;
+      this.curMuseumNum = 0;
+      this.curDepartments = [];
+      this.curDepartmentNum = 0;
+      this.curObjectString = "";
+      this.callback = null;
+      this.imageCallback = null;
+      this.callbackSelf = null;
+      this.curImageObject = null;
+      this.dataLoaded = false;
+      
+    
+      this.test = true;
+      this.timePerArtworkMS = 10000;
+      this.matColor = '#333333';
+      this.settings = {};
+
+      console.log('dataSevice loadData()');
+      this.numMuseums = 0;
+      this.curMuseumNum = 0;
+      // this.callback = callback;
+      // this.callbackSelf = self;
+      this.loadAirTableBase('ArtControl');
+    }
   } 
 
   // Load Museum API data
-  loadAirTableBase = (baseName) => {
+  loadAirTableBase (baseName){
     var that = this;
     base(baseName).select({
       // Selecting the first 3 records in Grid view:
@@ -357,7 +375,7 @@ export default class DataService {
 
   // Set art time
   setArtTime(timeSecs) {
-    console.log('setTimeSecs: ' + timeSecs);
+    console.log('setTimeSecs: ' + timeSecs + ' ' + this.settings.timePerArtwork);
     this.settings.timePerArtwork = timeSecs;
     base('ArtControl').update([
       {
@@ -374,6 +392,8 @@ export default class DataService {
     });
   }
 }
+
+module.exports = DataService;
 
 
 /*fetch(url)
