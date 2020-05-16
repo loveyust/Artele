@@ -14,6 +14,11 @@ const io = socketIO(server);
 const DataService = require('./data.service');
 const data = new DataService();
 
+function callback() {
+  console.log("socket Send Image");
+  io.sockets.emit("send_random_image", data.curImageObject);
+}
+
 io.on("connection", socket => {
   console.log("New client connected" + socket.id);
 
@@ -30,6 +35,15 @@ io.on("connection", socket => {
     io.sockets.emit("send_settings_data", data.settings);
   });
 
+  socket.on("request_random_image", () => {
+    console.log("socket Request Image");
+    // var promise = data.getRandomImage();
+    // promise.then(function(result) { 
+    data.getRandomImage(callback); // .then(() => {
+      
+    //});
+  });
+
   socket.on("set_time", time => {
     // time should contain new time value - could also do settings in general
     io.sockets.emit("send_time");
@@ -41,6 +55,7 @@ io.on("connection", socket => {
     console.log("user disconnected");
   });
 });
+
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
 

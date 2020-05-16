@@ -1,6 +1,8 @@
 // Airtable
 //import { Airtable } from 'airtable';
 //import { environment } from '../environment.js';
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+var request = new XMLHttpRequest();
 const environment = require('../environment.js');
 const Airtable = require("airtable");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
@@ -154,7 +156,7 @@ class DataService {
     }
 
     console.log(url + ' AT: ' + this.airTableData[curMuseumNum].accessToken);
-    var request = new XMLHttpRequest();
+    //var request = new XMLHttpRequest();
     request.open('GET', url, true);
     var that = this;
     request.onload = function() {
@@ -233,9 +235,9 @@ class DataService {
   }
 
   // Request for a random image and information to display
-  getRandomImage(self, imageCallback) {
+  getRandomImage(imageCallback) { ///// self, imageCallback) {
     
-    this.callbackSelf = self;
+/////     this.callbackSelf = self;
     this.imageCallback = imageCallback;
 
     // Select a random museum
@@ -260,12 +262,15 @@ class DataService {
     }
 
     console.log('Object URL: ' + url);
-    var request = new XMLHttpRequest();
     request.open('GET', url, true);
+    request.responseType = "json";
     var that = this;
+
+    // xhr.onload = () => {
     request.onload = function() {
       // Begin accessing JSON data here
-      var data = JSON.parse(this.response);
+      console.log('JSON response: ' + JSON.stringify(this.responseText));
+      var data = JSON.parse (this.responseText);
       if (request.status >= 200 && request.status < 400) {
 
         console.log(JSON.stringify(data));
@@ -309,7 +314,7 @@ class DataService {
         };
        
         // Send the image back to the Display through its callback function
-        that.imageCallback(that.callbackSelf);
+        that.imageCallback(); ///// that.callbackSelf);
 
       } else {
         console.log('error')
