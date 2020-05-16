@@ -24,11 +24,7 @@ io.on("connection", socket => {
 
   // Returning the initial data of airtable data
   socket.on("request_museum_data", () => {
-    // collection_foodItems.find({}).then(docs => {
-    // collection_artsource.find({}).then(docs => {
-      //console.log("docs: " + docs);
-      io.sockets.emit("send_museum_data", data.airTableData);
-    // });
+    io.sockets.emit("send_museum_data", data.airTableData);
   });
 
   socket.on("request_settings_data", () => {
@@ -37,11 +33,7 @@ io.on("connection", socket => {
 
   socket.on("request_random_image", () => {
     console.log("socket Request Image");
-    // var promise = data.getRandomImage();
-    // promise.then(function(result) { 
-    data.getRandomImage(callback); // .then(() => {
-      
-    //});
+    data.getRandomImage(callback);
   });
 
   socket.on("set_time", time => {
@@ -56,28 +48,4 @@ io.on("connection", socket => {
   });
 });
 
-
 server.listen(port, () => console.log(`Listening on port ${port}`));
-
-
-/*fetch(url)
-    .then(response => response.json())
-    .then(response => {
-      // Ensure service worker exists, and that we really are getting a JS file.
-      const contentType = response.headers.get('content-type');
-      if (response.status === 404) //|| (contentType != null && contentType.indexOf('javascript') === -1)
-      {
-        // No service worker found. Probably a different app. Reload the page.
-    
-        console.log('Error loading department API');
-      } else {
-        // Service worker found. Proceed as normal.
-        // registerValidSW(swUrl, config);
-        console.log('loadObjectsByDepartment: ' + JSON.stringify(response));
-      }
-    })
-    .catch(() => {
-      console.log(
-        'No internet connection found. App is running in offline mode.'
-      );
-    });*/
