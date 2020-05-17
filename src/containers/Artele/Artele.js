@@ -6,13 +6,8 @@ import TriggerButton from "../../components/TriggerButton/TriggerButton";
 import styled from "styled-components";
 import Toggle from 'react-toggle'
 
-// Airtable Data
-///// import DataService from '../../services/data.service';
-
 // Styles
 import './style.scss';
-
-// const [value, setValue] = useState(false);
 
 const Label = styled.label`
   font-weight: bold;

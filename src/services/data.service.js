@@ -2,7 +2,7 @@
 //import { Airtable } from 'airtable';
 //import { environment } from '../environment.js';
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-var request = new XMLHttpRequest();
+var requestImage = new XMLHttpRequest();
 const environment = require('../environment.js');
 const Airtable = require("airtable");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
@@ -155,12 +155,12 @@ class DataService {
     }
 
     console.log(url + ' AT: ' + this.airTableData[curMuseumNum].accessToken);
-    //var request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
     request.open('GET', url, true);
     var that = this;
     request.onload = function() {
       // Begin accessing JSON data here
-      var data = JSON.parse(this.response);
+      var data = JSON.parse(this.responseText);
       if (request.status >= 200 && request.status < 400) {
 
         // The object terms that get us to the Object ID. 
@@ -262,16 +262,16 @@ class DataService {
     }
 
     console.log('Object URL: ' + url);
-    request.open('GET', url, true);
-    request.responseType = "json";
+    requestImage.open('GET', url, true);
+    requestImage.responseType = "json";
     var that = this;
-    request.onload = function() {
+    requestImage.onload = function() {
 
       // Begin accessing JSON data here
       console.log('JSON response: ' + JSON.stringify(this.responseText));
 
       var data = JSON.parse (this.responseText);
-      if (request.status >= 200 && request.status < 400) {
+      if (requestImage.status >= 200 && requestImage.status < 400) {
 
         console.log(JSON.stringify(data));
       
@@ -320,7 +320,7 @@ class DataService {
         console.log('error')
       }
     }
-    request.send()
+    requestImage.send()
   }
 
   processElementArray(that, data, elementArray, defaultElement) {
@@ -395,6 +395,30 @@ class DataService {
         return;
       }
     });
+  }
+
+  clearImageData() {
+    console.log('data clearImageData');
+    var that = this;
+    for (var i = 0; i < this.airTableData.length; i++) {
+      this.airTableData[i].objectIDs = undefined;
+      base('ArtSources').update([
+        {
+          "id": this.airTableData[i].id,
+          "fields": {
+            "ObjectIDs": ""
+          }
+        }
+      ], function(err, records) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+    }
+    this.loadingData = false;
+    that.loadData();
+    // .then(() => {that.loadData();})
   }
 }
 

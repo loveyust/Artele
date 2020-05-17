@@ -50,6 +50,12 @@ io.on("connection", socket => {
     io.sockets.emit("send_set_time", timeSecs);
   });
 
+  socket.on("request_images_update", () => {
+    console.log('socket request_images_update: ');
+    data.clearImageData();
+    // io.sockets.emit("send_set_time", timeSecs);
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");
