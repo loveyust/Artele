@@ -14,10 +14,10 @@ class DataService {
     }
     DataService.instance = this;
      
-     this.loadingData = false;
-     this.callbacks = [];
-     console.log('DataService constructor');
-     this.loadData();
+    this.loadingData = false;
+    this.callbacks = [];
+    console.log('DataService constructor');
+    this.loadData();
     return this;
   }
 
@@ -53,7 +53,6 @@ class DataService {
       this.curImageObject = null;
       this.dataLoaded = false;
       
-    
       this.test = true;
       this.timePerArtworkMS = 10000;
       this.matColor = '#333333';
@@ -254,6 +253,7 @@ class DataService {
       randomObjectNum = Math.floor(Math.random() * this.airTableData[curMuseumNum].objectIDsArray.length);
       tempObjectID = this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum];
     }
+
     // Cooper Hewitt, Object with only video, no images '68268677'
     var url = this.airTableData[curMuseumNum].objectAPI.replace("ObjectID", this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum]);
     if (this.airTableData[curMuseumNum].accessToken !== undefined) {
@@ -266,6 +266,7 @@ class DataService {
     request.responseType = "json";
     var that = this;
     request.onload = function() {
+
       // Begin accessing JSON data here
       console.log('JSON response: ' + JSON.stringify(this.responseText));
 

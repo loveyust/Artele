@@ -45,6 +45,8 @@ class Display extends Component {
     this.onImageData = this.onImageData.bind(this);
     this.getSettingsData = this.getSettingsData.bind(this);
     this.settings = null;
+
+ 
   }
 
   componentDidMount() {
@@ -52,17 +54,16 @@ class Display extends Component {
     // socket.on("send_museum_data", this.getMuseumData);
     socket.on("send_settings_data", this.getSettingsData);
     socket.on("send_random_image", this.onImageData);
+    socket.on("send_set_time", this.onSetTime);
+    
     socket.emit("request_settings_data");
-
     
-    
-
     // Get museum data
     // socket.emit("request_museum_data");
     
     // Timer
     this.imageInterval = setInterval(function(){
-    }, 1 * 1000); 
+    }, 100 * 1000); 
     clearInterval(this.imageInterval);
 
     this.fadeInterval = setInterval(function(){
@@ -90,17 +91,22 @@ class Display extends Component {
     this.showNextImage();
   }
 
+  onSetTime = timeSecs => {
+    console.log ('Display onSetTime: ' + timeSecs);
+    this.settings.timePerArtwork = timeSecs;
+  }
+
   museumDataLoaded (self) {
     // Grab some settings
 /////console.log('Display: ALL DATA LOADED ');
- /////   self.showNextImage();
+ /////   self.showNextImage();s
     // self.startTimer();
     // this.props.museumData.test = false;
   }
 
   componentWillUnmount() {
-    socket.off("send_settings_data");
-    socket.on("send_randome_image");
+    socket.off("send_settings_data", this.getSettingsData);
+    socket.off("send_random_image", this.onImageData);
   }
 
   // Timer to keep track of when to load next screen.

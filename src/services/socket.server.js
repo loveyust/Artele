@@ -14,7 +14,7 @@ const io = socketIO(server);
 const DataService = require('./data.service');
 const data = new DataService();
 
-function callback() {
+callback = () => {
   console.log("socket Send Image");
   io.sockets.emit("send_random_image", data.curImageObject);
 }
@@ -23,16 +23,18 @@ io.on("connection", socket => {
   console.log("New client connected" + socket.id);
 
   // Returning the initial data of airtable data
-  socket.on("request_museum_data", () => {
+  socket.on("request_museum_data", (datas) => {
+    console.log('socket request_museum_data ' + datas);
     io.sockets.emit("send_museum_data", data.airTableData);
   });
 
-  socket.on("request_settings_data", () => {
+  socket.on("request_settings_data", (datas) => {
+    console.log('socket request_settings_data ' + datas);
     io.sockets.emit("send_settings_data", data.settings);
   });
 
-  socket.on("request_random_image", () => {
-    console.log("socket Request Image");
+  socket.on("request_random_image", (datas) => {
+    console.log('socket request_random_image ' + datas);
     data.getRandomImage(callback);
   });
 
@@ -41,6 +43,12 @@ io.on("connection", socket => {
     io.sockets.emit("send_time");
   });
 
+  // Requests from Artele interface 
+  socket.on("request_set_time", (timeSecs) => {
+    console.log('socket request_set_time: ' + timeSecs);
+    data.setArtTime(timeSecs);
+    io.sockets.emit("send_set_time", timeSecs);
+  });
 
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
