@@ -85,8 +85,17 @@ class Artele extends Component {
 
   toggleActive = (active, id) => {
     console.log('setmuseumactive: ' + id + ' ' + active);
+    let tempMuseumData = this.state.museumData;
+    for (var i = 0; i < tempMuseumData.length; i++) {
+      if (tempMuseumData[i].id === id) {
+        tempMuseumData[i].active = active;
+      }
+    }
+
+    socket.emit("request_set_active", {active:active, id:id} );
+
 /////    this.props.museumData.setActive(active, id);
-    // this.setState({museumData: this.data.airTableData});
+    this.setState({museumData: tempMuseumData});
   }
 
   getMuseumData() {

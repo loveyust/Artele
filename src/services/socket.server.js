@@ -56,6 +56,11 @@ io.on("connection", socket => {
     // io.sockets.emit("send_set_time", timeSecs);
   });
 
+  socket.on("request_set_active", (activeObj) => {
+    console.log('socket request_set_active: ' + JSON.stringify(activeObj));
+    data.setActive(activeObj.active, activeObj.id);
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");
