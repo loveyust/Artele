@@ -111,14 +111,19 @@ class Display extends Component {
 
   // Timer to keep track of when to load next screen.
   startTimer = () => {
-    console.log('startTimer ' + this.settings.timePerArtwork);
+    var time = 10;
+    if (this.settings !== null) {
+      time = this.settings.timePerArtwork;
+      console.log('startTimer ' + this.settings.timePerArtwork);
+    }
+    
     var that = this;
     that.stopTimers();
     that.imageInterval = setInterval(function(){
       console.log('startTimer complete');
       that.stopTimers();
       that.fade();
-    }, this.settings.timePerArtwork * 1000);
+    }, time * 1000);
   }
 
   stopTimers() {

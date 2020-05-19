@@ -99,6 +99,7 @@ class DataService {
             accessToken: r.get('AccessToken'), 
             departmentIDs: r.get('DepartmentIDs'), // eyebrow,
             departmentObjectAPI: r.get('DepartmentObjectAPI'),
+            departmentArray: r.get('DepartmentArray'),
             departmentObjectField: r.get('DepartmentObjectField'),
             objectAPI: r.get('ObjectAPI'),
             objectIDs: r.get('ObjectIDs'),
@@ -122,7 +123,11 @@ class DataService {
   loadMuseum(curMuseumNum) {
     // TODO: If we already have ObjectIDs saved for this museum, 
     // lets avoid loading ObjectIDs unless there is some kind of update flag
-    this.curDepartments = this.airTableData[curMuseumNum].departmentIDs.split(',');
+    if (this.airTableData[curMuseumNum].departmentIDs !== undefined) {
+      this.curDepartments = this.airTableData[curMuseumNum].departmentIDs.split(',');
+    } else {
+      this.curDepartments = [];
+    }
     this.curDepartmentNum = 0;
     if (this.airTableData[curMuseumNum].objectIDs === undefined) {
       this.loadObjectsByDepartment(curMuseumNum, this.curDepartmentNum);
@@ -164,13 +169,53 @@ class DataService {
       if (request.status >= 200 && request.status < 400) {
 
         // The object terms that get us to the Object ID. 
-        var nameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
+        var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
         
-        //console.log('data: ' + JSON.stringify(data[nameArray[0]]));
+
+        console.log('data: ' + JSON.stringify(objectNameArray));
         // Save the ObjectIDs
-        var tempArray = [];
+        var objectArray = data;
+        if (objectNameArray.length > 0) {
+          objectNameArray.forEach(element => {
+            objectArray = objectArray[element];
+            console.log('data3: ' + JSON.stringify(objectArray));
+          });
+        }
+        
+/*      var objectArray;
+        if (objectNameArray.length === 1) {
+          objectArray = data[objectNameArray[0]];
+        } else if (objectNameArray.length > 1) {
+          objectArray = data;
+          // objectArray = that.processElementArray(that, data, objectNameArray, '');
+          objectNameArray.forEach(element => {
+            if (element.substr(-2) === '[]') {
+              objectArray = objectArray[element.substr(-2)];
+            } else {
+              objectArray = objectArray[element];
+            }
+          });
+
+        }
+*/
+        var objectFieldNameArray = [];
+        var objectFieldArray = [];
+        if (that.airTableData[that.curMuseumNum].departmentObjectField !== undefined) {
+          objectFieldNameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
+
+          console.log('data2: ' + JSON.stringify(objectFieldNameArray + ' ' + objectArray.length));
+          for (var i = 0; i < objectArray.length; i++) {
+            objectFieldArray[i] = that.processElementArray(that, objectArray[i], objectFieldNameArray, '');
+          }
+        } else {
+          objectFieldArray = objectArray;
+        }
+
+
+        console.log('objectFieldArray: ' + objectFieldArray);
+/*
         tempArray = data[nameArray[0]];
-        //console.log('tempArray: ' + tempArray);
+
         if (nameArray.length > 1) {
           for (var i = 0; i < tempArray.length; i++) {
             if (nameArray.length == 2) {
@@ -180,16 +225,18 @@ class DataService {
             }
           }
         }
-
+*/
         // randomize the order of the object, so we get different results. 
-        for(let i = tempArray.length - 1; i > 0; i--){
+        for(let i = objectFieldArray.length - 1; i > 0; i--){
           const j = Math.floor(Math.random() * i)
-          const temp = tempArray[i];
-          tempArray[i] = tempArray[j];
-          tempArray[j] = temp;
+          const temp = objectFieldArray[i];
+          objectFieldArray[i] = objectFieldArray[j];
+          objectFieldArray[j] = temp;
         }
+
+        console.log('objectFieldArray: ' + objectFieldArray);
         // Save some of the ObjectIDs for later
-        var slicedArray = tempArray.slice(0,50);
+        var slicedArray = objectFieldArray.slice(0, 100);
 
         that.curObjectString = that.curObjectString.concat(slicedArray.join() + ',');
         console.log('that.curObjectString: ' + that.curObjectString);
@@ -335,19 +382,20 @@ class DataService {
     return endpointReturn;
   }
 
-  returnElement(data, element) {
-    if (element.substr(-1) === 's') {
+  returnElement(dataObj, element) {
+    if (element.substr(-2) === '[]') {
       // This is an array, send the first element for now
-      if (data === undefined){
+      console.log('returnElement data element: '+ JSON.stringify(dataObj) + ' ' + element);
+      if (dataObj === undefined || dataObj[element.slice(0, -2)] === undefined){
         return;
       } else {
-        return data[element][0];
+        return dataObj[element.slice(0, -2)][0];
       }
     } else {
-      if (data === undefined){
+      if (dataObj === undefined){
         return;
       } else {
-        return data[element];
+        return dataObj[element];
       }
     }
   }
