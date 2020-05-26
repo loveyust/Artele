@@ -39,7 +39,8 @@ class FrameMat extends Component {
       <div className="frame">
         <div className="mat">
           <div className="art" style={this.state.matStyle}>
-            <img onLoad={this.onImgLoad} src={this.props.data.image}></img> {/*https://images.metmuseum.org/CRDImages/as/original/DP123730.jpg */}
+            <img onLoad={this.onImgLoad} src={this.props.data.image}></img>
+            {/*<img onLoad={this.onImgLoad} src="https://images.metmuseum.org/CRDImages/as/web-large/DP213279_CRD.jpg"></img> */}
           </div>
         </div>
       </div>
