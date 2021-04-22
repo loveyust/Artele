@@ -98,9 +98,9 @@ class Display extends Component {
 
   museumDataLoaded (self) {
     // Grab some settings
-/////console.log('Display: ALL DATA LOADED ');
- /////   self.showNextImage();s
-    // self.startTimer();
+    console.log('Display: ALL DATA LOADED ');
+ /////   self.showNextImage();
+    self.startTimer();
     // this.props.museumData.test = false;
   }
 

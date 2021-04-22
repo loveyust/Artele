@@ -4,12 +4,12 @@ const socketIO = require("socket.io");
 const monk = require('monk');
 
 const uri = require('./config/key').mongoURI;
-const db = require('monk')(uri);
+/*////const db = require('monk')(uri);
 db.then(() => {
   console.log('Connected correctly to server');
-});
+});*/
 // const collection_foodItems = db.get("FoodItems");
-const collection_artsource = db.get("ArtSource");
+/*/////const collection_artsource = db.get("ArtSource");*/
 
 // our localhost port
 const port = process.env.PORT || 3001;

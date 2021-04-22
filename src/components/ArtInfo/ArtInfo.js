@@ -28,7 +28,10 @@ class ArtInfo extends Component {
         <p className="art-text art-title">{this.props.data.title}</p>
         <p className="art-text">{this.props.data.artist}</p>
         <p className="art-text">{this.props.data.date}</p>
-        <p className="art-text art-medium">{this.props.data.medium.substring(0, 280) + '...'}</p>
+        {!!(this.props.data.medium) ?
+          <p className="art-text art-medium">{this.props.data.medium.substring(0, 280) + '...'}</p> :
+          <p className="art-text art-medium">""</p>
+        }
       </div>
     );
   }

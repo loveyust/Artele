@@ -5,9 +5,25 @@ const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var requestImage = new XMLHttpRequest();
 const environment = require('../environment.js');
 const Airtable = require("airtable");
+const fetch = require("node-fetch");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 
+
+/*
+fetch('https://jsonplaceholder.typicode.com/posts').then(function (response) {
+	// The API call was successful!
+	return response.json();
+}).then(function (data) {
+	// This is the JSON from our response
+	console.log(data);
+}).catch(function (err) {
+	// There was an error
+	console.warn('Something went wrong.', err);
+});
+*/
+
 class DataService {
+  // DataService Singleton
   constructor() {
     if (DataService.instance) {
       return DataService.instance;
@@ -77,7 +93,7 @@ class DataService {
     }).eachPage(function page(records, fetchNextPage) {
       if (baseName === 'ArtControl') {
         var settings = records.map(r => { 
-          console.log(JSON.stringify(r));
+          // console.log(JSON.stringify(r));
           return { 
             id: r.id,
             timePerArtwork: r.get('TimePerArtworkSecs'),
@@ -91,7 +107,7 @@ class DataService {
       } else if (baseName === 'ArtSources') {
         // This function (`page`) will get called for each page of records.
         var newState = records.map(r => { 
-          console.log(JSON.stringify(r));
+          // console.log(JSON.stringify(r));
           return { 
             id: r.id,
             name: r.get('Name'), 
@@ -307,20 +323,37 @@ class DataService {
       // Swap in the access token for this API if it is defined
       url = url.replace("AccessToken", this.airTableData[curMuseumNum].accessToken);
     }
+/*
+    fetch(url).then(function (response) {
+      // The API call was successful!
+      return response.json();
+    }).then(function (data) {
+      // This is the JSON from our response
+      console.log('FETCH: ' + JSON.stringify(data));
+    }).catch(function (err) {
+      // There was an error
+      console.warn('Something went wrong.', err);
+    });
+*/
 
     console.log('Object URL: ' + url);
-    requestImage.open('GET', url, true);
-    requestImage.responseType = "json";
+////    requestImage.open('GET', url, true);
+////    requestImage.responseType = "json";
     var that = this;
-    requestImage.onload = function() {
+////    requestImage.onload = function() {
 
       // Begin accessing JSON data here
-      console.log('JSON response: ' + JSON.stringify(this.responseText));
+      // console.log('JSON response: ' + JSON.stringify(this.responseText));
+    fetch(url).then(function (response) {
+      // The API call was successful!
+      return response.json();
+    }).then(function (data) {
+      // This is the JSON from our response
+      console.log('FETCH: ' + JSON.stringify(data));
+////      var data = JSON.parse (this.responseText);
+////      if (requestImage.status >= 200 && requestImage.status < 400) {
 
-      var data = JSON.parse (this.responseText);
-      if (requestImage.status >= 200 && requestImage.status < 400) {
-
-        console.log(JSON.stringify(data));
+        // console.log(JSON.stringify(data));
       
         // After object has been found, reconcile differences between museum APIs
         // Image
@@ -363,11 +396,15 @@ class DataService {
         // Send the image back to the Display through its callback function
         that.imageCallback();
 
-      } else {
-        console.log('error')
-      }
-    }
-    requestImage.send()
+////      } else {
+////        console.log('error')
+////      }
+    ////}
+    //// requestImage.send()
+    }).catch(function (err) {
+      // There was an error
+      console.warn('Something went wrong.', err);
+    });
   }
 
   processElementArray(that, data, elementArray, defaultElement) {
