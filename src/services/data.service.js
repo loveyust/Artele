@@ -8,7 +8,6 @@ const Airtable = require("airtable");
 const fetch = require("node-fetch");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 
-
 /*
 fetch('https://jsonplaceholder.typicode.com/posts').then(function (response) {
 	// The API call was successful!
@@ -336,7 +335,9 @@ class DataService {
     });
 */
 
-    console.log('Object URL: ' + url);
+    //// test header problem 
+    ////url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/56602';
+    ////console.log('Object URL: ' + url);
 ////    requestImage.open('GET', url, true);
 ////    requestImage.responseType = "json";
     var that = this;
@@ -344,7 +345,15 @@ class DataService {
 
       // Begin accessing JSON data here
       // console.log('JSON response: ' + JSON.stringify(this.responseText));
-    fetch(url).then(function (response) {
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        ContentType: 'application/json'
+      },
+      referrer: 'no-referrer'
+      //httpOptions: {insecureHTTPParser: true}//,
+      //insecureHTTPParser: true
+    }).then(function (response) {
       // The API call was successful!
       return response.json();
     }).then(function (data) {
