@@ -32,8 +32,6 @@ Experience Architecture:
 
 ## Frontend Code
 
-### Root directory except the backend-my-app contains the frontend code.
-
 Project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 
