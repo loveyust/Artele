@@ -1,25 +1,11 @@
-// Airtable
-//import { Airtable } from 'airtable';
-//import { environment } from '../environment.js';
 const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var requestImage = new XMLHttpRequest();
 const environment = require('../environment.js');
+// Airtable
 const Airtable = require("airtable");
-const fetch = require("node-fetch");
+// https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
+const fetch = require("node-fetch"); 
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
-
-/*
-fetch('https://jsonplaceholder.typicode.com/posts').then(function (response) {
-	// The API call was successful!
-	return response.json();
-}).then(function (data) {
-	// This is the JSON from our response
-	console.log(data);
-}).catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});
-*/
 
 class DataService {
   // DataService Singleton
@@ -175,102 +161,72 @@ class DataService {
     }
 
     console.log(url + ' AT: ' + this.airTableData[curMuseumNum].accessToken);
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    var that = this;
-    request.onload = function() {
-      // Begin accessing JSON data here
-      var data = JSON.parse(this.responseText);
-      if (request.status >= 200 && request.status < 400) {
 
-        // The object terms that get us to the Object ID. 
-        var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
-        
+    fetch(url, {
+      method: 'GET',
+      headers: { ContentType: 'application/json'},
+      referrer: 'no-referrer'
+    }).then(function (response) {
+      // The API call was successful!
+      return response.json();
+    }).then(function (data) {
 
-        console.log('data: ' + JSON.stringify(objectNameArray));
-        // Save the ObjectIDs
-        var objectArray = data;
-        if (objectNameArray.length > 0) {
-          objectNameArray.forEach(element => {
-            objectArray = objectArray[element];
-            console.log('data3: ' + JSON.stringify(objectArray));
-          });
-        }
-        
-/*      var objectArray;
-        if (objectNameArray.length === 1) {
-          objectArray = data[objectNameArray[0]];
-        } else if (objectNameArray.length > 1) {
-          objectArray = data;
-          // objectArray = that.processElementArray(that, data, objectNameArray, '');
-          objectNameArray.forEach(element => {
-            if (element.substr(-2) === '[]') {
-              objectArray = objectArray[element.substr(-2)];
-            } else {
-              objectArray = objectArray[element];
-            }
-          });
+      // The object terms that get us to the Object ID. 
+      var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
 
-        }
-*/
-        var objectFieldNameArray = [];
-        var objectFieldArray = [];
-        if (that.airTableData[that.curMuseumNum].departmentObjectField !== undefined) {
-          objectFieldNameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
-
-          console.log('data2: ' + JSON.stringify(objectFieldNameArray + ' ' + objectArray.length));
-          for (var i = 0; i < objectArray.length; i++) {
-            objectFieldArray[i] = that.processElementArray(that, objectArray[i], objectFieldNameArray, '');
-          }
-        } else {
-          objectFieldArray = objectArray;
-        }
-
-
-        console.log('objectFieldArray: ' + objectFieldArray);
-/*
-        tempArray = data[nameArray[0]];
-
-        if (nameArray.length > 1) {
-          for (var i = 0; i < tempArray.length; i++) {
-            if (nameArray.length == 2) {
-              if (tempArray[i][nameArray[1]] !== undefined && tempArray[i][nameArray[1]] !== '') {
-                tempArray[i] = tempArray[i][nameArray[1]];
-              }
-            }
-          }
-        }
-*/
-        // randomize the order of the object, so we get different results. 
-        for(let i = objectFieldArray.length - 1; i > 0; i--){
-          const j = Math.floor(Math.random() * i)
-          const temp = objectFieldArray[i];
-          objectFieldArray[i] = objectFieldArray[j];
-          objectFieldArray[j] = temp;
-        }
-
-        console.log('objectFieldArray: ' + objectFieldArray);
-        // Save some of the ObjectIDs for later
-        var slicedArray = objectFieldArray.slice(0, 100);
-
-        that.curObjectString = that.curObjectString.concat(slicedArray.join() + ',');
-        console.log('that.curObjectString: ' + that.curObjectString);
-        that.curDepartmentNum += 1;
-        if (that.curDepartmentNum < that.curDepartments.length) {
-          // Load the next department
-          that.loadObjectsByDepartment(curMuseumNum, that.curDepartmentNum);
-        } else {
-          // Update AirTable with Objects
-          that.uploadObjectsToAirTable(curMuseumNum, that.curObjectString);
-          that.loadNextMuseum();
-        }
-
-      } else {
-        console.log('error')
+      console.log('data: ' + JSON.stringify(objectNameArray));
+      // Save the ObjectIDs
+      var objectArray = data;
+      if (objectNameArray.length > 0) {
+        objectNameArray.forEach(element => {
+          objectArray = objectArray[element];
+          console.log('data3: ' + JSON.stringify(objectArray));
+        });
       }
-    }
 
-    request.send()
+      var objectFieldNameArray = [];
+      var objectFieldArray = [];
+      if (that.airTableData[that.curMuseumNum].departmentObjectField !== undefined) {
+        objectFieldNameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
+
+        console.log('data2: ' + JSON.stringify(objectFieldNameArray + ' ' + objectArray.length));
+        for (var i = 0; i < objectArray.length; i++) {
+          objectFieldArray[i] = that.processElementArray(that, objectArray[i], objectFieldNameArray, '');
+        }
+      } else {
+        objectFieldArray = objectArray;
+      }
+
+
+      console.log('objectFieldArray: ' + objectFieldArray);
+
+      // randomize the order of the object, so we get different results. 
+      for(let i = objectFieldArray.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * i)
+        const temp = objectFieldArray[i];
+        objectFieldArray[i] = objectFieldArray[j];
+        objectFieldArray[j] = temp;
+      }
+
+      console.log('objectFieldArray: ' + objectFieldArray);
+      // Save some of the ObjectIDs for later
+      var slicedArray = objectFieldArray.slice(0, 100);
+
+      that.curObjectString = that.curObjectString.concat(slicedArray.join() + ',');
+      console.log('that.curObjectString: ' + that.curObjectString);
+      that.curDepartmentNum += 1;
+      if (that.curDepartmentNum < that.curDepartments.length) {
+        // Load the next department
+        that.loadObjectsByDepartment(curMuseumNum, that.curDepartmentNum);
+      } else {
+        // Update AirTable with Objects
+        that.uploadObjectsToAirTable(curMuseumNum, that.curObjectString);
+        that.loadNextMuseum();
+      }
+    }).catch(function (err) {
+      // There was an error
+      console.warn('Something went wrong. loadObjectsByDepartment', err);
+    });
   }
 
   // Upload the object IDs back to AirTable to reduce API calls. 
@@ -322,94 +278,62 @@ class DataService {
       // Swap in the access token for this API if it is defined
       url = url.replace("AccessToken", this.airTableData[curMuseumNum].accessToken);
     }
-/*
-    fetch(url).then(function (response) {
-      // The API call was successful!
-      return response.json();
-    }).then(function (data) {
-      // This is the JSON from our response
-      console.log('FETCH: ' + JSON.stringify(data));
-    }).catch(function (err) {
-      // There was an error
-      console.warn('Something went wrong.', err);
-    });
-*/
 
-    //// test header problem 
     ////url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/56602';
     ////console.log('Object URL: ' + url);
-////    requestImage.open('GET', url, true);
-////    requestImage.responseType = "json";
     var that = this;
-////    requestImage.onload = function() {
-
-      // Begin accessing JSON data here
-      // console.log('JSON response: ' + JSON.stringify(this.responseText));
+    // Begin accessing JSON data here
     fetch(url, {
       method: 'GET',
-      headers: {
-        ContentType: 'application/json'
-      },
+      headers: { ContentType: 'application/json'},
       referrer: 'no-referrer'
-      //httpOptions: {insecureHTTPParser: true}//,
-      //insecureHTTPParser: true
     }).then(function (response) {
       // The API call was successful!
       return response.json();
     }).then(function (data) {
       // This is the JSON from our response
       console.log('FETCH: ' + JSON.stringify(data));
-////      var data = JSON.parse (this.responseText);
-////      if (requestImage.status >= 200 && requestImage.status < 400) {
+      // After object has been found, reconcile differences between museum APIs
+      // Image
+      var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
+      var image = that.processElementArray(that, data, imagePathArray, 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg');
+      console.log('derived image: ' + image);
 
-        // console.log(JSON.stringify(data));
+      // Title
+      var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
+      var title = that.processElementArray(that, data, titlePathArray, '');
+
+      // Artist
+      var artistPathArray = that.airTableData[curMuseumNum].artistField.split(',');
+      var artist = that.processElementArray(that, data, artistPathArray, ''); // data[that.airTableData[curMuseumNum].artistField];
+      if (artist === '' || artist === undefined) {
+        artist = 'Unknown';
+      }
+
+      // Date
+      var datePathArray = that.airTableData[curMuseumNum].dateField.split(',');
+      var date = that.processElementArray(that, data, datePathArray, ''); // var date = data[that.airTableData[curMuseumNum].dateField];
+
+      // Medium
+      var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
+      var medium = that.processElementArray(that, data, mediumPathArray, ''); // var medium = data[that.airTableData[curMuseumNum].mediumField];
+
+      // Department Name
+      // TODO
+
+      that.curImageObject = {
+        image: image,
+        title: title,
+        artist: artist,
+        date: date,
+        medium: medium,
+        museumName: that.airTableData[curMuseumNum].name,
+        objectID: tempObjectID
+      };
       
-        // After object has been found, reconcile differences between museum APIs
-        // Image
-        var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
-        var image = that.processElementArray(that, data, imagePathArray, 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg');
-        console.log('derived image: ' + image);
-
-        // Title
-        var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
-        var title = that.processElementArray(that, data, titlePathArray, '');
-
-        // Artist
-        var artistPathArray = that.airTableData[curMuseumNum].artistField.split(',');
-        var artist = that.processElementArray(that, data, artistPathArray, ''); // data[that.airTableData[curMuseumNum].artistField];
-        if (artist === '' || artist === undefined) {
-          artist = 'Unknown';
-        }
-
-        // Date
-        var datePathArray = that.airTableData[curMuseumNum].dateField.split(',');
-        var date = that.processElementArray(that, data, datePathArray, ''); // var date = data[that.airTableData[curMuseumNum].dateField];
-
-        // Medium
-        var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
-        var medium = that.processElementArray(that, data, mediumPathArray, ''); // var medium = data[that.airTableData[curMuseumNum].mediumField];
-
-        // Department Name
-        // TODO
-
-        that.curImageObject = {
-          image: image,
-          title: title,
-          artist: artist,
-          date: date,
-          medium: medium,
-          museumName: that.airTableData[curMuseumNum].name,
-          objectID: tempObjectID
-        };
-       
-        // Send the image back to the Display through its callback function
-        that.imageCallback();
-
-////      } else {
-////        console.log('error')
-////      }
-    ////}
-    //// requestImage.send()
+      // Send the image back to the Display through its callback function
+      that.imageCallback();
+      
     }).catch(function (err) {
       // There was an error
       console.warn('Something went wrong.', err);
