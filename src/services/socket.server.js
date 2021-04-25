@@ -67,4 +67,6 @@ io.on("connection", socket => {
   });
 });
 
+app.use(express.static("build"));
+
 server.listen(port, () => console.log(`Listening on port ${port}`));

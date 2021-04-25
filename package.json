@@ -23,7 +23,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "server-build": "rsync -r ./src/services/* ./build/services && rsync -r ./src/environment.js ./build",
+    "build": "react-scripts build && npm run server-build",
     "socket-serve--dev": "node src/services/socket.server.js &",
     "dev": "npm install && npm run socket-serve--dev && npm start",
     "test": "npm run socket-serve--dev && npm start"

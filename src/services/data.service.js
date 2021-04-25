@@ -161,7 +161,7 @@ class DataService {
     }
 
     console.log(url + ' AT: ' + this.airTableData[curMuseumNum].accessToken);
-
+    var that = this;
     fetch(url, {
       method: 'GET',
       headers: { ContentType: 'application/json'},
@@ -171,57 +171,59 @@ class DataService {
       return response.json();
     }).then(function (data) {
 
-      // The object terms that get us to the Object ID. 
-      var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
+      if (that.airTableData[that.curMuseumNum] != undefined) {
+        // The object terms that get us to the Object ID. 
+        var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
 
-      console.log('data: ' + JSON.stringify(objectNameArray));
-      // Save the ObjectIDs
-      var objectArray = data;
-      if (objectNameArray.length > 0) {
-        objectNameArray.forEach(element => {
-          objectArray = objectArray[element];
-          console.log('data3: ' + JSON.stringify(objectArray));
-        });
-      }
-
-      var objectFieldNameArray = [];
-      var objectFieldArray = [];
-      if (that.airTableData[that.curMuseumNum].departmentObjectField !== undefined) {
-        objectFieldNameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
-
-        console.log('data2: ' + JSON.stringify(objectFieldNameArray + ' ' + objectArray.length));
-        for (var i = 0; i < objectArray.length; i++) {
-          objectFieldArray[i] = that.processElementArray(that, objectArray[i], objectFieldNameArray, '');
+        console.log('data: ' + JSON.stringify(objectNameArray));
+        // Save the ObjectIDs
+        var objectArray = data;
+        if (objectNameArray.length > 0) {
+          objectNameArray.forEach(element => {
+            objectArray = objectArray[element];
+            console.log('data3: ' + JSON.stringify(objectArray));
+          });
         }
-      } else {
-        objectFieldArray = objectArray;
-      }
+
+        var objectFieldNameArray = [];
+        var objectFieldArray = [];
+        if (that.airTableData[that.curMuseumNum].departmentObjectField !== undefined) {
+          objectFieldNameArray = that.airTableData[that.curMuseumNum].departmentObjectField.split(',');
+
+          console.log('data2: ' + JSON.stringify(objectFieldNameArray + ' ' + objectArray.length));
+          for (var i = 0; i < objectArray.length; i++) {
+            objectFieldArray[i] = that.processElementArray(that, objectArray[i], objectFieldNameArray, '');
+          }
+        } else {
+          objectFieldArray = objectArray;
+        }
 
 
-      console.log('objectFieldArray: ' + objectFieldArray);
+        // console.log('objectFieldArray: ' + objectFieldArray);
 
-      // randomize the order of the object, so we get different results. 
-      for(let i = objectFieldArray.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * i)
-        const temp = objectFieldArray[i];
-        objectFieldArray[i] = objectFieldArray[j];
-        objectFieldArray[j] = temp;
-      }
+        // randomize the order of the object, so we get different results. 
+        for(let i = objectFieldArray.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * i)
+          const temp = objectFieldArray[i];
+          objectFieldArray[i] = objectFieldArray[j];
+          objectFieldArray[j] = temp;
+        }
 
-      console.log('objectFieldArray: ' + objectFieldArray);
-      // Save some of the ObjectIDs for later
-      var slicedArray = objectFieldArray.slice(0, 100);
+        console.log('objectFieldArray: ' + objectFieldArray);
+        // Save some of the ObjectIDs for later
+        var slicedArray = objectFieldArray.slice(0, 100);
 
-      that.curObjectString = that.curObjectString.concat(slicedArray.join() + ',');
-      console.log('that.curObjectString: ' + that.curObjectString);
-      that.curDepartmentNum += 1;
-      if (that.curDepartmentNum < that.curDepartments.length) {
-        // Load the next department
-        that.loadObjectsByDepartment(curMuseumNum, that.curDepartmentNum);
-      } else {
-        // Update AirTable with Objects
-        that.uploadObjectsToAirTable(curMuseumNum, that.curObjectString);
-        that.loadNextMuseum();
+        that.curObjectString = that.curObjectString.concat(slicedArray.join() + ',');
+        console.log('that.curObjectString: ' + that.curObjectString);
+        that.curDepartmentNum += 1;
+        if (that.curDepartmentNum < that.curDepartments.length) {
+          // Load the next department
+          that.loadObjectsByDepartment(curMuseumNum, that.curDepartmentNum);
+        } else {
+          // Update AirTable with Objects
+          that.uploadObjectsToAirTable(curMuseumNum, that.curObjectString);
+          that.loadNextMuseum();
+        }
       }
     }).catch(function (err) {
       // There was an error
@@ -279,8 +281,8 @@ class DataService {
       url = url.replace("AccessToken", this.airTableData[curMuseumNum].accessToken);
     }
 
-    ////url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/56602';
-    ////console.log('Object URL: ' + url);
+    //// url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/56602';
+    //// console.log('Object URL: ' + url);
     var that = this;
     // Begin accessing JSON data here
     fetch(url, {
@@ -292,7 +294,7 @@ class DataService {
       return response.json();
     }).then(function (data) {
       // This is the JSON from our response
-      console.log('FETCH: ' + JSON.stringify(data));
+      // console.log('FETCH: ' + JSON.stringify(data));
       // After object has been found, reconcile differences between museum APIs
       // Image
       var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
@@ -333,7 +335,7 @@ class DataService {
       
       // Send the image back to the Display through its callback function
       that.imageCallback();
-      
+
     }).catch(function (err) {
       // There was an error
       console.warn('Something went wrong.', err);
@@ -355,7 +357,7 @@ class DataService {
   returnElement(dataObj, element) {
     if (element.substr(-2) === '[]') {
       // This is an array, send the first element for now
-      console.log('returnElement data element: '+ JSON.stringify(dataObj) + ' ' + element);
+      // console.log('returnElement data element: '+ JSON.stringify(dataObj) + ' ' + element);
       if (dataObj === undefined || dataObj[element.slice(0, -2)] === undefined){
         return;
       } else {
