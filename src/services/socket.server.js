@@ -1,14 +1,33 @@
 // socket server
 const express = require("express");
 const http = require("http");
-const socketIO = require("socket.io");
 // our localhost port
 const port = process.env.PORT || 3001;
 const app = express();
+
+app.use(function (req, res, next) {
+  //res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT ,DELETE");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 // our server instance
-const server = http.createServer(app);
 // This creates our socket using the instance of the server
-const io = socketIO(server);
+const server = http.createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["content-type"],
+    credentials: true
+  }  
+});
 
 // Data Service
 const DataService = require('./data.service');

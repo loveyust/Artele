@@ -18,7 +18,7 @@ class Header extends Component {
       endpoint: "http://localhost:3001/" // Update 3001 with port on which backend-my-app/server.js is running.
     };
 
-    socket = socketIOClient(this.state.endpoint); // "socket-serve--dev": "node server/server.js &",
+    socket = socketIOClient(this.state.endpoint, { transports : ['websocket'] }); // "socket-serve--dev": "node server/server.js &",
     // data = new DataService();
     // data.loadData();
   }
