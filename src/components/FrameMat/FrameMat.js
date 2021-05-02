@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import { Button, Table, Container } from "reactstrap";
-//import ColorThief from "colorthief";
-import analyze from 'rgbaster';
-//import colorify from 'colorify.js';
 
 // Styles
 import './style.scss';
@@ -37,18 +34,9 @@ class FrameMat extends Component {
     var matWidth = (this.screenWidth - (imgScale * img.width)) / 2;
     matWidth = (matWidth < this.minMat) ? this.minMat : matWidth;
     this.setState({matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: matWidth, right: matWidth}, fadeClass: "fade fade-out", matColor: {background: this.props.data.matColor}});
-
-    //this.funcName();
-
     this.props.callback();
   }
-/*
-  funcName = async () => {
-    console.log('funcName FrameMat');
-    const result = await analyze('https://cors-anywhere.herokuapp.com/'+this.props.data.image);
-    console.log(`The dominant color is ${result[0].color} with ${result[0].count} occurrence(s)`);
-  };
-*/
+
   render() {
     return (
       <div className="frame">

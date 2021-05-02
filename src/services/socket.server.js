@@ -33,6 +33,10 @@ const io = require("socket.io")(server, {
 const DataService = require('./data.service');
 const data = new DataService();
 
+// Receiver Controller
+const ReceiverController = require('./receiver.controller');
+const rcontroller = new ReceiverController();
+
 callback = () => {
   console.log("socket Send Image");
   io.sockets.emit("send_random_image", data.curImageObject);
@@ -52,8 +56,9 @@ io.on("connection", socket => {
     io.sockets.emit("send_settings_data", data.settings);
   });
 
-  socket.on("request_random_image", (datas) => {
+  socket.on("request_random_image", (datas) => {    
     console.log('socket request_random_image ' + datas);
+    rcontroller.test();
     data.getRandomImage(callback);
   });
 

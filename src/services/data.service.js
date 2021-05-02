@@ -256,7 +256,7 @@ class DataService {
 
   // Request for a random image and information to display
   getRandomImage(imageCallback) {
-    
+
     this.imageCallback = imageCallback;
 
     // Select a random museum
