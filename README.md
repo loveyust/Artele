@@ -50,3 +50,15 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 <br> For deployment, put the build code into the backend-my-app/build folder <br> and then start the express server
 
+
+## Deployment
+
+- Copy build app tp RPi: <br>`scp -r */build pi@192.168.1.139:/home/pi/Desktop/`
+- Run web server: <br>`serve -s build -l 3000`
+- Run socket server: <br>`node build/services/socket.server.js`
+
+
+
+
+
+
