@@ -6,6 +6,7 @@ const Airtable = require("airtable");
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
 const fetch = require("node-fetch"); 
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
+const ColorThief = require('colorthief');
 
 class DataService {
   // DataService Singleton
@@ -92,7 +93,7 @@ class DataService {
       } else if (baseName === 'ArtSources') {
         // This function (`page`) will get called for each page of records.
         var newState = records.map(r => { 
-          // console.log(JSON.stringify(r));
+          console.log('Load ArtSources: ' + JSON.stringify(r));
           return { 
             id: r.id,
             name: r.get('Name'), 
@@ -175,7 +176,7 @@ class DataService {
         // The object terms that get us to the Object ID. 
         var objectNameArray = that.airTableData[that.curMuseumNum].departmentArray.split(',');
 
-        console.log('data: ' + JSON.stringify(objectNameArray));
+        // console.log('data: ' + JSON.stringify(objectNameArray));
         // Save the ObjectIDs
         var objectArray = data;
         if (objectNameArray.length > 0) {
@@ -282,7 +283,8 @@ class DataService {
     }
 
     //// url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/56602';
-    //// console.log('Object URL: ' + url);
+    // url = 'https://collectionapi.metmuseum.org/public/collection/v1/objects/23949';
+    console.log('Object URL: ' + url);
     var that = this;
     // Begin accessing JSON data here
     fetch(url, {
@@ -330,11 +332,29 @@ class DataService {
         date: date,
         medium: medium,
         museumName: that.airTableData[curMuseumNum].name,
-        objectID: tempObjectID
+        objectID: tempObjectID,
+        matColor: matColor
       };
-      
-      // Send the image back to the Display through its callback function
-      that.imageCallback();
+
+      var matColor = '#FF0000';
+
+      ColorThief.getPalette(image, 2)
+      .then(color => { 
+
+        const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+          const hex = x.toString(16)
+          return hex.length === 1 ? '0' + hex : hex
+        }).join('');
+        var hex = rgbToHex(color[1][0], color[1][1], color[1][2]); 
+        matColor = hex;
+        console.log('ColorThief: ' + hex);
+
+        that.curImageObject.matColor = matColor;
+
+        // Send the image back to the Display through its callback function
+        that.imageCallback();
+      })
+      .catch(err => { console.log('ColorThiefError' + err) });
 
     }).catch(function (err) {
       // There was an error
