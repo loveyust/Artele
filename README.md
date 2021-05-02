@@ -51,11 +51,19 @@ The build is minified and the filenames include the hashes.<br>
 <br> For deployment, put the build code into the backend-my-app/build folder <br> and then start the express server
 
 
-## Deployment
+## Deployment and Startup
 
-- Copy build app tp RPi: <br>`scp -r */build pi@192.168.1.139:/home/pi/Desktop/`
-- Run web server: <br>`serve -s build -l 3000`
-- Run socket server: <br>`node build/services/socket.server.js`
+* Copy build app tp RPi: <br>`scp -r */build pi@192.168.1.000:/home/pi/Desktop/`
+* RPi startup script: 
+<br>`sudo nano /etc/xdg/lxsession/LXDE-pi/autostart`
+<br>`@bash <path>/utils/kiosk.sh`
+* kiosk.sh:
+  * Launch web servers 
+       * Run web server: <br>`serve -s build -l 3000`
+       * Run socket server: <br>`node build/services/socket.server.js`
+  * start chrome <br>
+       `chromium-browser --noerrdialogs --disable-infobars --incognito --startfullscreen http://localhost:3000/display`
+
 
 
 
