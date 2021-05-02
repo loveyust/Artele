@@ -23,7 +23,7 @@ class ArtInfo extends Component {
 
   render() {
     return (
-      <div className="art-block">
+      <div className="art-block" style={{color: this.props.data.textColor}}>
         <p className="art-text art-museum">{this.props.data.museumName}</p>
         <p className="art-text art-title">{this.props.data.title}</p>
         <p className="art-text">{this.props.data.artist}</p>

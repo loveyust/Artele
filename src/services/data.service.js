@@ -325,6 +325,9 @@ class DataService {
       // Department Name
       // TODO
 
+      var matColor = '#FF0000';
+      var textColor = '#FFFFFF';
+
       that.curImageObject = {
         image: image,
         title: title,
@@ -333,23 +336,22 @@ class DataService {
         medium: medium,
         museumName: that.airTableData[curMuseumNum].name,
         objectID: tempObjectID,
-        matColor: matColor
+        matColor: matColor,
+        textColor: textColor
       };
-
-      var matColor = '#FF0000';
 
       ColorThief.getPalette(image, 2)
       .then(color => { 
-
-        const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-          const hex = x.toString(16)
-          return hex.length === 1 ? '0' + hex : hex
-        }).join('');
-        var hex = rgbToHex(color[1][0], color[1][1], color[1][2]); 
+        // const .join('');
+        var hex = that.rgbToHex(color[1][0], color[1][1], color[1][2]); 
+        //var hexInv = that.invert(color[1]);
         matColor = hex;
-        console.log('ColorThief: ' + hex);
+        var hexInv = that.getContrast(matColor);
+        textColor = hexInv;
+        console.log('ColorThief: ' + hex + ' ' + hexInv);
 
         that.curImageObject.matColor = matColor;
+        that.curImageObject.textColor = textColor;
 
         // Send the image back to the Display through its callback function
         that.imageCallback();
@@ -361,6 +363,38 @@ class DataService {
       console.warn('Something went wrong.', err);
     });
   }
+
+  // Color helper functions 
+  componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+  rgbToHex(r, g, b) {
+      return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+  }
+  invert(rgb) {
+    rgb = [].slice.call(arguments).join(",").replace(/rgb\(|\)|rgba\(|\)|\s/gi, '').split(',');
+    for (var i = 0; i < rgb.length; i++) rgb[i] = (i === 3 ? 1 : 255) - rgb[i];
+    return this.rgbToHex(rgb[0], rgb[1], rgb[2]);
+  }
+  getContrast(hexcolor){
+
+    // If a leading # is provided, remove it
+    if (hexcolor.slice(0, 1) === '#') {
+      hexcolor = hexcolor.slice(1);
+    }
+  
+    // Convert to RGB value
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+  
+    // Get YIQ ratio
+    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+  
+    // Check contrast
+    return (yiq >= 128) ? '#000000' : '#FFFFFF';
+  };
 
   processElementArray(that, data, elementArray, defaultElement) {
     var endpointReturn = defaultElement;
