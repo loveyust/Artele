@@ -5,6 +5,10 @@ const onkyo = new Onkyo({ip: '192.168.1.104'});
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 
+// cec-controller
+var CecController = require('cec-controller');
+var cecCtl = new CecController();
+
 class ReceiverController {
     // Receiver Controller Singleton
     constructor() {
@@ -19,10 +23,34 @@ class ReceiverController {
     }
   
     connect () {
+        // Test cec-controller
+        cecCtl.on('ready', this.readyHandler);
+        // cecCtl.on('ready', (controller) => console.log(controller));
+        cecCtl.on('error', console.error);
 
     }
 
-    test() {
+    readyHandler(controller)
+    {
+        let that = this;
+        console.log(controller)
+        console.log('Checking TV Status...' + controller.dev0.powerStatus);
+        if(controller.dev0.powerStatus === 'standby') {
+            console.log('Turning ON TV...');
+            controller.dev0.turnOn().then(() =>
+            {
+                controller.setActive();
+                console.log('TV on...');
+                that.changeInput();
+            });
+        } else {
+            // TV already on, change receiver input.
+            console.log('TV already on...'); 
+            this.changeInput();
+        }
+    }
+
+    changeInput () {
         // Test comm with onkyo
         // STREAM, GAME - target input modes
 
@@ -44,6 +72,10 @@ class ReceiverController {
         .then(() => onkyo.isOff().then((onkyo) => {
             console.log(`Detected Off: ${onkyo.toString()}`);
         }));
+
+
+
+
         /*
         .then(() => Promise.delay(500))
         .then(() => onkyo.pwrOn())
