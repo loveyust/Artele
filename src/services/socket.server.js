@@ -58,7 +58,7 @@ io.on("connection", socket => {
 
   socket.on("request_random_image", (datas) => {    
     console.log('socket request_random_image ' + datas);
-    rcontroller.test();
+    // rcontroller.test();
     data.getRandomImage(callback);
   });
 
