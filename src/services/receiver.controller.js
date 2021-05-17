@@ -7,7 +7,7 @@ const onkyo = new Onkyo({ip: '192.168.1.104'});
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 
-// cec-controller
+// cec-controller for the TV
 var CecController = require('cec-controller');
 var cecCtl = new CecController();
 
@@ -30,9 +30,8 @@ class ReceiverController {
     }
   
     connect () {
-        // Test cec-controller
+        // Connect to the TV
         cecCtl.on('ready', this.readyHandler.bind(this));
-        // cecCtl.on('ready', (controller) => console.log(controller));
         cecCtl.on('error', this.cecError.bind(this));
     }
 
@@ -46,6 +45,8 @@ class ReceiverController {
         let that = this;
         console.log(controller)
         console.log('Checking TV Status...' + controller.dev0.powerStatus);
+        // If TV is off('standby'), turn it on, then change the input. 
+        // TODO: Add the scheduling to make sure it is time to turn this on. 
         if(controller.dev0.powerStatus === 'standby') {
             console.log('Turning ON TV...');
             controller.dev0.turnOn().then(() =>
@@ -59,16 +60,15 @@ class ReceiverController {
             console.log('TV already on...'); 
             this.changeReceiverInput();
         }
-        
     }
 
     changeReceiverInput() 
     {
         // Test comm with onkyo
         // STREAM, GAME - target input modes
-
         console.log('Test Onkyo in');
-        //this.onkyo = new Onkyo({ip: '192.168.1.104'});
+
+        // Catch errors in onkyo communication, especially after setSource()
         onkyo.on('error', (errMsg) => {
             // this generates file 'unknown_msgs.txt' if unrecognized messages
             // is received from amplifier. Please raise issues with body if file appears.
@@ -81,23 +81,21 @@ class ReceiverController {
         onkyo.getDeviceState()
         .then((state) => { console.log(state);})
         .then(() => Promise.delay(500))
-/*        .then(() => onkyo.setSource('GAME').then((onkyo) => {
-            console.log(`Set Source: ${onkyo.toString()}`);
-        }).catch((error) => {
-            console.log('SET SOURCE ERROR ' + error);
-        }))
-*/
-
-/*        .then(() => Promise.delay(500))
-        .then(() => onkyo.close())
-        .then(process.exit)
-        */
         .catch((error) => {
             console.log('ONKYO ERROR ' + error);
             process.exit();
         });
         
+        // Set Source on the receiver. 
+/*      .then(() => onkyo.setSource('GAME').then((onkyo) => {
+            console.log(`Set Source: ${onkyo.toString()}`);
+        }).catch((error) => {
+            console.log('SET SOURCE ERROR ' + error);
+        }))
+*/        
         console.log('Test Onkyo in over');
+
+        
 /*
         onkyo.getDeviceState()
         .then((state) => {

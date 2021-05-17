@@ -199,9 +199,7 @@ class DataService {
           objectFieldArray = objectArray;
         }
 
-
         // console.log('objectFieldArray: ' + objectFieldArray);
-
         // randomize the order of the object, so we get different results. 
         for(let i = objectFieldArray.length - 1; i > 0; i--){
           const j = Math.floor(Math.random() * i)
@@ -340,13 +338,6 @@ class DataService {
         textColor: textColor
       };
 
-      /*
-      let imageURL = 'https://i.pinimg.com/564x/3b/b4/9b/3bb49bd2a7f86e29b5670da1fe03fee4.jpg';
-let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-
-img.crossOrigin = 'Anonymous';
-img.src = googleProxyURL + encodeURIComponent(imageURL);
-*/
       ColorThief.crossOrigin = 'Anonymous';
       ColorThief.getPalette(image, 2)
       .then(color => { 
