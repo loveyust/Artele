@@ -93,7 +93,8 @@ class DataService {
       } else if (baseName === 'ArtSources') {
         // This function (`page`) will get called for each page of records.
         var newState = records.map(r => { 
-          console.log('Load ArtSources: ' + JSON.stringify(r));
+          let rData = JSON.stringify(r).substr(0, 500) + "\u2026";
+          console.log('Load ArtSources: ' + rData);
           return { 
             id: r.id,
             name: r.get('Name'), 
