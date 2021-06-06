@@ -129,14 +129,20 @@ class Artele extends Component {
   }
 
   onChangeSecs = (event) =>  {
-    if (parseInt(event.target.value) <= 5) {
-      event.target.value = 5;
-    }
+    
     console.log('Change Seconds: ' + event.target.value);
-//    this.props.museumData.setArtTime(event.target.value);
-    socket.emit('request_set_time', event.target.value);
+    ////socket.emit('request_set_time', event.target.value);
     this.setState({timeSecs: event.target.value});
     // TODO Add seconds to Airtable
+  }
+
+  onUpdateSecs = (event) => {
+    let numSecs = parseInt(this.state.timeSecs);
+    if (numSecs <= 5) {
+      numSecs = 5;
+      this.setState({timeSecs: numSecs});
+    }
+    socket.emit('request_set_time', numSecs);
   }
 
   render() {
@@ -154,14 +160,15 @@ class Artele extends Component {
                       <td className="left">
                         <p className="description">Change the number of seconds each artwork is visible.</p>
                       </td>
-                      <td className="right">
-                      <input
-                        onChange={e => this.onChangeSecs(e)}
-                        value={this.state.timeSecs}
-                        type="number"
-                        placeholder="Time in Secs"
-                        min="0"
-                      />
+                      <td className="right numInput">
+                        <input
+                          onChange={e => this.onChangeSecs(e)}
+                          value={this.state.timeSecs}
+                          type="number"
+                          placeholder="Time in Secs"
+                          min="0"
+                        />
+                        <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
                       </td>
                     </tr>
                     <tr>
