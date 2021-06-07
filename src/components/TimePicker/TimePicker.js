@@ -20,8 +20,7 @@ class TimePicker extends Component {
   render() {
     return (
       <>
-        <>
-        </>
+        <p>{this.props.label}</p>
       </>
     );
   }

@@ -163,6 +163,12 @@ class Artele extends Component {
               />
               <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
             </div>
+            <div className="col-12">
+              <TimePicker label={"Weekday"} />
+            </div>
+            <div className="col-12">
+              <TimePicker label={"Weekend"} />
+            </div>
             <div className="col-6">
               <p className="description">Update the stored image IDs for the museums.</p>
             </div>
