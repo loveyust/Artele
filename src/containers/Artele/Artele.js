@@ -149,44 +149,42 @@ class Artele extends Component {
     return (
       <div className="artele-container">
           <div className="grid">
-            <div className="row">
-              <div className="artele-header col-12">
-                <p className="title">Artele</p>
-              </div>
-              <div className="col-12">
-                <Table className="table-trigger">
-                  <tbody>
-                    <tr>
-                      <td className="left">
-                        <p className="description">Change the number of seconds each artwork is visible.</p>
-                      </td>
-                      <td className="right numInput">
-                        <input
-                          onChange={e => this.onChangeSecs(e)}
-                          value={this.state.timeSecs}
-                          type="number"
-                          placeholder="Time in Secs"
-                          min="0"
-                        />
-                        <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="left">
-                        <p className="description">Update the stored image IDs for the museums.</p>
-                      </td>
-                      <td className="right">
-                        <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="left header">Museum</td>
-                      <td className="right header">Active</td>
-                    </tr>
-                    {this.getMuseumData()}
-                  </tbody>
-                </Table>
-              </div>
+            <div className="artele-header col-12">
+              <p className="title">Artele</p>
+            </div>
+            <div className="col-12">
+              <Table className="table-trigger">
+                <tbody>
+                  <tr>
+                    <td className="left">
+                      <p className="description">Change the number of seconds each artwork is visible.</p>
+                    </td>
+                    <td className="right numInput">
+                      <input
+                        onChange={e => this.onChangeSecs(e)}
+                        value={this.state.timeSecs}
+                        type="number"
+                        placeholder="Time in Secs"
+                        min="0"
+                      />
+                      <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="left">
+                      <p className="description">Update the stored image IDs for the museums.</p>
+                    </td>
+                    <td className="right">
+                      <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="left header">Museum</td>
+                    <td className="right header">Active</td>
+                  </tr>
+                  {this.getMuseumData()}
+                </tbody>
+              </Table>
             </div>
           </div>
       </div>
