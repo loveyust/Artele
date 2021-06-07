@@ -123,20 +123,6 @@ class Artele extends Component {
     }
   }
 
-  /*
-  <tr key={museum.id}>
-            <td className="left museum">{museum.name}</td>
-            <td className="right museum">
-              <ToggleSwitch
-                active={museum.active}
-                aria-label='No label tag'
-                id={museum.id}
-                onChange={() => this.toggleActive(!museum.active, museum.id)}
-                label={""} />
-            </td>
-        </tr>
-        */
-
   onUpdateImages() {
     console.log('Update Images: ');
     // TODO send flag to update images from Air Table in data service
