@@ -105,7 +105,26 @@ class Artele extends Component {
       return this.state.museumData.map(museum => {
         console.log('musum: ' + museum.active);
         return (
-          <tr key={museum.id}>
+          <div className="col-12 grid" key={museum.id}>
+            <div className="col-6"><p className="museum">{museum.name}</p></div>
+            <div className="col-6">
+              <ToggleSwitch
+                active={museum.active}
+                aria-label='No label tag'
+                id={museum.id}
+                onChange={() => this.toggleActive(!museum.active, museum.id)}
+                label={""} />
+            </div>
+          </div>
+        );
+      });
+    } else {
+      return;
+    }
+  }
+
+  /*
+  <tr key={museum.id}>
             <td className="left museum">{museum.name}</td>
             <td className="right museum">
               <ToggleSwitch
@@ -115,13 +134,8 @@ class Artele extends Component {
                 onChange={() => this.toggleActive(!museum.active, museum.id)}
                 label={""} />
             </td>
-          </tr>
-        );
-      });
-    } else {
-      return;
-    }
-  }
+        </tr>
+        */
 
   onUpdateImages() {
     console.log('Update Images: ');
@@ -130,11 +144,8 @@ class Artele extends Component {
   }
 
   onChangeSecs = (event) =>  {
-    
     console.log('Change Seconds: ' + event.target.value);
-    ////socket.emit('request_set_time', event.target.value);
     this.setState({timeSecs: event.target.value});
-    // TODO Add seconds to Airtable
   }
 
   onUpdateSecs = (event) => {
@@ -153,40 +164,32 @@ class Artele extends Component {
             <div className="artele-header col-12">
               <p className="title">Artele</p>
             </div>
-            <div className="col-12">
-              <Table className="table-trigger">
-                <tbody>
-                  <tr>
-                    <td className="left">
-                      <p className="description">Change the number of seconds each artwork is visible.</p>
-                    </td>
-                    <td className="right numInput">
-                      <input
-                        onChange={e => this.onChangeSecs(e)}
-                        value={this.state.timeSecs}
-                        type="number"
-                        placeholder="Time in Secs"
-                        min="0"
-                      />
-                      <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="left">
-                      <p className="description">Update the stored image IDs for the museums.</p>
-                    </td>
-                    <td className="right">
-                      <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="left header">Museum</td>
-                    <td className="right header">Active</td>
-                  </tr>
-                  {this.getMuseumData()}
-                </tbody>
-              </Table>
+            <div className="col-6">
+              <p className="description">Change the number of seconds each artwork is visible.</p>
             </div>
+            <div className="col-6 interaction numInput">
+              <input
+                onChange={e => this.onChangeSecs(e)}
+                value={this.state.timeSecs}
+                type="number"
+                placeholder="Time in Secs"
+                min="0"
+              />
+              <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
+            </div>
+            <div className="col-6">
+              <p className="description">Update the stored image IDs for the museums.</p>
+            </div>
+            <div className="col-6 interaction">
+              <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
+            </div>
+            <div className="col-6">
+              <p className="header">Museum</p>
+            </div>
+            <div className="col-6">
+              <p className="header center">Active</p>
+            </div>
+            {this.getMuseumData()}
           </div>
       </div>
     );
