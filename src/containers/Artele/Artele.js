@@ -106,7 +106,7 @@ class Artele extends Component {
         console.log('musum: ' + museum.active);
         return (
           <div className="col-12 grid" key={museum.id}>
-            <div className="col-6"><p className="museum">{museum.name}</p></div>
+            <div className="col-6"><p className="subheader">{museum.name}</p></div>
             <div className="col-6">
               <ToggleSwitch
                 active={museum.active}
@@ -163,11 +163,20 @@ class Artele extends Component {
               />
               <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
             </div>
+            <div className="col-6">
+              <p className="header">Schedule</p>
+            </div>
+            <div className="col-6">
+              <p className="header center">Active</p>
+            </div>
             <div className="col-12">
               <TimePicker label={"Weekday"} />
             </div>
             <div className="col-12">
               <TimePicker label={"Weekend"} />
+            </div>
+            <div className="col-12">
+              <p className="header">Update Images</p>
             </div>
             <div className="col-6">
               <p className="description">Update the stored image IDs for the museums.</p>
