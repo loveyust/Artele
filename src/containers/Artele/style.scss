@@ -24,6 +24,15 @@
     }
   }
 
+  .section-header {
+    font-family: $font-name-montserrat-bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    text-align: left;
+    color: white;
+    padding-left: 10px;
+  }
+
   .header {
     color: #FFF;
     font-family: $font-name-montserrat-semibold;

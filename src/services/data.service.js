@@ -79,11 +79,15 @@ class DataService {
     }).eachPage(function page(records, fetchNextPage) {
       if (baseName === 'ArtControl') {
         var settings = records.map(r => { 
-          // console.log(JSON.stringify(r));
+          console.log('Settings:' + JSON.stringify(r));
           return { 
             id: r.id,
             timePerArtwork: r.get('TimePerArtworkSecs'),
-            matColor: r.get('MatColor')
+            matColor: r.get('MatColor'),
+            amOnWeekday: r.get('AMOnWeekday'),
+            amOffWeekday: r.get('AMOffWeekday'),
+            pmOnWeekday: r.get('PMOnWeekday'),
+            pmOffWeekday: r.get('PMOffWeekday')
           }
         });
         if (settings.length > 0) {

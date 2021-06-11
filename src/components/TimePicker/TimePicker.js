@@ -40,7 +40,7 @@ class TimePicker extends Component {
     let options = [];
     for (let i = 0; i < 24; i++) {
       let fN = ("0" + i).slice(-2);
-      options.push(<option key={i}>{fN}</option>);
+      options.push(<option key={i} value={i}>{fN}</option>);
     }
     return options;
   }
@@ -63,8 +63,8 @@ class TimePicker extends Component {
           <p className="description">AM On</p>
         </div>
         <div className="col-3">
-          <select 
-            value={this.state.selectValue} 
+          <select className="dropdown"
+            value={this.props.amOnTime} 
             onChange={this.handleChange} >
             {this.populateTimeOptions()}
           </select>
@@ -73,8 +73,8 @@ class TimePicker extends Component {
           <p className="description">AM Off</p>
         </div>
         <div className="col-3">
-          <select 
-            value={this.state.selectValue} 
+          <select className="dropdown"
+            value={this.props.amOffTime} 
             onChange={this.handleChange} >
             {this.populateTimeOptions()}
           </select>
@@ -83,8 +83,8 @@ class TimePicker extends Component {
           <p className="description">PM On</p>
         </div>
         <div className="col-3">
-          <select 
-            value={this.state.selectValue} 
+          <select className="dropdown"
+            value={this.props.pmOnTime} 
             onChange={this.handleChange} >
             {this.populateTimeOptions()}
           </select>
@@ -93,8 +93,8 @@ class TimePicker extends Component {
           <p className="description">PM Off</p>
         </div>
         <div className="col-3">
-          <select 
-            value={this.state.selectValue} 
+          <select className="dropdown"
+            value={this.props.pmOffTime} 
             onChange={this.handleChange} >
             {this.populateTimeOptions()}
           </select>

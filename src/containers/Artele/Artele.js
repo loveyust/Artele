@@ -39,9 +39,15 @@ const Root = styled.div`
 class Artele extends Component {
   constructor() {
     super();
+    this.handleAMOnWeekday = this.handleAMOnWeekday.bind(this);
+    this.handleAMOffWeekday = this.handleAMOffWeekday.bind(this);
     this.state = {
       museumData: [],
-      timeSecs: 10
+      timeSecs: 10, 
+      amOnWeekday: 7, 
+      amOffWeekday: 10, 
+      pmOnWeekday: 17, 
+      pmOffWeekday: 19
     };
 
     this.museumData = [];
@@ -68,8 +74,15 @@ class Artele extends Component {
   };
 
   getSettingsData = settingsData => {
-    console.log('Display: ALL DATA LOADED Artele');
-    this.setState({museumData: this.museumData, timeSecs: settingsData.timePerArtwork});
+    console.log('Display: ALL DATA LOADED Artele: ' + settingsData.amOnWeekday + ' ' +settingsData.amOffWeekday);
+    this.setState({
+      museumData: this.museumData, 
+      timeSecs: settingsData.timePerArtwork, 
+      amOnWeekday: settingsData.amOnWeekday,
+      amOffWeekday: settingsData.amOffWeekday,
+      pmOnWeekday: settingsData.pmOnWeekday,
+      pmOffWeekday: settingsData.pmOffWeekday
+    });
   }
 
 /*
@@ -94,7 +107,6 @@ class Artele extends Component {
     }
 
     socket.emit("request_set_active", {active:active, id:id} );
-
 /////    this.props.museumData.setActive(active, id);
     this.setState({museumData: tempMuseumData});
   }
@@ -143,12 +155,23 @@ class Artele extends Component {
     socket.emit('request_set_time', numSecs);
   }
 
+  handleAMOnWeekday = (time) => {
+
+  }
+
+  handleAMOffWeekday = (time) => {
+
+  }
+
   render() {
     return (
       <div className="artele-container">
           <div className="grid">
             <div className="artele-header col-12">
               <p className="title">Artele</p>
+            </div>
+            <div className="col-12">
+              <p className="section-header">Timing</p>
             </div>
             <div className="col-6">
               <p className="description">Change the number of seconds each artwork is visible.</p>
@@ -170,10 +193,20 @@ class Artele extends Component {
               <p className="header center">Active</p>
             </div>
             <div className="col-12">
-              <TimePicker label={"Weekday"} />
+              <TimePicker 
+                label={"Weekday"} 
+                amOnTime={this.state.amOnWeekday} 
+                amOffTime={this.state.amOffWeekday} 
+                pmOnTime={this.state.pmOnWeekday} 
+                pmOffTime={this.state.pmOffWeekday} 
+                handleAMOn={this.handleAMOnWeekday} 
+                handleAMOff={this.handleAMOffWeekday} />
             </div>
             <div className="col-12">
               <TimePicker label={"Weekend"} />
+            </div>
+            <div className="col-12">
+              <p className="section-header">Museum Images</p>
             </div>
             <div className="col-12">
               <p className="header">Update Images</p>
