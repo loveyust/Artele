@@ -39,8 +39,6 @@ const Root = styled.div`
 class Artele extends Component {
   constructor() {
     super();
-    this.handleAMOnWeekday = this.handleAMOnWeekday.bind(this);
-    this.handleAMOffWeekday = this.handleAMOffWeekday.bind(this);
     this.state = {
       museumData: [],
       timeSecs: 10, 
@@ -77,7 +75,7 @@ class Artele extends Component {
       museumData: this.museumData, 
       timeSecs: settingsData.timePerArtwork, 
       weekday: settingsData.weekday,
-      /* weekend: settingsData.weekend */
+      weekend: settingsData.weekend
     });
   }
 
@@ -151,14 +149,6 @@ class Artele extends Component {
     socket.emit('request_set_time', numSecs);
   }
 
-  handleAMOnWeekday = (time) => {
-
-  }
-
-  handleAMOffWeekday = (time) => {
-
-  }
-
   onWeekdayCallback = (val, num) => {
     let newWeekday = this.state.weekday;
     newWeekday.[val] = num;
@@ -167,6 +157,16 @@ class Artele extends Component {
     });
 
      console.log ('Artele onWeekdayCallback: ' + JSON.stringify(this.state.weekday));
+  }
+
+  onWeekendCallback = (val, num) => {
+    let newWeekend = this.state.weekend;
+    newWeekend.[val] = num;
+    this.setState({
+      weekend: newWeekend
+    });
+
+     console.log ('Artele onWeekendCallback: ' + JSON.stringify(this.state.weekend));
   }
 
   render() {
@@ -206,8 +206,8 @@ class Artele extends Component {
             </div>
             <div className="col-12">
               <TimePicker label={"Weekend"}
-                data={this.state.weekday}
-                toCallBack={(val, num) => this.onWeekdayCallback(val, num)}/>
+                data={this.state.weekend}
+                toCallBack={(val, num) => this.onWeekendCallback(val, num)}/>
             </div>
             <div className="col-12">
               <p className="section-header">Museum Images</p>
