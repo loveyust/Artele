@@ -44,10 +44,8 @@ class Artele extends Component {
     this.state = {
       museumData: [],
       timeSecs: 10, 
-      amOnWeekday: 7, 
-      amOffWeekday: 10, 
-      pmOnWeekday: 17, 
-      pmOffWeekday: 19
+      weekday: {},
+      weekend: {}
     };
 
     this.museumData = [];
@@ -58,8 +56,8 @@ class Artele extends Component {
   }
 
   componentDidMount() {
-  socket.on("send_museum_data", this.getMuseumDataFromServer); 
-  socket.on("send_settings_data", this.getSettingsData);
+    socket.on("send_museum_data", this.getMuseumDataFromServer); 
+    socket.on("send_settings_data", this.getSettingsData);
     // this.props.museumData.registerDataLoadCallback(this, this.museumDataLoaded);
     // Get museum data
     socket.emit("request_museum_data");
@@ -74,14 +72,12 @@ class Artele extends Component {
   };
 
   getSettingsData = settingsData => {
-    console.log('Display: ALL DATA LOADED Artele: ' + settingsData.amOnWeekday + ' ' +settingsData.amOffWeekday);
+    console.log('Display: ALL DATA LOADED Artele: ' + JSON.stringify(settingsData.weekday));
     this.setState({
       museumData: this.museumData, 
       timeSecs: settingsData.timePerArtwork, 
-      amOnWeekday: settingsData.amOnWeekday,
-      amOffWeekday: settingsData.amOffWeekday,
-      pmOnWeekday: settingsData.pmOnWeekday,
-      pmOffWeekday: settingsData.pmOffWeekday
+      weekday: settingsData.weekday,
+      /* weekend: settingsData.weekend */
     });
   }
 
@@ -163,6 +159,16 @@ class Artele extends Component {
 
   }
 
+  onWeekdayCallback = (val, num) => {
+    let newWeekday = this.state.weekday;
+    newWeekday.[val] = num;
+    this.setState({
+      weekday: newWeekday
+    });
+
+     console.log ('Artele onWeekdayCallback: ' + JSON.stringify(this.state.weekday));
+  }
+
   render() {
     return (
       <div className="artele-container">
@@ -195,15 +201,13 @@ class Artele extends Component {
             <div className="col-12">
               <TimePicker 
                 label={"Weekday"} 
-                amOnTime={this.state.amOnWeekday} 
-                amOffTime={this.state.amOffWeekday} 
-                pmOnTime={this.state.pmOnWeekday} 
-                pmOffTime={this.state.pmOffWeekday} 
-                handleAMOn={this.handleAMOnWeekday} 
-                handleAMOff={this.handleAMOffWeekday} />
+                data={this.state.weekday}
+                toCallBack={(val, num) => this.onWeekdayCallback(val, num)}/>
             </div>
             <div className="col-12">
-              <TimePicker label={"Weekend"} />
+              <TimePicker label={"Weekend"}
+                data={this.state.weekday}
+                toCallBack={(val, num) => this.onWeekdayCallback(val, num)}/>
             </div>
             <div className="col-12">
               <p className="section-header">Museum Images</p>

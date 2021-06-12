@@ -6,14 +6,12 @@ import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
 import './style.scss';
 
 class TimePicker extends Component {
-  constructor() {
+  constructor(props) {
     super();
-    this.state = {
-      selectValue: 'select'
-    };
   }
 
   componentDidMount() {  
+    //this.setState(data: this.props.data);
   }
 
   componentWillUnmount() {
@@ -30,6 +28,10 @@ class TimePicker extends Component {
 
     // socket.emit("request_set_active", {active:active, id:id} );
     //this.setState({museumData: tempMuseumData});
+  }
+
+  setStateAndRunCallback = (val, num) => {
+    this.props.toCallBack(val, num);
   }
 
   handleChange = (e) => {
@@ -64,8 +66,8 @@ class TimePicker extends Component {
         </div>
         <div className="col-3">
           <select className="dropdown"
-            value={this.props.amOnTime} 
-            onChange={this.handleChange} >
+            value={this.props.data.amOn} 
+            onChange={(e) => this.setStateAndRunCallback('amOn', e.target.value)} >
             {this.populateTimeOptions()}
           </select>
         </div>
@@ -74,8 +76,8 @@ class TimePicker extends Component {
         </div>
         <div className="col-3">
           <select className="dropdown"
-            value={this.props.amOffTime} 
-            onChange={this.handleChange} >
+            value={this.props.data.amOff} 
+            onChange={(e) => this.setStateAndRunCallback('amOff', e.target.value)} >
             {this.populateTimeOptions()}
           </select>
         </div>
@@ -84,8 +86,8 @@ class TimePicker extends Component {
         </div>
         <div className="col-3">
           <select className="dropdown"
-            value={this.props.pmOnTime} 
-            onChange={this.handleChange} >
+            value={this.props.data.pmOn} 
+            onChange={(e) => this.setStateAndRunCallback('pmOn', e.target.value)} >
             {this.populateTimeOptions()}
           </select>
         </div>
@@ -94,8 +96,8 @@ class TimePicker extends Component {
         </div>
         <div className="col-3">
           <select className="dropdown"
-            value={this.props.pmOffTime} 
-            onChange={this.handleChange} >
+            value={this.props.data.pmOff} 
+            onChange={(e) => this.setStateAndRunCallback('pmOff', e.target.value)} >
             {this.populateTimeOptions()}
           </select>
         </div>

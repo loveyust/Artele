@@ -84,10 +84,12 @@ class DataService {
             id: r.id,
             timePerArtwork: r.get('TimePerArtworkSecs'),
             matColor: r.get('MatColor'),
-            amOnWeekday: r.get('AMOnWeekday'),
-            amOffWeekday: r.get('AMOffWeekday'),
-            pmOnWeekday: r.get('PMOnWeekday'),
-            pmOffWeekday: r.get('PMOffWeekday')
+            weekday: {
+              amOn: r.get('AMOnWeekday'),
+              amOff: r.get('AMOffWeekday'),
+              pmOn: r.get('PMOnWeekday'),
+              pmOff: r.get('PMOffWeekday')
+            }
           }
         });
         if (settings.length > 0) {
