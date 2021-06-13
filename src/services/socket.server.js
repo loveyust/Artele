@@ -98,6 +98,11 @@ io.on("connection", socket => {
     data.setActive(activeObj.active, activeObj.id);
   });
 
+  socket.on("request_set_schedule", (scheduleObj) => {
+    console.log('socket request_set_schedule: ' + JSON.stringify(scheduleObj));
+    data.setSchedule(scheduleObj.day, scheduleObj.data);
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");

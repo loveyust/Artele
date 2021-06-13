@@ -488,6 +488,30 @@ class DataService {
     });
   }
 
+  setSchedule(day, data) {
+    console.log('setSchedule: ' + day + ' ' + JSON.stringify(data));
+    this.settings[day] = data;
+    let capString = day.charAt(0).toUpperCase() + day.slice(1);
+    
+    base('ArtControl').update([
+      {
+        "id": this.settings.id,
+        "fields": {
+          ['Active' + capString]: data.active,
+          ['AMOn' + capString]: parseInt(data.amOn),
+          ['AMOff' + capString]: parseInt(data.amOff),
+          ['PMOn' + capString]: parseInt(data.pmOn),
+          ['PMOff' + capString]: parseInt(data.pmOff)
+        }
+      }
+    ], function(err, records) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+
   clearImageData() {
     console.log('data clearImageData');
     var that = this;
