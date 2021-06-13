@@ -23,9 +23,9 @@ class Artele extends Component {
 
     this.museumData = [];
 
-   // this.museumDataLoaded = this.museumDataLoaded.bind(this);
-///    this.getMuseumData = this.getMuseumData.bind(this);
-    //this.getSettingsData = this.getSettingsData.bind(this);
+    // this.museumDataLoaded = this.museumDataLoaded.bind(this);
+    /// this.getMuseumData = this.getMuseumData.bind(this);
+    // this.getSettingsData = this.getSettingsData.bind(this);
   }
 
   componentDidMount() {
@@ -80,30 +80,6 @@ class Artele extends Component {
     this.setState({museumData: tempMuseumData});
   }
 
-  getMuseumData() {
-    console.log('getMuseumData: ' + JSON.stringify(this.state.museumData));
-    if (this.state.museumData !== undefined) {
-      return this.state.museumData.map(museum => {
-        console.log('musum: ' + museum.active);
-        return (
-          <div className="col-12 grid" key={museum.id}>
-            <div className="col-6"><p className="subheader">{museum.name}</p></div>
-            <div className="col-6">
-              <ToggleSwitch
-                active={museum.active}
-                aria-label='No label tag'
-                id={museum.id}
-                onChange={() => this.toggleActive(!museum.active, museum.id)}
-                label={""} />
-            </div>
-          </div>
-        );
-      });
-    } else {
-      return;
-    }
-  }
-
   onUpdateImages() {
     console.log('Update Images: ');
     // TODO send flag to update images from Air Table in data service
@@ -142,6 +118,30 @@ class Artele extends Component {
     });
 
      console.log ('Artele onWeekendCallback: ' + JSON.stringify(this.state.weekend));
+  }
+
+  renderMuseumData() {
+    console.log('renderMuseumData: ' + JSON.stringify(this.state.museumData));
+    if (this.state.museumData !== undefined) {
+      return this.state.museumData.map(museum => {
+        console.log('musum: ' + museum.active);
+        return (
+          <div className="col-12 grid" key={museum.id}>
+            <div className="col-6"><p className="subheader">{museum.name}</p></div>
+            <div className="col-6">
+              <ToggleSwitch
+                active={museum.active}
+                aria-label='No label tag'
+                id={museum.id}
+                onChange={() => this.toggleActive(!museum.active, museum.id)}
+                label={""} />
+            </div>
+          </div>
+        );
+      });
+    } else {
+      return;
+    }
   }
 
   render() {
@@ -205,7 +205,7 @@ class Artele extends Component {
                 <div className="col-6">
                   <p className="header center">Active</p>
                 </div>
-                {this.getMuseumData()}
+                {this.renderMuseumData()}
               </> :
               <>
               </>

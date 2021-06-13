@@ -6,15 +6,13 @@ import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
 import './style.scss';
 
 class TimePicker extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      // active: props.active
     }
   }
 
   componentDidMount() {  
-    // this.setState(data: this.props.data);
   }
 
   componentWillUnmount() {
@@ -23,16 +21,6 @@ class TimePicker extends Component {
   toggleActive = (active) => {
     console.log('set day active:  ' + this.props.data.active);
     this.props.toCallBack("active", active);
-    // this.setState({active: active});
-    /* let tempMuseumData = this.state.museumData;
-    for (var i = 0; i < tempMuseumData.length; i++) {
-      if (tempMuseumData[i].id === id) {
-        tempMuseumData[i].active = active;
-      }
-    } */
-
-    // socket.emit("request_set_active", {active:active, id:id} );
-    // this.setState({museumData: tempMuseumData});
   }
 
   setStateAndRunCallback = (val, num) => {
