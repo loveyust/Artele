@@ -10,32 +10,6 @@ import Toggle from 'react-toggle'
 // Styles
 import './style.scss';
 
-const Label = styled.label`
-  font-weight: bold;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min-content;
-  white-space: nowrap;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const Sample = styled.div`
-  padding: 16px;
-`;
-
-const Root = styled.div`
-  font-family: Arial, Helvetica, sans-serif;
-  h1 {
-    text-align: center;
-  }
-
-  h2 {
-    padding-bottom: 4px;
-    border-bottom: 1px solid #ccc;
-  }
-`;
-
 class Artele extends Component {
   constructor() {
     super();
