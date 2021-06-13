@@ -443,7 +443,7 @@ class DataService {
     }
   }
 
-  // Set active
+  // Set a museum to be active 
   setActive(active, id) {
     console.log('setActive: ' + active + ' ' + id);
     for (var i = 0; i < this.airTableData.length; i++) {
@@ -469,7 +469,7 @@ class DataService {
     console.log('setActive: ' + this.airTableData[0].active);
   }
 
-  // Set art time
+  // Set the amount of time each artwork is visible
   setArtTime(timeSecs) {
     console.log('setTimeSecs: ' + timeSecs + ' ' + this.settings.timePerArtwork);
     this.settings.timePerArtwork = timeSecs;
@@ -488,6 +488,7 @@ class DataService {
     });
   }
 
+  // Change the schedule for weekday or weekend 
   setSchedule(day, data) {
     console.log('setSchedule: ' + day + ' ' + JSON.stringify(data));
     this.settings[day] = data;

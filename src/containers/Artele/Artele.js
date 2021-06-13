@@ -118,8 +118,8 @@ class Artele extends Component {
       weekend: newWeekend
     });
 
-     console.log ('Artele onWeekendCallback: ' + JSON.stringify(this.state.weekend));
-     socket.emit('request_set_schedule', {day:'weekend', data:newWeekend});
+    console.log ('Artele onWeekendCallback: ' + JSON.stringify(this.state.weekend));
+    socket.emit('request_set_schedule', {day:'weekend', data:newWeekend});
   }
 
   renderMuseumData() {

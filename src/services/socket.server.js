@@ -34,20 +34,20 @@ const DataService = require('./data.service');
 const data = new DataService();
 
 // Receiver Controller
-//const ReceiverController = require('./receiver.controller');
-// const rcontroller = new ReceiverController();
+const ReceiverController = require('./receiver.controller');
+const rcontroller = new ReceiverController();
 
 // Scheduling 
-const cron = require('node-cron');
-task = cron.schedule('*/5 * * * * *', () => {
-  console.log('running a task every 5 sec.');
-});
-task.start();
-task.stop();
-task = cron.schedule('*/10 * * * * *', () => {
-  console.log('running a task every 10 sec.');
-});
-task.start();
+// const cron = require('node-cron');
+// task = cron.schedule('*/5 * * * * *', () => {
+//   console.log('running a task every 5 sec.');
+// });
+// task.start();
+// task.stop();
+// task = cron.schedule('*/10 * * * * *', () => {
+//   console.log('running a task every 10 sec.');
+// });
+// task.start();
 
 
 callback = () => {
