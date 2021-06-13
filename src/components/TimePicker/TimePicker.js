@@ -7,35 +7,36 @@ import './style.scss';
 
 class TimePicker extends Component {
   constructor(props) {
-    super();
+    super(props);
+    this.state = {
+      // active: props.active
+    }
   }
 
   componentDidMount() {  
-    //this.setState(data: this.props.data);
+    // this.setState(data: this.props.data);
   }
 
   componentWillUnmount() {
   }
 
-  toggleActive = (active, id) => {
-    console.log('set day active: ' + id + ' ' + active);
-    /*let tempMuseumData = this.state.museumData;
+  toggleActive = (active) => {
+    console.log('set day active:  ' + this.props.data.active);
+    this.props.toCallBack("active", active);
+    // this.setState({active: active});
+    /* let tempMuseumData = this.state.museumData;
     for (var i = 0; i < tempMuseumData.length; i++) {
       if (tempMuseumData[i].id === id) {
         tempMuseumData[i].active = active;
       }
-    }*/
+    } */
 
     // socket.emit("request_set_active", {active:active, id:id} );
-    //this.setState({museumData: tempMuseumData});
+    // this.setState({museumData: tempMuseumData});
   }
 
   setStateAndRunCallback = (val, num) => {
     this.props.toCallBack(val, num);
-  }
-
-  handleChange = (e) => {
-    this.setState({selectValue:e.target.value});
   }
 
   populateTimeOptions = () => {
@@ -55,10 +56,10 @@ class TimePicker extends Component {
         </div>
         <div className="col-6">
           <ToggleSwitch
-            active={true}
+            active={this.props.data.active}
             aria-label='No label tag'
             id={1}
-            onChange={() => this.toggleActive(!true, 1)}
+            onChange={() => this.toggleActive(!this.props.data.active)}
             label={""} />
         </div>
         <div className="col-3">
