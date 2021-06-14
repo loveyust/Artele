@@ -8,6 +8,10 @@ const fetch = require("node-fetch");
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 const ColorThief = require('colorthief');
 
+// Receiver Controller
+const ReceiverController = require('./receiver.controller');
+const rcontroller = new ReceiverController();
+
 class DataService {
   // DataService Singleton
   constructor() {
@@ -161,6 +165,10 @@ class DataService {
       this.loadMuseum(this.curMuseumNum);
     } else {
       // All museum data is loaded 
+
+      // set the cron schedule
+      rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
+
       // this.callback(this.callbackSelf);
       this.dataLoaded = true;
       this.makeRegisteredCallbacks();
@@ -510,6 +518,9 @@ class DataService {
         console.error(err);
         return;
       }
+    }).then(() => {
+      // set the cron schedule
+      rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
     });
   }
 

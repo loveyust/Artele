@@ -37,19 +37,6 @@ const data = new DataService();
 const ReceiverController = require('./receiver.controller');
 const rcontroller = new ReceiverController();
 
-// Scheduling 
-// const cron = require('node-cron');
-// task = cron.schedule('*/5 * * * * *', () => {
-//   console.log('running a task every 5 sec.');
-// });
-// task.start();
-// task.stop();
-// task = cron.schedule('*/10 * * * * *', () => {
-//   console.log('running a task every 10 sec.');
-// });
-// task.start();
-
-
 callback = () => {
   console.log("socket Send Image");
   io.sockets.emit("send_random_image", data.curImageObject);
@@ -101,6 +88,7 @@ io.on("connection", socket => {
   socket.on("request_set_schedule", (scheduleObj) => {
     console.log('socket request_set_schedule: ' + JSON.stringify(scheduleObj));
     data.setSchedule(scheduleObj.day, scheduleObj.data);
+    rcontroller.setScheduleCron(scheduleObj.day, scheduleObj.data);
   });
 
   // disconnect is fired when a client leaves the server

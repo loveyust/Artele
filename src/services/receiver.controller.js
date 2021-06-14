@@ -33,15 +33,58 @@ class ReceiverController {
   }
 
   initializeSchedule() {
-    this.weekdayCron = cron.schedule('*/5 * * * * *', () => {
-        console.log('running a task every 5 sec.');
-    });
-    this.weekdayCron.start();
-    this.weekdayCron.stop();
-    this.weekdayCron = cron.schedule('*/10 * * * * *', () => {
-        console.log('running a task every 10 sec.');
-    });
-    this.weekdayCron.start();
+    // Weekday
+    this.weekdayAmOn = cron.schedule('* * * * * *', () => {});
+    this.weekdayAmOff = cron.schedule('* * * * * *', () => {});
+    this.weekdayPmOn = cron.schedule('* * * * * *', () => {});
+    this.weekdayPmOff = cron.schedule('* * * * * *', () => {});
+
+    // Weekend
+    this.weekendAmOn = cron.schedule('* * * * * *', () => {});
+    this.weekendAmOff = cron.schedule('* * * * * *', () => {});
+    this.weekendPmOn = cron.schedule('* * * * * *', () => {});
+    this.weekendPmOff = cron.schedule('* * * * * *', () => {});
+
+    // Weekday
+    this.weekdayAmOn.stop();
+    this.weekdayAmOff.stop();
+    this.weekdayPmOn.stop();
+    this.weekdayPmOff.stop();
+
+    // Weekend
+    this.weekendAmOn.stop();
+    this.weekendAmOff.stop();
+    this.weekendPmOn.stop();
+    this.weekendPmOff.stop();
+  }
+
+  setScheduleCron(weekday, weekend) {
+    console.log('ReceiverController setScheduleCron: ' + weekday.amOn);
+
+    //if ()
+    // Weekday
+    this.weekdayAmOn = cron.schedule('0 0 ' + weekday.amOn + ' * * 1-5', () => { this.turnOnReceiver(); });
+    this.weekdayAmOff = cron.schedule('0 0 ' + weekday.amOff + ' * * 1-5', () => { this.turnOffReceiver(); });
+    this.weekdayPmOn = cron.schedule('0 0 ' + weekday.pmOn + ' * * 1-5', () => { this.turnOnReceiver(); });
+    this.weekdayPmOff = cron.schedule('0 0 ' + weekday.pmOff + ' * * 1-5', () => { this.turnOffReceiver(); });
+
+    // Weekend - test for every 10 secs: */10 * * * * 6-7
+    // this.weekendAmOn = cron.schedule('*/10 * * * * 6-7', () => { this.turnOnReceiver(); });
+    this.weekendAmOn = cron.schedule('0 0 ' + weekend.amOn + ' * * 6-7', () => { this.turnOnReceiver(); });
+    this.weekendAmOff = cron.schedule('0 0 ' + weekend.amOff + ' * * 6-7', () => { this.turnOffReceiver(); });
+    this.weekendPmOn = cron.schedule('0 0 ' + weekend.pmOn + ' * * 6-7', () => { this.turnOnReceiver(); });
+    this.weekendPmOff = cron.schedule('0 0 ' + weekend.pmOff + ' * * 6-7', () => { this.turnOffReceiver(); });
+  }
+
+  turnOnReceiver() {
+    console.log('ReceiverController - turnOn');
+    // Turn on the receiver
+    // restart the timer to send a new image to the display, image timer should only run when the system is on
+
+  }
+
+  turnOffReceiver() {
+    console.log('ReceiverController - turnOff');
   }
 
   connect () {
