@@ -70,16 +70,15 @@ class Display extends Component {
     }, this.fadeTime);
     clearInterval(this.fadeInterval);
 
-/*/////  
+    /*/////  
     // this.props.data.loadData(this, this.museumDataLoaded);
     this.props.museumData.registerDataLoadCallback(this, this.museumDataLoaded);
-  */
+    */
   }
 
   /*/////
   getMuseumData = museumItems => {
     console.log(museumItems);
-
     // Get settings
     socket.emit("request_settings_data");
   };*/////
@@ -95,15 +94,15 @@ class Display extends Component {
     console.log ('Display onSetTime: ' + timeSecs);
     this.settings.timePerArtwork = timeSecs;
   }
-
-  museumDataLoaded (self) {
+I /*
+  MuseumDataLoaded (self) {
     // Grab some settings
     console.log('Display: ALL DATA LOADED ');
  /////   self.showNextImage();
     self.startTimer();
     // this.props.museumData.test = false;
   }
-
+*/
   componentWillUnmount() {
     socket.off("send_settings_data", this.getSettingsData);
     socket.off("send_random_image", this.onImageData);
@@ -154,14 +153,14 @@ class Display extends Component {
     this.setState({currentImageData: imageData});
   }
 
-/*/////
+  /*/////
   onObjectLoaded(self) {
     if (self.props !== undefined) {
     console.log("onObjectLoaded: " + JSON.stringify(self.props.museumData.curImageObject));
     self.setState({currentImageData: self.props.museumData.curImageObject});
     }
   }
-*/
+  */
 
   onImageRendered(){
     console.log('onImageRendered');
