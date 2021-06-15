@@ -22,9 +22,16 @@ class DataService {
      
     this.loadingData = false;
     this.callbacks = [];
+    // Timer
+    this.imageInterval = setInterval(function() {}, 100 * 1000); 
+    clearInterval(this.imageInterval);
     console.log('DataService constructor');
     this.loadData();
     return this;
+  }
+
+  setCallback(callback) {
+    this.imageCallback = callback;
   }
 
   registerDataLoadCallback(self, callback) {
@@ -172,6 +179,9 @@ class DataService {
       // this.callback(this.callbackSelf);
       this.dataLoaded = true;
       this.makeRegisteredCallbacks();
+
+      // Load the first image 
+      this.getRandomImage(true);
     }
   }
 
@@ -276,9 +286,7 @@ class DataService {
   }
 
   // Request for a random image and information to display
-  getRandomImage(imageCallback) {
-
-    this.imageCallback = imageCallback;
+  getRandomImage(internal) {
 
     // Select a random museum
     var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
@@ -377,6 +385,9 @@ class DataService {
 
         // Send the image back to the Display through its callback function
         that.imageCallback();
+
+        // Start the image timer to load the next image, but ignore requests from the socket layer 
+        if (internal) that.startImageTimer();
       })
       .catch(err => { 
         console.log('ColorThiefError' + err);
@@ -451,6 +462,36 @@ class DataService {
     }
   }
 
+
+  startImageTimer(){
+    var time = 10;
+    if (this.settings !== null) {
+      time = this.settings.timePerArtwork;
+      console.log('startTimer ' + this.settings.timePerArtwork);
+    }
+    
+    var that = this;
+    that.stopImageTimer();
+    that.imageInterval = setInterval(function(){
+      console.log('startTimer complete');
+      that.stopImageTimer();
+      
+      // Send next Iamge
+      that.getRandomImage(true);
+
+      // Restart the timer for the next image
+      // that.startImageTimer();
+    }, time * 1000);
+  }
+
+  stopImageTimer() {
+    clearInterval(this.imageInterval);
+  }
+
+
+  ////////////////////////////////////////
+  // Update AirTable
+  ////////////////////////////////////////
   // Set a museum to be active 
   setActive(active, id) {
     console.log('setActive: ' + active + ' ' + id);

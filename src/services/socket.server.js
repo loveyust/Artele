@@ -29,18 +29,20 @@ const io = require("socket.io")(server, {
   }  
 });
 
+callback = () => {
+  console.log("socket Send Image");
+  io.sockets.emit("send_random_image", data.curImageObject);
+}
+
 // Data Service
 const DataService = require('./data.service');
 const data = new DataService();
+data.setCallback(callback);
 
 // Receiver Controller
 const ReceiverController = require('./receiver.controller');
 const rcontroller = new ReceiverController();
 
-callback = () => {
-  console.log("socket Send Image");
-  io.sockets.emit("send_random_image", data.curImageObject);
-}
 
 io.on("connection", socket => {
   console.log("New client connected" + socket.id);
@@ -59,7 +61,7 @@ io.on("connection", socket => {
   socket.on("request_random_image", (datas) => {    
     console.log('socket request_random_image ' + datas);
     // rcontroller.test();
-    data.getRandomImage(callback);
+    data.getRandomImage(false);
   });
 
   socket.on("set_time", time => {
