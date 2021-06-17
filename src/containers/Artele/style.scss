@@ -4,6 +4,24 @@
   width: 100%;
   min-height: 100vh;
 
+  .tab-background {
+    background-color: #000;
+  }
+
+  .mr-3 {
+    color: #FFF;
+    font-family: $font-name-montserrat-bold;
+    text-transform: uppercase;
+  }
+
+  .mt-3 {
+    padding-top: 20px;
+  }
+  
+  .rb-tabs .rb-tabs-header .rb-tabs-active-item {
+    background-color: #FFF;
+  }
+
   p {
     margin: 0px;
   }

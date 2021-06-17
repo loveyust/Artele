@@ -153,69 +153,107 @@ class Artele extends Component {
     const isLoaded = this.state.isLoaded;
     return (
       <div className="artele-container">
-          <div className="grid">
-            <div className="artele-header col-12">
-              <p className="title">Artele</p>
-            </div>
-            <div className="col-12">
-              <p className="section-header">Timing</p>
-            </div>
-            { isLoaded ? 
-              <>
-                <div className="col-6">
-                  <p className="description">Change the number of seconds each artwork is visible.</p>
-                </div>
-                <div className="col-6 interaction numInput">
-                  <input
-                    onChange={e => this.onChangeSecs(e)}
-                    value={this.state.timeSecs}
-                    type="number"
-                    placeholder="Time in Secs"
-                    min="0"
-                  />
-                  <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
-                </div>
-                <div className="col-6">
-                  <p className="header">Schedule</p>
-                </div>
-                <div className="col-6">
-                  <p className="header center">Active</p>
-                </div>
-                <div className="col-12">
-                  <TimePicker 
-                    label={"Weekday"} 
-                    data={this.state.weekday}
-                    toCallBack={(val, num) => this.onWeekdayCallback(val, num)}/>
-                </div>
-                <div className="col-12">
-                  <TimePicker label={"Weekend"}
-                    data={this.state.weekend}
-                    toCallBack={(val, num) => this.onWeekendCallback(val, num)}/>
-                </div>
-                <div className="col-12">
-                  <p className="section-header">Museum Images</p>
-                </div>
-                <div className="col-12">
-                  <p className="header">Update Images</p>
-                </div>
-                <div className="col-6">
-                  <p className="description">Update the stored image IDs for the museums.</p>
-                </div>
-                <div className="col-6 interaction">
-                  <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
-                </div>
-                <div className="col-6">
-                  <p className="header">Museum</p>
-                </div>
-                <div className="col-6">
-                  <p className="header center">Active</p>
-                </div>
-                {this.renderMuseumData()}
-              </> :
-              <>
-              </>
-            }
+        <div className="grid">
+          <div className="artele-header col-12">
+            <p className="title">Artele</p>
           </div>
+        </div>
+        <Tabs activeTab="1" className="tab-background" ulClassName="" activityClassName="bg-success" onClick={(event, tab) => console.log(event, tab)}>
+          <Tab title="Art" className="mr-3">
+            <div className="mt-3">
+              <div className="grid">
+                { isLoaded ? 
+                  <>
+                    <div className="col-12">
+                      <p className="header">Pause Art</p>
+                    </div>
+                    <div className="col-12">
+                      <p className="header">Next Art</p>
+                    </div>
+                    <div className="col-12">
+                      <p className="header">Save Art</p>
+                    </div>
+                  </> :
+                  <>
+                  </>
+                }
+              </div>
+            </div>
+          </Tab>
+          <Tab title="Images" className="mr-3">
+            <div className="mt-3">
+              <div className="grid">
+                { isLoaded ? 
+                  <>
+                    <div className="col-12">
+                      <p className="header">Update Images</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="description">Update the stored image IDs for the museums.</p>
+                    </div>
+                    <div className="col-6 interaction">
+                      <TriggerButton action={() => this.onUpdateImages()} label={"Update Images"} />
+                    </div>
+                    <div className="col-6">
+                      <p className="header">Museum</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="header center">Active</p>
+                    </div>
+                    {this.renderMuseumData()}
+                  </> :
+                  <>
+                  </>
+                }
+              </div>
+            </div>
+          </Tab>
+          <Tab title="Schedule" className="mr-3">
+            <div className="mt-3">
+              <div className="grid">
+                { isLoaded ? 
+                  <>
+                    <div className="col-12">
+                      <p className="header">Art Time</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="description">Change the number of seconds each artwork is visible.</p>
+                    </div>
+                    <div className="col-6 interaction numInput">
+                      <input
+                        onChange={e => this.onChangeSecs(e)}
+                        value={this.state.timeSecs}
+                        type="number"
+                        placeholder="Time in Secs"
+                        min="0"
+                      />
+                      <TriggerButton action={() => this.onUpdateSecs()} label={"Update Secs"} />
+                    </div>
+                    <div className="col-6">
+                      <p className="header">Schedule</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="header center">Active</p>
+                    </div>
+                    <div className="col-12">
+                      <TimePicker 
+                        label={"Weekday"} 
+                        data={this.state.weekday}
+                        toCallBack={(val, num) => this.onWeekdayCallback(val, num)}/>
+                    </div>
+                    <div className="col-12">
+                      <TimePicker label={"Weekend"}
+                        data={this.state.weekend}
+                        toCallBack={(val, num) => this.onWeekendCallback(val, num)}/>
+                    </div>
+                  </> :
+                  <>
+                  </>
+                }
+              </div>
+            </div>
+          </Tab>
+        </Tabs>
       </div>
     );
   }
