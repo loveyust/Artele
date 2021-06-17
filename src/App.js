@@ -3,10 +3,6 @@ import "./App.css";
 import { Header } from "./global/header";
 import { Switch, Route } from "react-router-dom";
 
-import PlaceOrder from "./main/PlaceOrder";
-import UpdatePredicted from "./main/UpdatePredicted";
-import Kitchen from "./main/Kitchen";
-
 import Display from "./containers/Display/Display";
 import Artele from "./containers/Artele/Artele";
 
@@ -27,12 +23,8 @@ which is a string that describes the pathname that the route matches */
 class App extends Component {
   constructor() {
     super();
-    // Airtable Data
-    // import DataService from './services/data.service';
- //   this.dataService = new DataService();
-    ////this.dataService.loadData();
     this.state = {
-      dataService: null // new DataService()
+      
     }
   }
 
@@ -46,12 +38,9 @@ class App extends Component {
         <Header />
         <div className="app-contents">
         <Switch>
-          <Route exact path="/" render={(props) => <Artele {...props} museumData={this.state.dataService} />} />
-          <Route path="/display" render={(props) => <Display {...props} museumData={this.state.dataService} />} />
-          <Route path="/updatepredicted" component={UpdatePredicted} />  
-          <Route path="/kitchen" component={Kitchen} />
+          <Route exact path="/" render={(props) => <Artele {...props} />} />
+          <Route path="/display" render={(props) => <Display {...props} />} />
           {/* <Route path="/display" component={Display} />*/}
-          
         </Switch>
         </div>
       </div>
