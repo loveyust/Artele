@@ -93,6 +93,7 @@ class DataService {
           console.log('Settings:' + JSON.stringify(r));
           return { 
             id: r.id,
+            paused: r.get('Paused'),
             timePerArtwork: r.get('TimePerArtworkSecs'),
             matColor: r.get('MatColor'),
             weekday: {
@@ -562,6 +563,25 @@ class DataService {
     }).then(() => {
       // set the cron schedule
       rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
+    });
+  }
+
+  // Set Art to Pause 
+  setPaused(paused) {
+    console.log('setPaused: ' + paused);
+    this.settings.paused = paused;
+    base('ArtControl').update([
+      {
+        "id": this.settings.id,
+        "fields": {
+          "Paused": paused
+        }
+      }
+    ], function(err, records) {
+      if (err) {
+        console.error(err);
+        return;
+      }
     });
   }
 

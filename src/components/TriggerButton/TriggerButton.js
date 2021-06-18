@@ -8,10 +8,14 @@ class TriggerButton extends Component {
   constructor() {
     super();
     this.state = {
+      buttonClass: ""
     };
   }
 
   componentDidMount() {  
+    this.props.stretch ? 
+    this.setState({buttonClass: "stretch"}) : 
+    this.setState({buttonClass: ""});
   }
 
   componentWillUnmount() {
@@ -20,7 +24,7 @@ class TriggerButton extends Component {
   render() {
     return (
       <>
-        <button onClick={this.props.action}>{this.props.label}</button>
+        <button onClick={this.props.action} className={this.state.buttonClass}>{this.props.label}</button>
       </>
     );
   }

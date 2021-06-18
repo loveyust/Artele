@@ -19,6 +19,7 @@ class Artele extends Component {
     this.state = {
       museumData: [],
       timeSecs: 10, 
+      paused: false,
       weekday: {},
       weekend: {},
       isLoaded: false
@@ -54,7 +55,8 @@ class Artele extends Component {
       timeSecs: settingsData.timePerArtwork, 
       weekday: settingsData.weekday,
       weekend: settingsData.weekend,
-      isLoaded:true
+      isLoaded:true, 
+      paused: settingsData.paused
     });
   }
 
@@ -125,6 +127,25 @@ class Artele extends Component {
     socket.emit('request_set_schedule', {day:'weekend', data:newWeekend});
   }
 
+  onArtPause = () => {
+    this.setState({paused: true});
+    socket.emit('request_set_paused', true);
+  }
+
+  onArtPlay = () => {
+    this.setState({paused: false});
+    socket.emit('request_set_paused', false);
+  }
+
+  onReverse = () => {
+  }
+
+  onForward = () => {
+  }
+
+  onSave = () => {
+  }
+
   renderMuseumData() {
     console.log('renderMuseumData: ' + JSON.stringify(this.state.museumData));
     if (this.state.museumData !== undefined) {
@@ -161,17 +182,37 @@ class Artele extends Component {
         <Tabs activeTab="1" className="tab-background" ulClassName="" activityClassName="bg-success" onClick={(event, tab) => console.log(event, tab)}>
           <Tab title="Art" className="mr-3">
             <div className="mt-3">
-              <div className="grid">
+              <div className="grid spacing">
                 { isLoaded ? 
                   <>
-                    <div className="col-12">
-                      <p className="header">Pause Art</p>
+                    <div className="col-4">
+                      <TriggerButton action={() => this.onArtPlay()} label={"Play Art"} stretch={true} />
+                    </div>
+                    <div className="col-4">
+                      { this.state.paused ? 
+                        <div className='icon pause'></div> :
+                        <div className='icon play'></div>
+                      } 
+                    </div>
+                    <div className="col-4">
+                      <TriggerButton action={() => this.onArtPause()} label={"Pause Art"} stretch={true} />
+                    </div>
+                    <div className="col-3">
+                      <TriggerButton action={() => this.onReverse()} label={"Back"} stretch={true} />
+                    </div>
+                    <div className="col-3">
+                      <div className='icon backward'></div>
+                      <div className='icon backward'></div>
+                    </div>
+                    <div className="col-3">
+                      <div className='icon forward'></div>
+                      <div className='icon forward'></div>
+                    </div>
+                    <div className="col-3">
+                      <TriggerButton action={() => this.onForward()} label={"Next"} stretch={true} />
                     </div>
                     <div className="col-12">
-                      <p className="header">Next Art</p>
-                    </div>
-                    <div className="col-12">
-                      <p className="header">Save Art</p>
+                      <TriggerButton action={() => this.onSave()} label={"Save To Slack"} stretch={true} />
                     </div>
                   </> :
                   <>

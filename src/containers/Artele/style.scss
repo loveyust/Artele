@@ -8,6 +8,13 @@
     background-color: #000;
   }
 
+  .spacing {
+    div[class^="col-"] {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+
   .mr-3 {
     color: #FFF;
     font-family: $font-name-montserrat-bold;
@@ -20,6 +27,47 @@
   
   .rb-tabs .rb-tabs-header .rb-tabs-active-item {
     background-color: #FFF;
+  }
+
+  .icon.play {
+    border-style: solid;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border-width: 20px 0px 20px 40px;
+    border-color: transparent transparent transparent #FFFFFF;
+    margin: auto;
+  }
+
+  .icon.pause {
+    width: 0px;
+    height: 40px;
+    border-style: double;
+    border-width: 0px 0px 0px 20px;
+    border-color: #FFFFFF;
+    margin: auto;
+  }
+
+  .icon.forward {
+    border-style: solid;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-width: 20px 0px 20px 40px;
+    border-color: transparent transparent transparent #FFFFFF;
+    margin: auto;
+    float: left;
+  }
+
+  .icon.backward {
+    border-style: solid;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-width: 20px 40px 20px 0px;
+    border-color: transparent #FFFFFF transparent transparent;
+    margin: auto;
+    float: left;
   }
 
   p {

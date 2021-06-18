@@ -93,6 +93,11 @@ io.on("connection", socket => {
     rcontroller.setScheduleCron(scheduleObj.day, scheduleObj.data);
   });
 
+  socket.on("request_set_paused", (paused) => {
+    console.log('socket request_set_paused: ' + JSON.stringify(paused));
+    data.setPaused(paused);
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");
