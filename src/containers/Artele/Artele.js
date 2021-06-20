@@ -144,6 +144,7 @@ class Artele extends Component {
   }
 
   onSave = () => {
+    socket.emit('request_save_image');
   }
 
   renderMuseumData() {

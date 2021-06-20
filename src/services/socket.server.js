@@ -98,6 +98,11 @@ io.on("connection", socket => {
     data.setPaused(paused);
   });
 
+  socket.on("request_save_image", () => {
+    console.log('socket request_save_image: ' + JSON.stringify(data.curImageObject));
+    data.saveImage();
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");
