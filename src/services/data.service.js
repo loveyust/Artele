@@ -7,6 +7,8 @@ const Airtable = require("airtable");
 const fetch = require("node-fetch"); 
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 const ColorThief = require('colorthief');
+const axios = require('axios');
+const slackToken = environment.production.slack;
 
 // Receiver Controller
 const ReceiverController = require('./receiver.controller');
@@ -465,7 +467,6 @@ class DataService {
     }
   }
 
-
   startImageTimer(){
     var time = 10;
     if (this.settings !== null) {
@@ -586,6 +587,37 @@ class DataService {
         return;
       }
     });
+  }
+
+  saveImage() {
+    // Save the image to slack
+    this.sendImageToSlack().catch(err => console.log(err));
+  }
+
+  async sendImageToSlack() {
+    console.log('RUN sendImageToSlack()');
+    let that = this;
+    const url = 'https://slack.com/api/chat.postMessage';
+    const res = await axios.post(url, {
+      channel: '#artele',
+      blocks: [
+        {
+          type: 'section',
+          text: { type: 'mrkdwn', text: 'Image from Artele' }
+        },
+        {
+          type: 'section',
+          text: { type: 'mrkdwn', text: JSON.stringify(that.curImageObject)}
+        },
+        {
+          type: 'image',
+          image_url: that.curImageObject.image, 
+          alt_text: 'Image Saved from Artele'
+        }
+      ],
+    }, { headers: { authorization: `Bearer ${slackToken}` } });
+    
+    console.log('Done sent Iamge to Slack', res.data);
   }
 
   clearImageData() {
