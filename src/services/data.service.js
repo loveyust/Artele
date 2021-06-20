@@ -388,7 +388,9 @@ class DataService {
         that.imageCallback();
 
         // Start the image timer to load the next image, but ignore requests from the socket layer 
-        if (internal) that.startImageTimer();
+        if (!that.settings.paused) {
+          that.startImageTimer();
+        }
       })
       .catch(err => { 
         console.log('ColorThiefError' + err);
@@ -570,6 +572,7 @@ class DataService {
   setPaused(paused) {
     console.log('setPaused: ' + paused);
     this.settings.paused = paused;
+    this.settings.paused ? this.stopImageTimer(): this.startImageTimer();
     base('ArtControl').update([
       {
         "id": this.settings.id,
