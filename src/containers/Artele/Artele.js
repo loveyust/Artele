@@ -4,11 +4,8 @@ import { socket } from "../../global/header";
 import ToggleSwitch from "../../components/ToggleSwitch/ToggleSwitch";
 import TriggerButton from "../../components/TriggerButton/TriggerButton";
 import TimePicker from "../../components/TimePicker/TimePicker";
-import styled from "styled-components";
-import Toggle from 'react-toggle'
 import Tabs, {Tab} from 'react-best-tabs';
 import 'react-best-tabs/dist/index.css';
-
 
 // Styles
 import './style.scss';
