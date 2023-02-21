@@ -1,20 +1,23 @@
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+// const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+import { XMLHttpRequest } from 'xmlhttprequest';
 var requestImage = new XMLHttpRequest();
-const environment = require('../environment.js');
+// const environment = require('../environment.js');
+import environment from '../environment.js';
 // Airtable
-const Airtable = require("airtable");
+// const Airtable = require("airtable");
+import Airtable from 'airtable';
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
-const fetch = require("node-fetch"); 
+import fetch from 'node-fetch'; // const fetch = require("node-fetch"); 
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
-const ColorThief = require('colorthief');
-const axios = require('axios');
+import ColorThief from 'colorthief';
+import axios from 'axios';
 const slackToken = environment.production.slack;
 
 // Receiver Controller
-const ReceiverController = require('./receiver.controller');
-const rcontroller = new ReceiverController();
+// import ReceiverController from './receiver.controller';
+// const rcontroller = new ReceiverController();
 
-class DataService {
+export default class DataService {
   // DataService Singleton
   constructor() {
     if (DataService.instance) {
@@ -177,7 +180,7 @@ class DataService {
       // All museum data is loaded 
 
       // set the cron schedule
-      rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
+     //// rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
 
       // this.callback(this.callbackSelf);
       this.dataLoaded = true;
@@ -645,4 +648,4 @@ class DataService {
   }
 }
 
-module.exports = DataService;
+// module.exports = DataService;

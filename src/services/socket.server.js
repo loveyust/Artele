@@ -1,12 +1,12 @@
 // socket server
-const express = require("express");
-const http = require("http");
+import express from 'express';//const express = require("express");
+import http from 'http';//const http = require("http");
 // our localhost port
 const port = process.env.PORT || 3001;
 const app = express();
 
 app.use(function (req, res, next) {
-  //res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET"); // , POST, PUT ,DELETE");
   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header('Access-Control-Allow-Credentials', true);
@@ -19,8 +19,11 @@ app.use(function (req, res, next) {
 
 // our server instance
 // This creates our socket using the instance of the server
-const server = http.createServer(app);
-const io = require("socket.io")(server, {
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
   cors: {
     origin: ["http://localhost:3000"],
     methods: ["GET", "POST"],
@@ -29,20 +32,19 @@ const io = require("socket.io")(server, {
   }  
 });
 
-callback = () => {
+function callback () {
   console.log("socket Send Image");
   io.sockets.emit("send_random_image", data.curImageObject);
 }
 
 // Data Service
-const DataService = require('./data.service');
+import DataService from './data.service.js';
 const data = new DataService();
 data.setCallback(callback);
 
 // Receiver Controller
-const ReceiverController = require('./receiver.controller');
-const rcontroller = new ReceiverController();
-
+// import ReceiverController from './receiver.controller.js';
+// const rcontroller = new ReceiverController();
 
 io.on("connection", socket => {
   console.log("New client connected" + socket.id);
@@ -111,4 +113,4 @@ io.on("connection", socket => {
 
 app.use(express.static("build"));
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+httpServer.listen(port, () => console.log(`Listening on port ${port}`));
