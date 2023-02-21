@@ -1,18 +1,19 @@
 import { XMLHttpRequest } from 'xmlhttprequest';
 var requestImage = new XMLHttpRequest();
 import environment from '../environment.js';
+
 // Airtable
 import Airtable from 'airtable';
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
-import fetch from 'node-fetch'; // const fetch = require("node-fetch"); 
+import fetch from 'node-fetch';
 const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
 import ColorThief from 'colorthief';
 import axios from 'axios';
 const slackToken = environment.production.slack;
 
 // Receiver Controller
-// import ReceiverController from './receiver.controller';
-// const rcontroller = new ReceiverController();
+import ReceiverController from './receiver.controller';
+const rcontroller = new ReceiverController();
 
 export default class DataService {
   // DataService Singleton
@@ -177,7 +178,7 @@ export default class DataService {
       // All museum data is loaded 
 
       // set the cron schedule
-     //// rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
+      //// rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
 
       // this.callback(this.callbackSelf);
       this.dataLoaded = true;
@@ -617,7 +618,7 @@ export default class DataService {
       ],
     }, { headers: { authorization: `Bearer ${slackToken}` } });
     
-    console.log('Done sent Iamge to Slack', res.data);
+    console.log('Done sent Imqge to Slack', res.data);
   }
 
   clearImageData() {
@@ -644,5 +645,3 @@ export default class DataService {
     // .then(() => {that.loadData();})
   }
 }
-
-// module.exports = DataService;
