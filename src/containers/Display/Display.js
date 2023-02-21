@@ -3,7 +3,6 @@ import { Button, Table, Container } from "reactstrap";
 import { socket } from "../../global/header";
 import FrameMat from "../../components/FrameMat/FrameMat";
 import ArtInfo from "../../components/ArtInfo/ArtInfo";
-import { DataConsumer, DataContext } from '../../data.context';
 
 // Styles
 import './style.scss';
