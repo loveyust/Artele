@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "Artele",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -47,7 +47,7 @@
   ],
   "devDependencies": {
     "install": "^0.13.0",
-    "npm": "^7.17.0",
+    "npm": "^9.3.1",
     "postcss": "^7.0.36",
     "postcss-loader": "^3.0.0"
   }
