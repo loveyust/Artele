@@ -35,9 +35,9 @@ Experience Architecture:
 Project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ### `yarn install`
-Installs dependancies and moduals
+Installs dependancies and modules
 
-### `npm run dev`
+### `npm run start`
 
 Runs the app in the development mode and launches the socket server<br>
 - Open [http://localhost:3000](http://localhost:3000) to view the mobile interface in the browser.

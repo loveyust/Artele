@@ -43,8 +43,8 @@ const data = new DataService();
 data.setCallback(callback);
 
 // Receiver Controller
-// import ReceiverController from './receiver.controller.js';
-// const rcontroller = new ReceiverController();
+import ReceiverController from './receiver.controller.js';
+const rcontroller = new ReceiverController();
 
 io.on("connection", socket => {
   console.log("New client connected" + socket.id);

@@ -18,7 +18,7 @@ process.on('unhandledRejection', function(err) {
     // sendInTheCalvary(err);
 });
 
-class ReceiverController {
+export default class ReceiverController {
   // Receiver Controller Singleton
   constructor() {
     if (ReceiverController.instance) {
@@ -228,5 +228,3 @@ class ReceiverController {
       */
   }
 }
-
-module.exports = ReceiverController;
