@@ -1,10 +1,7 @@
-// const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 import { XMLHttpRequest } from 'xmlhttprequest';
 var requestImage = new XMLHttpRequest();
-// const environment = require('../environment.js');
 import environment from '../environment.js';
 // Airtable
-// const Airtable = require("airtable");
 import Airtable from 'airtable';
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
 import fetch from 'node-fetch'; // const fetch = require("node-fetch"); 
