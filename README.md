@@ -34,6 +34,8 @@ Experience Architecture:
 
 Project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### `yarn install`
+Installs dependancies and moduals
 
 ### `npm run dev`
 
