@@ -29,11 +29,11 @@ class FrameMat extends Component {
   }
 
   onImgLoad({target:img}) {
-    console.log('onImgLoad: ' + this.props.data.matColor);
-    var imgScale = (1080.0 - (this.minMat * 2)) / img.height;
-    var matWidth = (this.screenWidth - (imgScale * img.width)) / 2;
-    matWidth = (matWidth < this.minMat) ? this.minMat : matWidth;
-    this.setState({matStyle: {position: 'absolute', top: this.minMat, bottom: this.minMat, left: matWidth, right: matWidth}, fadeClass: "fade fade-out", matColor: {background: this.props.data.matColor}});
+    console.log('onImgLoad: ' + this.props.data.matColor + ' ' + img.height + ' ' + img.width);
+    var imgScale = (this.screenWidth - (this.minMat * 2)) / img.width;
+    var matWidth = (imgScale > 1.0) ? (this.screenWidth - img.width) / 2 : this.minMat;
+    var matHeight = (imgScale <= 1.0) ? (1080.0 - (imgScale * img.height)) / 2 : this.minMat;
+    this.setState({matStyle: {position: 'absolute', top: matHeight, bottom: matHeight, left: matWidth, right: matWidth}, fadeClass: "fade fade-out", matColor: {background: this.props.data.matColor}});
     this.props.callback();
   }
 

@@ -74,6 +74,7 @@ class Display extends Component {
 
   onImageData = imageData => {
     console.log("onImageData: " + JSON.stringify(imageData));
+    // Wide Image Test imageData.image = 'https://images.metmuseum.org/CRDImages/aa/web-large/sfrl32.75.111_89269.jpg?'+Date.now();
     this.imageData = imageData;
     this.fade();
   }
