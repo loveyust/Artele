@@ -1,17 +1,17 @@
-const fs = require('fs');
+// import fs from 'fs'; // const fs = require('fs');
 
 // Onkyo.js
-const Promise = require('bluebird');
-const {OnkyoDiscover, Onkyo} = require('onkyo.js');
+import Promise from 'bluebird'; // const Promise = require('bluebird');
+import {OnkyoDiscover, Onkyo} from 'onkyo.js'; // const {OnkyoDiscover, Onkyo} = require('onkyo.js');
 const onkyo = new Onkyo({ip: '192.168.1.104'});
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 
 // cec-controller for the TV
-var CecController = require('cec-controller');
+import CecController from 'cec-controller'; // var CecController = require('cec-controller');
 
 // Scheduling
-const cron = require('node-cron');
+import cron from 'node-cron'; // const cron = require('node-cron');
 
 process.on('unhandledRejection', function(err) {
     console.log('GLOBAL ERROR CATCH: ' + err);

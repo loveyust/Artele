@@ -1,6 +1,7 @@
 // socket server
 import express from 'express';
 import http from 'http';
+
 // our localhost port
 const port = process.env.PORT || 3001;
 const app = express();
@@ -112,5 +113,4 @@ io.on("connection", socket => {
 });
 
 app.use(express.static("build"));
-
 httpServer.listen(port, () => console.log(`Listening on port ${port}`));

@@ -12,7 +12,7 @@ import axios from 'axios';
 const slackToken = environment.production.slack;
 
 // Receiver Controller
-import ReceiverController from './receiver.controller';
+import ReceiverController from './receiver.controller.js';
 const rcontroller = new ReceiverController();
 
 export default class DataService {
