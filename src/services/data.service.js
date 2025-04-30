@@ -6,7 +6,9 @@ import environment from '../environment.js';
 import Airtable from 'airtable';
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
 import fetch from 'node-fetch';
-const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
+//const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
+const base = new Airtable({apiKey: environment.production.AIRTABLE_PERSONAL_ACCESS_TOKEN}).base(environment.production.airtableBase);
+
 import ColorThief from 'colorthief';
 import axios from 'axios';
 const slackToken = environment.production.slack;
@@ -85,6 +87,7 @@ export default class DataService {
 
   // Load Museum API data
   loadAirTableBase (baseName){
+    console.log('loadAirTableBase: ' + baseName);
     var that = this;
     base(baseName).select({
       // Selecting the first 3 records in Grid view:
@@ -122,7 +125,7 @@ export default class DataService {
       } else if (baseName === 'ArtSources') {
         // This function (`page`) will get called for each page of records.
         var newState = records.map(r => { 
-          let rData = JSON.stringify(r).substr(0, 500) + "\u2026";
+          let rData = JSON.stringify(r).substring(0, 500) + "\u2026";
           console.log('Load ArtSources: ' + rData);
           return { 
             id: r.id,
@@ -146,6 +149,7 @@ export default class DataService {
         that.airTableData = newState;
         that.numMuseums = that.airTableData.length;
         that.loadMuseum(that.curMuseumNum);
+        console.log('loadAirTableBase: ' + that.airTableData.length);
       }
     }, function done(err) {
         if (err) { console.error(err); return; }
