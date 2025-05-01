@@ -1,3 +1,5 @@
+# Add to autostart by creating/editing /home/pi/.config/autostart/kiosk.desktop:
+
 [Desktop Entry]
 Type=Application
 Name=Kiosk
