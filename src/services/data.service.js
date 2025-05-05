@@ -35,8 +35,9 @@ export default class DataService {
     return this;
   }
 
-  setCallback(callback) {
+  setCallback(callback, dataLoadedCallback) {
     this.imageCallback = callback;
+    this.dataLoadedCallback = dataLoadedCallback;
   }
 
   registerDataLoadCallback(self, callback) {
@@ -120,13 +121,14 @@ export default class DataService {
         });
         if (settings.length > 0) {
           that.settings = settings[0];
+          that.dataLoadedCallback();
         }
         that.loadAirTableBase('ArtSources');
       } else if (baseName === 'ArtSources') {
         // This function (`page`) will get called for each page of records.
         var newState = records.map(r => { 
           let rData = JSON.stringify(r).substring(0, 500) + "\u2026";
-          console.log('Load ArtSources: ' + rData);
+          // console.log('Load ArtSources: ' + rData);
           return { 
             id: r.id,
             name: r.get('Name'), 
@@ -149,7 +151,7 @@ export default class DataService {
         that.airTableData = newState;
         that.numMuseums = that.airTableData.length;
         that.loadMuseum(that.curMuseumNum);
-        console.log('loadAirTableBase: ' + that.airTableData.length);
+        // console.log('loadAirTableBase: ' + that.airTableData.length);
       }
     }, function done(err) {
         if (err) { console.error(err); return; }

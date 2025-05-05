@@ -3,7 +3,7 @@
 // Onkyo.js
 import Promise from 'bluebird'; // const Promise = require('bluebird');
 import {OnkyoDiscover, Onkyo} from 'onkyo.js'; // const {OnkyoDiscover, Onkyo} = require('onkyo.js');
-const onkyo = new Onkyo({ip: '192.168.1.104'});
+const onkyo = new Onkyo({ip: '192.168.50.97'});
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 

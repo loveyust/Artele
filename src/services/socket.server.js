@@ -33,6 +33,11 @@ const io = new Server(httpServer, {
   }  
 });
 
+function dataLoadedCallback () {
+  console.log("dataLoaded Callback");
+  schedulerController.setSchedule(data.settings);
+}
+
 function callback () {
   console.log("socket Send Image");
   io.sockets.emit("send_random_image", data.curImageObject);
@@ -41,7 +46,24 @@ function callback () {
 // Data Service
 import DataService from './data.service.js';
 const data = new DataService();
-data.setCallback(callback);
+data.setCallback(callback, dataLoadedCallback);
+
+// Schedule Controller
+import ScheduleController from './scheduler.controller.js';
+//const SchedulerController = require('./src/SchedulerController');
+// import ScheduleController from './schedule.controller.js';
+
+const setAutoPlayFromScheduler = (auto) => {
+  console.log('setAutoPlayFromScheduler: ' + auto);
+  // If false show static image http://localhost:3000/window/
+  /* state.isAutoplay = auto;
+  io.emit('switch.state', state);
+  checkTimer();
+  if (!auto) {
+    io.emit('switch.scene', '/window/content/idle');
+  } */
+}
+const schedulerController = new ScheduleController((auto) => {setAutoPlayFromScheduler(auto)});
 
 // Receiver Controller
 import ReceiverController from './receiver.controller.js';
