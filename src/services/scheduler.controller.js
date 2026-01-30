@@ -5,6 +5,20 @@ const platform = os.platform();
 // const socketClient = require('./services/socket-client');
 // socketClient = new SocketClient({ type: 'scheduler' });
 
+// Receiver Controller
+import ReceiverController from './receiver.controller.js';
+// Create receiver controller instance
+const receiverController = new ReceiverController();
+receiverController.testReceiverControl();
+// Turn on receiver
+// await receiverController.turnOnReceiver();
+// Set input to GAME
+// await receiverController.setInputSource('GAME');
+// Check status
+// const isOn = await receiverController.isReceiverOn();
+// Turn off receiver
+// await receiverController.turnOffReceiver();
+
 export default class ScheduleController {
   constructor(autoplayCallback) {
     this.cmsSettings = null;
@@ -26,11 +40,6 @@ export default class ScheduleController {
         "weekend": `${newSettings.weekend.amOn}:0`
       },
       {
-        "name": "sleepMode",
-        "weekday": `${newSettings.weekday.pmOff}:0`,
-        "weekend": `${newSettings.weekend.pmOff}:0`
-      },
-      {
         "name": "workStart",
         "weekday": `${newSettings.weekday.amOff}:0`,
         "weekend": `${newSettings.weekend.amOff}:0`, // "NaN:NaN"
@@ -41,10 +50,15 @@ export default class ScheduleController {
         "weekend": `${newSettings.weekend.pmOn}:0`
       },
       {
+        "name": "sleepMode",
+        "weekday": `${newSettings.weekday.pmOff}:0`,
+        "weekend": `${newSettings.weekend.pmOff}:0`
+      }
+      /* {
         "name": "artMode",
         "weekday": `${newSettings.weekday.pmOn}:0`,
         "weekend": `${newSettings.weekend.pmOn}:0`
-      }
+      } */
     ];
   }
 
@@ -142,42 +156,21 @@ export default class ScheduleController {
     } 
   }
 
-  screenSleep () {
-    if (platform === "win32") { // Windows
-      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOff.bat';
-      /* exec(`cmd.exe /c "${batchFilePath}"`, (error, stdout, stderr) => {
-          if (error) { console.error(`exec error: ${error}`); return; }
-          if (stderr) { console.log(`stderr: ${stderr}`); return; }
-          console.log(`stdout: ${stdout}`);
-      }); */
-    }
-  }
-
-  screenWake () {
-    if (platform === "win32") { // Windows
-      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOn.bat';
-      /* exec(batchFilePath, (error, stdout, stderr) => {
-          if (error) { console.error(`exec error: ${error}`); return; }
-          if (stderr) { console.log(`stderr: ${stderr}`); return; }
-          console.log(`stdout: ${stdout}`);
-      }); */
-    }
-  }
-
   wakeUp () {
     console.log("wakeUp: Screen on and start the feed");
     // Wake screen
     this.screenWake();
-    // Turn off Autoplay (turn on static image)
+    // Turn on Autoplay on the socket server 
     this.autoplayCallback(false);
+    
     // Turn on feed
-    this.startStream();
+    // this.startStream();
   };
   
   sleepMode () {
     console.log("sleepMode: put the app and PC to sleep");
     // Turn off feed
-    this.endStream();
+    // this.endStream();
     // Turn off Autoplay (turn on static image)
     this.autoplayCallback(false);
     // Turn off screen
@@ -187,7 +180,7 @@ export default class ScheduleController {
   workStart () {
     console.log("workStart: Start of work day go to sleep");
     // Turn off feed
-    this.endStream();
+    // this.endStream();
     // Turn off Autoplay (turn on static image)
     this.autoplayCallback(false);
     // Turn off screen
@@ -200,7 +193,7 @@ export default class ScheduleController {
     this.wakeUp();
   };
   
-  artMode () {
+  /* artMode () {
     console.log("artMode: End feed and start art mode for the evening");
     // Turn on screen
     this.screenWake();
@@ -208,7 +201,33 @@ export default class ScheduleController {
     this.endStream();
     // Turn on Autoplay
     this.autoplayCallback(true);
-  };
+  }; */
+
+  // Receiver Controller On 
+  screenWake () {
+
+
+    /* if (platform === "win32") { // Windows
+      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOn.bat';
+      exec(batchFilePath, (error, stdout, stderr) => {
+          if (error) { console.error(`exec error: ${error}`); return; }
+          if (stderr) { console.log(`stderr: ${stderr}`); return; }
+          console.log(`stdout: ${stdout}`);
+      }); 
+    }*/
+  }
+
+  // Receiver Controller Off
+  screenSleep () {
+    /* if (platform === "win32") { // Windows
+      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOff.bat';
+      exec(`cmd.exe /c "${batchFilePath}"`, (error, stdout, stderr) => {
+          if (error) { console.error(`exec error: ${error}`); return; }
+          if (stderr) { console.log(`stderr: ${stderr}`); return; }
+          console.log(`stdout: ${stdout}`);
+      }); 
+    }*/
+  }
   
   startStream () {
     // ./zsh - https://phoenixnap.com/kb/set-environment-variable-mac

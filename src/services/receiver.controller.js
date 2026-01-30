@@ -27,12 +27,33 @@ export default class ReceiverController {
     ReceiverController.instance = this;
   
     console.log('ReceiverController constructor');
-    // this.connect();
-    this.initializeSchedule();
+    
+    // Initialize Onkyo connection with error handling
+    this.initializeOnkyoConnection();
+    
+    // this.connect(); // CEC TV connection
+    // this.initializeSchedule();
     return this;
   }
 
+  initializeOnkyoConnection() {
+    // Set up error handling for Onkyo connection
+    onkyo.on('error', (errMsg) => {
+      console.log('Onkyo connection error:', errMsg);
+    });
+
+    onkyo.on('connected', () => {
+      console.log('Onkyo receiver connected successfully');
+    });
+
+    onkyo.on('disconnected', () => {
+      console.log('Onkyo receiver disconnected');
+    });
+  }
+
   initializeSchedule() {
+
+    /* 
     // Weekday
     this.weekdayAmOn = cron.schedule('* * * * * *', () => {});
     this.weekdayAmOff = cron.schedule('* * * * * *', () => {});
@@ -55,9 +76,10 @@ export default class ReceiverController {
     this.weekendAmOn.stop();
     this.weekendAmOff.stop();
     this.weekendPmOn.stop();
-    this.weekendPmOff.stop();
+    this.weekendPmOff.stop(); */
   }
 
+  /* 
   setScheduleCron(weekday, weekend) {
     console.log('ReceiverController setScheduleCron: ' + weekday.amOn);
 
@@ -68,23 +90,117 @@ export default class ReceiverController {
     this.weekdayPmOn = cron.schedule('0 0 ' + weekday.pmOn + ' * * 1-5', () => { this.turnOnReceiver(); });
     this.weekdayPmOff = cron.schedule('0 0 ' + weekday.pmOff + ' * * 1-5', () => { this.turnOffReceiver(); });
 
-    // Weekend - test for every 10 secs: */10 * * * * 6-7
-    // this.weekendAmOn = cron.schedule('*/10 * * * * 6-7', () => { this.turnOnReceiver(); });
+    // Weekend - test for every 10 secs:  10 * * * * 6-7
+    // this.weekendAmOn = cron.schedule('10 * * * * 6-7', () => { this.turnOnReceiver(); });
     this.weekendAmOn = cron.schedule('0 0 ' + weekend.amOn + ' * * 6-7', () => { this.turnOnReceiver(); });
     this.weekendAmOff = cron.schedule('0 0 ' + weekend.amOff + ' * * 6-7', () => { this.turnOffReceiver(); });
     this.weekendPmOn = cron.schedule('0 0 ' + weekend.pmOn + ' * * 6-7', () => { this.turnOnReceiver(); });
     this.weekendPmOff = cron.schedule('0 0 ' + weekend.pmOff + ' * * 6-7', () => { this.turnOffReceiver(); });
   }
-
+ */
   turnOnReceiver() {
     console.log('ReceiverController - turnOn');
     // Turn on the receiver
-    // restart the timer to send a new image to the display, image timer should only run when the system is on
-
+    return onkyo.pwrOn()
+      .then(() => {
+        console.log('Onkyo receiver turned ON successfully');
+        // Optional: Set a specific input source after turning on
+        // return onkyo.setSource('GAME'); // or 'STREAM', 'TV', etc.
+      })
+      .catch((error) => {
+        console.error('Error turning ON Onkyo receiver:', error);
+        throw error;
+      });
   }
 
   turnOffReceiver() {
     console.log('ReceiverController - turnOff');
+    // Turn off the receiver
+    return onkyo.pwrOff()
+      .then(() => {
+        console.log('Onkyo receiver turned OFF successfully');
+      })
+      .catch((error) => {
+        console.error('Error turning OFF Onkyo receiver:', error);
+        throw error;
+      });
+  }
+
+  // Check if receiver is on
+  isReceiverOn() {
+    return onkyo.isOn()
+      .then((isOn) => {
+        console.log(`Receiver is ${isOn ? 'ON' : 'OFF'}`);
+        return isOn;
+      })
+      .catch((error) => {
+        console.error('Error checking receiver status:', error);
+        throw error;
+      });
+  }
+
+  // Get current input source
+  getCurrentSource() {
+    return onkyo.getSource()
+      .then((source) => {
+        console.log(`Current source: ${source}`);
+        return source;
+      })
+      .catch((error) => {
+        console.error('Error getting current source:', error);
+        throw error;
+      });
+  }
+
+  // Set input source (e.g., 'GAME', 'STREAM', 'TV', 'BD/DVD', etc.)
+  setInputSource(source) {
+    console.log(`Setting input source to: ${source}`);
+    return onkyo.setSource(source)
+      .then(() => {
+        console.log(`Input source set to ${source} successfully`);
+      })
+      .catch((error) => {
+        console.error(`Error setting input source to ${source}:`, error);
+        throw error;
+      });
+  }
+
+  // Volume control methods
+  volumeUp() {
+    return onkyo.volUp()
+      .then(() => console.log('Volume increased'))
+      .catch((error) => console.error('Error increasing volume:', error));
+  }
+
+  volumeDown() {
+    return onkyo.volDown()
+      .then(() => console.log('Volume decreased'))
+      .catch((error) => console.error('Error decreasing volume:', error));
+  }
+
+  mute() {
+    return onkyo.mute()
+      .then(() => console.log('Receiver muted'))
+      .catch((error) => console.error('Error muting receiver:', error));
+  }
+
+  unmute() {
+    return onkyo.unMute()
+      .then(() => console.log('Receiver unmuted'))
+      .catch((error) => console.error('Error unmuting receiver:', error));
+  }
+
+  // Get complete device state
+  getReceiverState() {
+    return onkyo.getDeviceState()
+      .then((state) => {
+        console.log('Receiver state:', state);
+        return state;
+      })
+      .catch((error) => {
+        console.error('Error getting receiver state:', error);
+        throw error;
+      });
   }
 
   connect () {
@@ -226,5 +342,38 @@ export default class ReceiverController {
           process.exit();
       });
       */
+  }
+
+  // Example method showing how to use the receiver controller
+  async testReceiverControl() {
+    try {
+      console.log('Testing receiver control...');
+      
+      // Check current state
+      const state = await this.getReceiverState();
+      
+      // Check if receiver is on
+      const isOn = await this.isReceiverOn();
+      
+      if (!isOn) {
+        // Turn on receiver
+        await this.turnOnReceiver();
+        
+        // Wait a moment for receiver to fully power on
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Set input source to GAME (or whatever you prefer)
+        await this.setInputSource('GAME');
+      } else {
+        console.log('Receiver is already on');
+        
+        // Get current source
+        await this.getCurrentSource();
+      }
+      
+      console.log('Receiver control test completed successfully');
+    } catch (error) {
+      console.error('Receiver control test failed:', error);
+    }
   }
 }

@@ -7,7 +7,7 @@ App to display art museum content from various art museum and other content and 
 Experience Architecture:
 - React app: Runs the display interface that runs and a mobile interface for updating and saving content. They are connected with a socket server. 
 - AirTable CMS: Stores a growing list of museum and image APIs that are dynamically loaded into the app and persistent settings like the amount of time each image is present and which APIs are active
-- Raspberry Pi 4: Runs the app in full screen and is connected to home A/V reciever for display on the TV. The RPi has scripts to communicate with an Onkyo TX-NR797 receiver in order to self select itself as the source and turn on the TV and receiver on a pre-determined and automated schedule. 
+- Raspberry Pi 4: Runs the app in full screen and is connected to home A/V reciever for display on the TV. The RPi has scripts to communicate with an Onkyo TX-NR797 receiver in order to self select itself as the source and turn on the TV and receiver on a pre-determined and automated schedule.  
 
 
 ## React App Folder Structure:

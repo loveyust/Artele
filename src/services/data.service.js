@@ -13,9 +13,6 @@ import ColorThief from 'colorthief';
 import axios from 'axios';
 const slackToken = environment.production.slack;
 
-// Receiver Controller
-import ReceiverController from './receiver.controller.js';
-const rcontroller = new ReceiverController();
 
 export default class DataService {
   // DataService Singleton
@@ -572,7 +569,7 @@ export default class DataService {
       }
     }).then(() => {
       // set the cron schedule
-      rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
+      // rcontroller.setScheduleCron(this.settings.weekday, this.settings.weekend);
     });
   }
 
