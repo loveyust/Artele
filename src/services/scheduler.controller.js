@@ -10,6 +10,8 @@ import ReceiverController from './receiver.controller.js';
 // Create receiver controller instance
 const receiverController = new ReceiverController();
 receiverController.testReceiverControl();
+// Turn on just the TV
+await receiverController.turnOnSystemViaReceiver();
 // Turn on receiver
 // await receiverController.turnOnReceiver();
 // Set input to GAME

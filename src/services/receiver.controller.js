@@ -39,7 +39,12 @@ export default class ReceiverController {
   initializeOnkyoConnection() {
     // Set up error handling for Onkyo connection
     onkyo.on('error', (errMsg) => {
-      console.log('Onkyo connection error:', errMsg);
+      // Filter out non-critical unknown command errors
+      if (errMsg.includes('Unknown data:')) {
+        console.log('Onkyo unknown command (non-critical):', errMsg);
+      } else {
+        console.log('Onkyo connection error:', errMsg);
+      }
     });
 
     onkyo.on('connected', () => {
@@ -204,10 +209,16 @@ export default class ReceiverController {
   }
 
   connect () {
-    this.cecCtl = new CecController();
-    // Connect to the TV
-    this.cecCtl.on('ready', this.readyHandler.bind(this));
-    this.cecCtl.on('error', this.cecError.bind(this));
+    console.log('Connecting to TV via CEC...');
+    return this.initializeTVConnection()
+      .then(() => {
+        console.log('TV connection established');
+      })
+      .catch((error) => {
+        console.error('Failed to connect to TV:', error);
+        // Fallback to receiver control if TV connection fails
+        this.changeReceiverInput();
+      });
   }
 
   cecError(err) {
@@ -374,6 +385,268 @@ export default class ReceiverController {
       console.log('Receiver control test completed successfully');
     } catch (error) {
       console.error('Receiver control test failed:', error);
+    }
+  }
+
+  // TV Control Methods using CEC
+  initializeTVConnection() {
+    return new Promise((resolve, reject) => {
+      if (this.cecCtl) {
+        resolve(this.cecCtl);
+        return;
+      }
+
+      this.cecCtl = new CecController();
+      
+      this.cecCtl.on('ready', (controller) => {
+        console.log('CEC TV controller ready');
+        this.tvController = controller;
+        resolve(controller);
+      });
+
+      this.cecCtl.on('error', (err) => {
+        console.error('CEC TV controller error:', err);
+        reject(err);
+      });
+    });
+  }
+
+  async turnOnTV() {
+    try {
+      console.log('Turning ON TV...');
+      
+      if (!this.cecCtl) {
+        await this.initializeTVConnection();
+      }
+
+      // Wait for controller to be ready
+      if (!this.tvController) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      if (this.tvController && this.tvController.dev0) {
+        if (this.tvController.dev0.powerStatus === 'standby') {
+          await this.tvController.dev0.turnOn();
+          console.log('TV turned ON successfully');
+          return true;
+        } else {
+          console.log('TV is already ON');
+          return true;
+        }
+      } else {
+        throw new Error('TV controller not available');
+      }
+    } catch (error) {
+      console.error('Error turning ON TV:', error);
+      throw error;
+    }
+  }
+
+  async turnOffTV() {
+    try {
+      console.log('Turning OFF TV...');
+      
+      if (!this.cecCtl) {
+        await this.initializeTVConnection();
+      }
+
+      // Wait for controller to be ready
+      if (!this.tvController) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      if (this.tvController && this.tvController.dev0) {
+        await this.tvController.dev0.turnOff();
+        console.log('TV turned OFF successfully');
+        return true;
+      } else {
+        throw new Error('TV controller not available');
+      }
+    } catch (error) {
+      console.error('Error turning OFF TV:', error);
+      throw error;
+    }
+  }
+
+  async getTVStatus() {
+    try {
+      if (!this.cecCtl) {
+        await this.initializeTVConnection();
+      }
+
+      // Wait for controller to be ready
+      if (!this.tvController) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      if (this.tvController && this.tvController.dev0) {
+        const status = this.tvController.dev0.powerStatus;
+        console.log(`TV Status: ${status}`);
+        return status; // 'on' or 'standby'
+      } else {
+        throw new Error('TV controller not available');
+      }
+    } catch (error) {
+      console.error('Error getting TV status:', error);
+      throw error;
+    }
+  }
+
+  // Combined method to turn on both TV and Receiver
+  async turnOnSystem() {
+    try {
+      console.log('Turning ON complete system (TV + Receiver)...');
+      
+      // Turn on TV first
+      await this.turnOnTV();
+      
+      // Wait a moment for TV to fully power on
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Turn on receiver
+      await this.turnOnReceiver();
+      
+      // Wait for receiver to power on
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Set receiver input source
+      await this.setInputSource('GAME'); // or whatever input you prefer
+      
+      console.log('Complete system turned ON successfully');
+    } catch (error) {
+      console.error('Error turning ON system:', error);
+      throw error;
+    }
+  }
+
+  // Combined method to turn off both TV and Receiver
+  async turnOffSystem() {
+    try {
+      console.log('Turning OFF complete system (TV + Receiver)...');
+      
+      // Turn off receiver first
+      await this.turnOffReceiver();
+      
+      // Wait a moment
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Turn off TV
+      await this.turnOffTV();
+      
+      console.log('Complete system turned OFF successfully');
+    } catch (error) {
+      console.error('Error turning OFF system:', error);
+      throw error;
+    }
+  }
+
+  // TV Control Methods using Onkyo Receiver CEC (via IP)
+  async turnOnTVViaReceiver() {
+    try {
+      console.log('Turning ON TV via Onkyo receiver CEC...');
+      
+      // First turn on the receiver (this often triggers CEC to turn on TV)
+      await this.turnOnReceiver();
+      
+      // Wait for receiver to fully power on
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Try to send CEC power on command through receiver
+      // Many Onkyo receivers support this via raw commands
+      try {
+        await this.sendOnkyoCommand('CEC', 'PWR01'); // CEC Power On command
+        console.log('CEC TV power on command sent via receiver');
+      } catch (cecError) {
+        console.log('Direct CEC command not available, using receiver power-on behavior');
+        // Many receivers automatically turn on connected TV when they power on
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error turning ON TV via receiver:', error);
+      throw error;
+    }
+  }
+
+  async turnOffTVViaReceiver() {
+    try {
+      console.log('Turning OFF TV via Onkyo receiver CEC...');
+      
+      // Try to send CEC power off command through receiver
+      try {
+        await this.sendOnkyoCommand('CEC', 'PWR00'); // CEC Power Off command
+        console.log('CEC TV power off command sent via receiver');
+      } catch (cecError) {
+        console.log('Direct CEC command not available');
+      }
+      
+      // Wait a moment
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Turn off receiver (this often triggers CEC to turn off TV)
+      await this.turnOffReceiver();
+      
+      return true;
+    } catch (error) {
+      console.error('Error turning OFF TV via receiver:', error);
+      throw error;
+    }
+  }
+
+  // Generic method to send raw commands to Onkyo receiver
+  async sendOnkyoCommand(category, command) {
+    return new Promise((resolve, reject) => {
+      // This is a generic command sender - may need adjustment based on onkyo.js capabilities
+      try {
+        // Try to send raw command if supported
+        if (onkyo.sendCommand) {
+          onkyo.sendCommand(category, command)
+            .then(resolve)
+            .catch(reject);
+        } else {
+          // Fallback - command not supported
+          reject(new Error('Raw command sending not supported'));
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  // Improved system control using receiver CEC
+  async turnOnSystemViaReceiver() {
+    try {
+      console.log('Turning ON complete system via receiver CEC...');
+      
+      // Turn on receiver first (this should trigger TV via CEC)
+      await this.turnOnReceiver();
+      
+      // Wait for both receiver and TV to power on
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Set receiver input source
+      await this.setInputSource('GAME'); // or whatever input you prefer
+      
+      console.log('Complete system turned ON via receiver CEC');
+      return true;
+    } catch (error) {
+      console.error('Error turning ON system via receiver:', error);
+      throw error;
+    }
+  }
+
+  async turnOffSystemViaReceiver() {
+    try {
+      console.log('Turning OFF complete system via receiver CEC...');
+      
+      // Turn off receiver (this should trigger TV off via CEC)
+      await this.turnOffReceiver();
+      
+      console.log('Complete system turned OFF via receiver CEC');
+      return true;
+    } catch (error) {
+      console.error('Error turning OFF system via receiver:', error);
+      throw error;
     }
   }
 }
