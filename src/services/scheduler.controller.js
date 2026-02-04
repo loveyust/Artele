@@ -5,27 +5,29 @@ const platform = os.platform();
 // const socketClient = require('./services/socket-client');
 // socketClient = new SocketClient({ type: 'scheduler' });
 
-// Receiver Controller
+// Receiver Controller - lazy initialization
 import ReceiverController from './receiver.controller.js';
-// Create receiver controller instance
-const receiverController = new ReceiverController();
-receiverController.testReceiverControl();
-// Turn on just the TV
-await receiverController.turnOnSystemViaReceiver();
-// Turn on receiver
-// await receiverController.turnOnReceiver();
-// Set input to GAME
-// await receiverController.setInputSource('GAME');
-// Check status
-// const isOn = await receiverController.isReceiverOn();
-// Turn off receiver
-// await receiverController.turnOffReceiver();
 
 export default class ScheduleController {
   constructor(autoplayCallback) {
     this.cmsSettings = null;
     this.autoplayCallback = autoplayCallback;
+    this.receiverController = null;
     console.log("SchedulerController - constructor");
+
+    // Initialize receiver controller (lazy, won't block if disabled)
+    this.initializeReceiver();
+  }
+
+  async initializeReceiver() {
+    try {
+      this.receiverController = new ReceiverController();
+      // Only test/turn on if receiver is enabled (checked inside these methods)
+      await this.receiverController.testReceiverControl();
+      await this.receiverController.turnOnSystemViaReceiver();
+    } catch (error) {
+      console.error('Receiver initialization failed (non-fatal):', error.message);
+    }
   }
 
   clearSchedules () {
@@ -99,7 +101,14 @@ export default class ScheduleController {
     }
 
     // Now that we know what was already scheduled we can go to that mode
-    this[currentMode.name]();
+    if (currentMode && currentMode.name && typeof this[currentMode.name] === 'function') {
+      console.log(`findCurrentMode: Activating mode '${currentMode.name}'`);
+      this[currentMode.name]();
+    } else {
+      // If no mode matches (before first schedule of the day), default to sleepMode
+      console.log('findCurrentMode: No active mode found, defaulting to sleepMode');
+      this.sleepMode();
+    }
   }
 
   setSchedule (cmsSettings) {
@@ -205,30 +214,28 @@ export default class ScheduleController {
     this.autoplayCallback(true);
   }; */
 
-  // Receiver Controller On 
-  screenWake () {
-
-
-    /* if (platform === "win32") { // Windows
-      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOn.bat';
-      exec(batchFilePath, (error, stdout, stderr) => {
-          if (error) { console.error(`exec error: ${error}`); return; }
-          if (stderr) { console.log(`stderr: ${stderr}`); return; }
-          console.log(`stdout: ${stdout}`);
-      }); 
-    }*/
+  // Receiver Controller On
+  async screenWake () {
+    console.log('screenWake: Turning on system via receiver');
+    if (this.receiverController) {
+      try {
+        await this.receiverController.turnOnSystemViaReceiver();
+      } catch (error) {
+        console.error('screenWake failed:', error.message);
+      }
+    }
   }
 
   // Receiver Controller Off
-  screenSleep () {
-    /* if (platform === "win32") { // Windows
-      const batchFilePath = 'C:\\WindowProject\\Code\\window-project\\utils\\windowsOff.bat';
-      exec(`cmd.exe /c "${batchFilePath}"`, (error, stdout, stderr) => {
-          if (error) { console.error(`exec error: ${error}`); return; }
-          if (stderr) { console.log(`stderr: ${stderr}`); return; }
-          console.log(`stdout: ${stdout}`);
-      }); 
-    }*/
+  async screenSleep () {
+    console.log('screenSleep: Turning off system via receiver');
+    if (this.receiverController) {
+      try {
+        await this.receiverController.turnOffSystemViaReceiver();
+      } catch (error) {
+        console.error('screenSleep failed:', error.message);
+      }
+    }
   }
   
   startStream () {

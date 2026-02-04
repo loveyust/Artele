@@ -111,7 +111,7 @@ io.on("connection", socket => {
   socket.on("request_set_schedule", (scheduleObj) => {
     console.log('socket request_set_schedule: ' + JSON.stringify(scheduleObj));
     data.setSchedule(scheduleObj.day, scheduleObj.data);
-    rcontroller.setScheduleCron(scheduleObj.day, scheduleObj.data);
+    // Schedule updates are handled by the ScheduleController via dataLoadedCallback
   });
 
   socket.on("request_set_paused", (paused) => {
