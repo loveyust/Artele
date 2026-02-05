@@ -7,24 +7,12 @@ const platform = os.platform();
 
 // Receiver Controller
 import ReceiverController from './receiver.controller.js';
-// Create receiver controller instance
-const receiverController = new ReceiverController();
-receiverController.testReceiverControl();
-// Turn on just the TV
-await receiverController.turnOnSystemViaReceiver();
-// Turn on receiver
-// await receiverController.turnOnReceiver();
-// Set input to GAME
-// await receiverController.setInputSource('GAME');
-// Check status
-// const isOn = await receiverController.isReceiverOn();
-// Turn off receiver
-// await receiverController.turnOffReceiver();
 
 export default class ScheduleController {
   constructor(autoplayCallback) {
     this.cmsSettings = null;
     this.autoplayCallback = autoplayCallback;
+    this.receiverController = new ReceiverController();
     console.log("SchedulerController - constructor");
   }
 
@@ -99,6 +87,10 @@ export default class ScheduleController {
     }
 
     // Now that we know what was already scheduled we can go to that mode
+    if (!currentMode || !currentMode.name || typeof this[currentMode.name] !== 'function') {
+      console.warn('SchedulerController.findCurrentMode: no current mode found');
+      return;
+    }
     this[currentMode.name]();
   }
 

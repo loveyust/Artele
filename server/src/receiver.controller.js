@@ -2,8 +2,8 @@
 
 // Onkyo.js
 import Promise from 'bluebird'; // const Promise = require('bluebird');
-import {OnkyoDiscover, Onkyo} from 'onkyo.js'; // const {OnkyoDiscover, Onkyo} = require('onkyo.js');
-const onkyo = new Onkyo({ip: '192.168.50.97'});
+import { OnkyoDiscover, Onkyo } from 'onkyo.js'; // const {OnkyoDiscover, Onkyo} = require('onkyo.js');
+import { config } from './config.js';
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 
@@ -27,7 +27,13 @@ export default class ReceiverController {
     ReceiverController.instance = this;
   
     console.log('ReceiverController constructor');
-    
+    this.enabled = config.receiver.enabled && !!config.receiver.ip;
+    if (!this.enabled) {
+      console.log('ReceiverController disabled or missing RECEIVER_IP');
+      return this;
+    }
+
+    this.onkyo = new Onkyo({ ip: config.receiver.ip });
     // Initialize Onkyo connection with error handling
     this.initializeOnkyoConnection();
     
@@ -38,7 +44,7 @@ export default class ReceiverController {
 
   initializeOnkyoConnection() {
     // Set up error handling for Onkyo connection
-    onkyo.on('error', (errMsg) => {
+    this.onkyo.on('error', (errMsg) => {
       // Filter out non-critical unknown command errors
       if (errMsg.includes('Unknown data:')) {
         console.log('Onkyo unknown command (non-critical):', errMsg);
@@ -47,11 +53,11 @@ export default class ReceiverController {
       }
     });
 
-    onkyo.on('connected', () => {
+    this.onkyo.on('connected', () => {
       console.log('Onkyo receiver connected successfully');
     });
 
-    onkyo.on('disconnected', () => {
+    this.onkyo.on('disconnected', () => {
       console.log('Onkyo receiver disconnected');
     });
   }
@@ -105,8 +111,9 @@ export default class ReceiverController {
  */
   turnOnReceiver() {
     console.log('ReceiverController - turnOn');
+    if (!this.enabled) return Promise.resolve(false);
     // Turn on the receiver
-    return onkyo.pwrOn()
+    return this.onkyo.pwrOn()
       .then(() => {
         console.log('Onkyo receiver turned ON successfully');
         // Optional: Set a specific input source after turning on
@@ -120,8 +127,9 @@ export default class ReceiverController {
 
   turnOffReceiver() {
     console.log('ReceiverController - turnOff');
+    if (!this.enabled) return Promise.resolve(false);
     // Turn off the receiver
-    return onkyo.pwrOff()
+    return this.onkyo.pwrOff()
       .then(() => {
         console.log('Onkyo receiver turned OFF successfully');
       })
@@ -133,7 +141,8 @@ export default class ReceiverController {
 
   // Check if receiver is on
   isReceiverOn() {
-    return onkyo.isOn()
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.isOn()
       .then((isOn) => {
         console.log(`Receiver is ${isOn ? 'ON' : 'OFF'}`);
         return isOn;
@@ -146,7 +155,8 @@ export default class ReceiverController {
 
   // Get current input source
   getCurrentSource() {
-    return onkyo.getSource()
+    if (!this.enabled) return Promise.resolve(null);
+    return this.onkyo.getSource()
       .then((source) => {
         console.log(`Current source: ${source}`);
         return source;
@@ -160,7 +170,8 @@ export default class ReceiverController {
   // Set input source (e.g., 'GAME', 'STREAM', 'TV', 'BD/DVD', etc.)
   setInputSource(source) {
     console.log(`Setting input source to: ${source}`);
-    return onkyo.setSource(source)
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.setSource(source)
       .then(() => {
         console.log(`Input source set to ${source} successfully`);
       })
@@ -172,32 +183,37 @@ export default class ReceiverController {
 
   // Volume control methods
   volumeUp() {
-    return onkyo.volUp()
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.volUp()
       .then(() => console.log('Volume increased'))
       .catch((error) => console.error('Error increasing volume:', error));
   }
 
   volumeDown() {
-    return onkyo.volDown()
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.volDown()
       .then(() => console.log('Volume decreased'))
       .catch((error) => console.error('Error decreasing volume:', error));
   }
 
   mute() {
-    return onkyo.mute()
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.mute()
       .then(() => console.log('Receiver muted'))
       .catch((error) => console.error('Error muting receiver:', error));
   }
 
   unmute() {
-    return onkyo.unMute()
+    if (!this.enabled) return Promise.resolve(false);
+    return this.onkyo.unMute()
       .then(() => console.log('Receiver unmuted'))
       .catch((error) => console.error('Error unmuting receiver:', error));
   }
 
   // Get complete device state
   getReceiverState() {
-    return onkyo.getDeviceState()
+    if (!this.enabled) return Promise.resolve(null);
+    return this.onkyo.getDeviceState()
       .then((state) => {
         console.log('Receiver state:', state);
         return state;
@@ -253,9 +269,10 @@ export default class ReceiverController {
     // Test comm with onkyo
     // STREAM, GAME - target input modes
     console.log('Test Onkyo in');
+    if (!this.enabled) return;
 
     // Catch errors in onkyo communication, especially after setSource()
-    onkyo.on('error', (errMsg) => {
+    this.onkyo.on('error', (errMsg) => {
         // this generates file 'unknown_msgs.txt' if unrecognized messages
         // is received from amplifier. Please raise issues with body if file appears.
         // fs.appendFile('unknown_msgs.txt', `${errMsg}\n`, (err) => {
@@ -264,7 +281,7 @@ export default class ReceiverController {
         console.log('onkyo error: ' + errMsg);
       });
     // onkyo.on('connected', () => console.log('onkyo connected'));
-    onkyo.getDeviceState()
+    this.onkyo.getDeviceState()
     .then((state) => { console.log(state);})
     .then(() => Promise.delay(500))
     .catch((error) => {
@@ -374,7 +391,7 @@ export default class ReceiverController {
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         // Set input source to GAME (or whatever you prefer)
-        await this.setInputSource('GAME');
+        await this.setInputSource(config.receiver.defaultInput);
       } else {
         console.log('Receiver is already on');
         

@@ -31,12 +31,11 @@
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "server-build": "rsync -r ./src/services/* ./build/services && rsync -r ./src/environment.js ./build",
-    "build": "react-scripts --openssl-legacy-provider build && npm run server-build",
-    "socket-serve--dev": "node src/services/socket.server.js",
-    "dev": "npm install && npm start",
-    "test": "npm run socket-serve--dev && npm start"
+    "start": "npm run server & react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "server": "node server/src/socket.server.js",
+    "dev": "npm run server & npm start",
+    "test": "echo \"No tests\""
   },
   "eslintConfig": {
     "extends": "react-app"
