@@ -1,17 +1,17 @@
 import { XMLHttpRequest } from 'xmlhttprequest';
 var requestImage = new XMLHttpRequest();
-import environment from '../environment.js';
+import { config } from './config.js';
 
 // Airtable
 import Airtable from 'airtable';
 // https://github.com/node-fetch/node-fetch/blob/master/docs/CHANGELOG.md#v300-beta7 
 import fetch from 'node-fetch';
-//const base = new Airtable({ apiKey: environment.production.airtableKey }).base(environment.production.airtableBase);
-const base = new Airtable({apiKey: environment.production.AIRTABLE_PERSONAL_ACCESS_TOKEN}).base(environment.production.airtableBase);
+//const base = new Airtable({ apiKey: config.airtable.key }).base(config.airtable.base);
+const base = new Airtable({ apiKey: config.airtable.token }).base(config.airtable.base);
 
 import ColorThief from 'colorthief';
 import axios from 'axios';
-const slackToken = environment.production.slack;
+const slackToken = config.slackToken;
 
 
 export default class DataService {
@@ -75,6 +75,11 @@ export default class DataService {
       this.settings = {};
 
       console.log('dataSevice loadData()');
+      if (!config.airtable.token || !config.airtable.base) {
+        console.warn('Airtable config missing. Set AIRTABLE_TOKEN and AIRTABLE_BASE in .env');
+        this.loadingData = false;
+        return;
+      }
       this.numMuseums = 0;
       this.curMuseumNum = 0;
       // this.callback = callback;
@@ -294,13 +299,21 @@ export default class DataService {
 
   // Request for a random image and information to display
   getRandomImage(internal) {
+    if (!this.airTableData || this.airTableData.length === 0) {
+      console.warn('getRandomImage: airTableData not loaded');
+      return;
+    }
 
     // Select a random museum
     var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
 
     // Make sure we choose an active Museum
-    while(!this.airTableData[curMuseumNum].active) {
+    while(this.airTableData[curMuseumNum] && !this.airTableData[curMuseumNum].active) {
       curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
+    }
+    if (!this.airTableData[curMuseumNum]) {
+      console.warn('getRandomImage: no active museums available');
+      return;
     }
 
     // Select a random object from that museum's collection (from pre-filled object )

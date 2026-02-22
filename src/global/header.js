@@ -15,7 +15,7 @@ class Header extends Component {
   constructor() {
     super();
     this.state = {
-      endpoint: "http://localhost:3001/" // Update 3001 with port on which backend-my-app/server.js is running.
+      endpoint: process.env.REACT_APP_SOCKET_URL || "http://localhost:3001/" // Update 3001 with port on which backend-my-app/server.js is running.
     };
 
     socket = socketIOClient(this.state.endpoint, { transports : ['websocket'] }); // "socket-serve--dev": "node server/server.js &",

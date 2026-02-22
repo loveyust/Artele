@@ -1,15 +1,17 @@
 // socket server
 import express from 'express';
-import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { config } from './config.js';
 
 // our localhost port
-const port = process.env.PORT || 3001;
+const port = config.port;
 const app = express();
 
 app.use(function (req, res, next) {
   // res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET"); // , POST, PUT ,DELETE");
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", config.corsOrigins[0] || "http://localhost:3000");
   res.header('Access-Control-Allow-Credentials', true);
   res.header(
       "Access-Control-Allow-Headers",
@@ -23,14 +25,31 @@ app.use(function (req, res, next) {
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
-const httpServer = createServer();
+const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: config.corsOrigins,
     methods: ["GET", "POST"],
     allowedHeaders: ["content-type"],
     credentials: true
-  }  
+  }
+});
+
+app.get('/health', (req, res) => {
+  res.json({
+    ok: true,
+    service: 'artele-socket',
+    port
+  });
+});
+
+app.get('/config', (req, res) => {
+  res.json({
+    ok: true,
+    airtableConfigured: Boolean(config.airtable.token && config.airtable.base),
+    receiverEnabled: Boolean(config.receiver.enabled && config.receiver.ip),
+    corsOrigins: config.corsOrigins
+  });
 });
 
 function dataLoadedCallback () {
@@ -82,6 +101,11 @@ io.on("connection", socket => {
   socket.on("request_random_image", (datas) => {    
     console.log('socket request_random_image ' + datas);
     // rcontroller.test();
+    if (!data.dataLoaded || !data.airTableData || data.airTableData.length === 0) {
+      console.log('request_random_image ignored: data not loaded yet');
+      io.sockets.emit("send_random_image_error", { message: "Data not loaded yet" });
+      return;
+    }
     data.getRandomImage(false);
   });
 
@@ -111,7 +135,7 @@ io.on("connection", socket => {
   socket.on("request_set_schedule", (scheduleObj) => {
     console.log('socket request_set_schedule: ' + JSON.stringify(scheduleObj));
     data.setSchedule(scheduleObj.day, scheduleObj.data);
-    rcontroller.setScheduleCron(scheduleObj.day, scheduleObj.data);
+    schedulerController.setSchedule(data.settings);
   });
 
   socket.on("request_set_paused", (paused) => {
@@ -130,5 +154,7 @@ io.on("connection", socket => {
   });
 });
 
-app.use(express.static("build"));
-httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const clientBuildPath = path.resolve(__dirname, '..', '..', 'build');
+app.use(express.static(clientBuildPath));
+httpServer.listen(port, config.host, () => console.log(`Listening on ${config.host}:${port}`));
