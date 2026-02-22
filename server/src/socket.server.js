@@ -157,4 +157,4 @@ io.on("connection", socket => {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientBuildPath = path.resolve(__dirname, '..', '..', 'build');
 app.use(express.static(clientBuildPath));
-httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+httpServer.listen(port, config.host, () => console.log(`Listening on ${config.host}:${port}`));

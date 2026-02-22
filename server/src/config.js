@@ -17,6 +17,7 @@ const splitList = (value, fallback) => {
 };
 
 export const config = {
+  host: process.env.SOCKET_HOST || '0.0.0.0',
   port: Number(process.env.SOCKET_PORT || process.env.PORT || 3001),
   corsOrigins: splitList(process.env.CORS_ORIGINS, ['http://localhost:3000']),
   airtable: {
@@ -28,5 +29,8 @@ export const config = {
     enabled: parseBool(process.env.RECEIVER_ENABLED, false),
     ip: process.env.RECEIVER_IP || '',
     defaultInput: process.env.RECEIVER_INPUT || 'GAME'
+  },
+  cec: {
+    enabled: parseBool(process.env.CEC_ENABLED, false)
   }
 };

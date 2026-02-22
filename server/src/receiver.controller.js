@@ -7,8 +7,7 @@ import { config } from './config.js';
 // Command reference
 // https://github.com/jupe/onkyo.js/blob/master/sample/control.js
 
-// cec-controller for the TV
-import CecController from 'cec-controller'; // var CecController = require('cec-controller');
+// cec-controller for the TV (loaded dynamically on supported platforms)
 
 // Scheduling
 import cron from 'node-cron'; // const cron = require('node-cron');
@@ -28,14 +27,15 @@ export default class ReceiverController {
   
     console.log('ReceiverController constructor');
     this.enabled = config.receiver.enabled && !!config.receiver.ip;
+    this.cecEnabled = config.cec.enabled;
+    this.CecController = null;
     if (!this.enabled) {
       console.log('ReceiverController disabled or missing RECEIVER_IP');
-      return this;
+    } else {
+      this.onkyo = new Onkyo({ ip: config.receiver.ip });
+      // Initialize Onkyo connection with error handling
+      this.initializeOnkyoConnection();
     }
-
-    this.onkyo = new Onkyo({ ip: config.receiver.ip });
-    // Initialize Onkyo connection with error handling
-    this.initializeOnkyoConnection();
     
     // this.connect(); // CEC TV connection
     // this.initializeSchedule();
@@ -406,15 +406,28 @@ export default class ReceiverController {
   }
 
   // TV Control Methods using CEC
-  initializeTVConnection() {
-    return new Promise((resolve, reject) => {
-      if (this.cecCtl) {
-        resolve(this.cecCtl);
-        return;
-      }
+  async initializeTVConnection() {
+    if (!this.cecEnabled) {
+      console.log('CEC control disabled');
+      return null;
+    }
+    if (this.cecCtl) {
+      return this.cecCtl;
+    }
 
-      this.cecCtl = new CecController();
-      
+    if (!this.CecController) {
+      try {
+        const cecModule = await import('cec-controller');
+        this.CecController = cecModule.default || cecModule;
+      } catch (err) {
+        console.log('CEC controller not available (expected on macOS):', err.message);
+        return null;
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      this.cecCtl = new this.CecController();
+
       this.cecCtl.on('ready', (controller) => {
         console.log('CEC TV controller ready');
         this.tvController = controller;
@@ -431,6 +444,10 @@ export default class ReceiverController {
   async turnOnTV() {
     try {
       console.log('Turning ON TV...');
+      if (!this.cecEnabled) {
+        console.log('CEC control disabled - skipping turnOnTV');
+        return false;
+      }
       
       if (!this.cecCtl) {
         await this.initializeTVConnection();
@@ -462,6 +479,10 @@ export default class ReceiverController {
   async turnOffTV() {
     try {
       console.log('Turning OFF TV...');
+      if (!this.cecEnabled) {
+        console.log('CEC control disabled - skipping turnOffTV');
+        return false;
+      }
       
       if (!this.cecCtl) {
         await this.initializeTVConnection();
@@ -487,6 +508,10 @@ export default class ReceiverController {
 
   async getTVStatus() {
     try {
+      if (!this.cecEnabled) {
+        console.log('CEC control disabled - skipping getTVStatus');
+        return null;
+      }
       if (!this.cecCtl) {
         await this.initializeTVConnection();
       }
@@ -615,9 +640,13 @@ export default class ReceiverController {
     return new Promise((resolve, reject) => {
       // This is a generic command sender - may need adjustment based on onkyo.js capabilities
       try {
+        if (!this.enabled || !this.onkyo) {
+          reject(new Error('Receiver not enabled'));
+          return;
+        }
         // Try to send raw command if supported
-        if (onkyo.sendCommand) {
-          onkyo.sendCommand(category, command)
+        if (this.onkyo.sendCommand) {
+          this.onkyo.sendCommand(category, command)
             .then(resolve)
             .catch(reject);
         } else {
@@ -642,7 +671,7 @@ export default class ReceiverController {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Set receiver input source
-      await this.setInputSource('GAME'); // or whatever input you prefer
+      await this.setInputSource(config.receiver.defaultInput);
       
       console.log('Complete system turned ON via receiver CEC');
       return true;

@@ -87,11 +87,14 @@ export default class ScheduleController {
     }
 
     // Now that we know what was already scheduled we can go to that mode
-    if (!currentMode || !currentMode.name || typeof this[currentMode.name] !== 'function') {
-      console.warn('SchedulerController.findCurrentMode: no current mode found');
-      return;
+    if (currentMode && currentMode.name && typeof this[currentMode.name] === 'function') {
+      console.log(`findCurrentMode: Activating mode '${currentMode.name}'`);
+      this[currentMode.name]();
+    } else {
+      // If no mode matches (before first schedule of the day), default to sleepMode
+      console.log('findCurrentMode: No active mode found, defaulting to sleepMode');
+      this.sleepMode();
     }
-    this[currentMode.name]();
   }
 
   setSchedule (cmsSettings) {
