@@ -10,4 +10,16 @@ $font-name-montserrat-semibold-italic: 'Montserrat-SemiBoldItalic';
 $font-name-montserrat-bold: 'Montserrat-Bold';
 $font-name-montserrat-black: 'Montserrat-Black';
 
+// Legacy
 $selected-green: #1FA152;
+
+// Industrial / Dark palette (from references/Palette)
+$color-bg:           #1A2730;  // darkest — main background
+$color-surface:      #424048;  // elevated card surfaces
+$color-surface-low:  #232E38;  // slightly elevated from bg (transport buttons, inputs)
+$color-fg:           #D8ECF5;  // primary text (light, reads on dark)
+$color-light:        #B0CEE2;  // secondary text / powder blue
+$color-muted:        #45586C;  // muted text & borders — steel blue
+$color-border:       #45586C;  // borders
+$color-accent:       #E95D2C;  // bright orange — primary CTA / active
+$color-accent-deep:  #A63E1B;  // deep burnt orange — hover / pressed

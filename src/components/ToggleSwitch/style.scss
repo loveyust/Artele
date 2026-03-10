@@ -1,7 +1,6 @@
 @import '../../styles/params/variables';
 
-
-.switch-container{
+.switch-container {
   //height: 80px;
 }
 
@@ -12,8 +11,8 @@
   cursor: pointer;
   width: 110px;
   height: 40px;
-  background: grey;
-  border-radius: 80px;
+  background: $color-muted;
+  border-radius: 3px;
   position: relative;
   transition: background-color .2s;
 }
@@ -25,10 +24,14 @@
   left: 2px;
   width: 35px;
   height: 35px;
-  border-radius: 35px;
+  border-radius: 2px;
   transition: 0.2s;
-  background: #fff;
-  box-shadow: 0 0 2px 0 rgba(10, 10, 10, 0.29);
+  background: $color-light;
+  box-shadow: none;
+}
+
+.react-switch-checkbox:checked + .react-switch-label {
+  background: $color-accent;
 }
 
 .react-switch-checkbox:checked + .react-switch-label .react-switch-button {
@@ -44,4 +47,3 @@
   width: 60px;
   overflow: hidden;
 }
-
