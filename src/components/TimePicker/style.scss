@@ -11,6 +11,16 @@
   margin-bottom: 8px;
 }
 
+.description {
+  font-family: $font-name-montserrat-semibold;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #5A5040;
+  text-align: left;
+  margin: 0 0 6px;
+}
+
 .dropdown {
   width: 100%;
   max-width: 90px;

@@ -238,7 +238,7 @@ class Artele extends Component {
             <div className="mt-3">
               { isLoaded ?
                 <div className="card-surface">
-                  <p className="card-label">SCHEDULE</p>
+                  <p className="card-label card-label--left">SCHEDULE</p>
 
                   <div className="sched-row">
                     <div className="sched-row-label">
