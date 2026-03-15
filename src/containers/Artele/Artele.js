@@ -148,7 +148,7 @@ class Artele extends Component {
         </div>
 
         {/* ── Tabs ───────────────────────────────────── */}
-        <Tabs activeTab="1" className="tab-background" ulClassName="" activityClassName="bg-success" onClick={(event, tab) => console.log(event, tab)}>
+        <Tabs activeTab="1" className="tab-background" ulClassName="" onClick={(event, tab) => console.log(event, tab)}>
 
           {/* ART ─────────────────────────────────────── */}
           <Tab title="ART" className="mr-3">
@@ -213,16 +213,18 @@ class Artele extends Component {
             <div className="mt-3">
               { isLoaded ?
                 <div className="card-surface">
-                  <p className="card-label">IMAGES</p>
+                  <p className="card-label card-label--left">IMAGES</p>
                   <button className="action-btn stretch" onClick={() => this.onUpdateImages()}>
                     UPDATE IMAGES
                   </button>
-                  <div className="list-head">
-                    <span className="list-col-label">Museum</span>
-                    <span className="list-col-label">Active</span>
-                  </div>
-                  <div className="stacked-list">
-                    {this.renderMuseumData()}
+                  <div className="museum-list-block">
+                    <div className="list-head">
+                      <span className="list-head-label">Museum</span>
+                      <span className="list-head-label">Active</span>
+                    </div>
+                    <div className="stacked-list">
+                      {this.renderMuseumData()}
+                    </div>
                   </div>
                 </div>
               :

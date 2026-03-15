@@ -81,7 +81,7 @@
 .rb-tabs {
   .rb-tabs-header {
     border: none;
-    border-bottom: 1px solid rgba($color-border, 0.4);
+    border-bottom: 1px solid rgba($color-fg, 0.2);
     padding: 0;
     display: flex;
     gap: 0;
@@ -95,14 +95,18 @@
       font-size: 11px;
       letter-spacing: 0.10em;
       text-transform: uppercase;
-      color: $color-muted;
+      color: rgba($color-fg, 0.6);
       cursor: pointer;
+    }
+
+    .rb-tabs-item.active {
+      color: #fff;
     }
 
     .rb-tabs-active-item {
       background: transparent;
       border: none;
-      border-bottom: 2px solid $color-accent;
+      border-bottom: 2px solid #fff;
       color: $color-fg;
       margin-bottom: -1px;
     }
@@ -139,6 +143,10 @@
   color: #5A5040;
   text-align: center;
   margin: 0 0 14px;
+}
+
+.card-label--left {
+  text-align: left;
 }
 
 // ─────────────────────────────────────────────────────────
@@ -329,21 +337,40 @@
 // Images tab — museum list
 // ─────────────────────────────────────────────────────────
 
-.list-head {
+.museum-list-block {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(#1A2730, 0.15);
-  margin-bottom: 4px;
+  flex-direction: column;
+  margin-top: 22px;
 }
 
-.list-col-label {
+.list-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  column-gap: 12px;
+  align-items: center;
+  padding: 0 0 3px;
+  margin: 0 0 2px;
+  border-bottom: 1px solid rgba(#1A2730, 0.15);
+}
+
+.list-head-label {
+  display: block;
   font-family: $font-name-montserrat-semibold;
   font-size: 10px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
   color: #5A5040;
+  margin: 0;
+  padding: 0;
+}
+
+.list-head-label:first-child {
+  justify-self: start;
+}
+
+.list-head-label:last-child {
+  justify-self: end;
+  text-align: right;
 }
 
 .stacked-list {
@@ -352,17 +379,27 @@
 }
 
 .museum-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  column-gap: 12px;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 0;
+  padding: 8px 0;
   border-bottom: 1px solid rgba(#1A2730, 0.1);
+}
+
+.museum-row > *:last-child {
+  justify-self: end;
+}
+
+.museum-row .react-toggle {
+  justify-self: end;
 }
 
 .museum-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  justify-self: start;
 }
 
 .museum-name {
@@ -529,7 +566,7 @@ p {
   height: 22px;
   border: none;
   border-radius: 50%;
-  background-color: #fff;
+  background-color: #1A2730;
   box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   box-sizing: border-box;
   transition: left 0.25s ease;
@@ -537,9 +574,9 @@ p {
 
 .react-toggle--checked .react-toggle-thumb {
   left: 22px;
-  border-color: $color-accent;
+  border-color: #1A2730;
 }
 
 .react-toggle--focus .react-toggle-thumb {
-  box-shadow: 0 0 0 3px rgba($color-accent, 0.25);
+  box-shadow: 0 0 0 3px rgba(#1A2730, 0.25);
 }
