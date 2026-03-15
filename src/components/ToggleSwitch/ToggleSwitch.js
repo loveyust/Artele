@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Button, Table, Container } from "reactstrap";
 import Toggle from 'react-toggle'
 
 // Styles
@@ -21,13 +20,15 @@ class ToggleSwitch extends Component {
   }
 
   render() {
+    const hasLabel = typeof this.props.label === 'string' && this.props.label.trim().length > 0;
+
     return (
       <>
         <Toggle
           defaultChecked={this.props.active}
           aria-label={this.props.aria}
           onChange={() => this.props.onChange(!this.props.active, this.props.id)} />
-        <span>{this.props.label}</span>
+        {hasLabel && <span>{this.props.label}</span>}
       </>
     );
   }

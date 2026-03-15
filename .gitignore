@@ -32,3 +32,6 @@ yarn.lock
 package-lock.json
 server/config/*
 src/environment.js
+
+# UI design references (local only)
+/references
