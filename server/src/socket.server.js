@@ -46,7 +46,6 @@ app.get('/health', (req, res) => {
 app.get('/config', (req, res) => {
   res.json({
     ok: true,
-    airtableConfigured: Boolean(config.airtable.token && config.airtable.base),
     receiverEnabled: Boolean(config.receiver.enabled && config.receiver.ip),
     corsOrigins: config.corsOrigins
   });

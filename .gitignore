@@ -35,3 +35,6 @@ src/environment.js
 
 # UI design references (local only)
 /references
+
+# SQLite database (local data, do not commit)
+/server/data/
