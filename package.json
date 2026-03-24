@@ -13,7 +13,6 @@
     "http-parser-js": "^0.5.3",
     "node-cron": "^3.0.0",
     "node-fetch": "^2.6.6",
-    "node-sass": "^8.0",
     "node-schedule": "^2.1.1",
     "onkyo.js": "^0.8.0",
     "os": "^0.1.2",
@@ -31,10 +30,11 @@
     "xmlhttprequest": "^1.8.0"
   },
   "scripts": {
-    "start": "npm run server & react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider build",
+    "start": "react-scripts --openssl-legacy-provider start",
     "server": "node server/src/socket.server.js",
-    "dev": "npm run server & npm start",
+    "dev": "concurrently --kill-others-on-fail --names \"web,socket\" --prefix-colors \"cyan,green\" \"yarn start\" \"yarn server\"",
+    "predev": "lsof -ti :3000 -ti :3001 | xargs kill -9 2>/dev/null; exit 0",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "echo \"No tests\""
   },
   "eslintConfig": {
@@ -47,9 +47,11 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "install": "^0.13.0",
     "npm": "^9.3.1",
     "postcss": "^7.0.36",
-    "postcss-loader": "^3.0.0"
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.98.0"
   }
 }

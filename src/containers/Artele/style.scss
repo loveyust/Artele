@@ -500,6 +500,186 @@ p {
 }
 
 // ─────────────────────────────────────────────────────────
+// Sources tab
+// ─────────────────────────────────────────────────────────
+
+.src-top-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.src-row {
+  border-bottom: 1px solid rgba(#1A2730, 0.1);
+}
+
+.src-row-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.src-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.src-chevron {
+  font-size: 18px;
+  color: #5A5040;
+  transition: transform 0.2s ease;
+  line-height: 1;
+  user-select: none;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.src-card--new {
+  background: rgba(#1A2730, 0.05);
+  border-radius: 10px;
+  padding: 14px 12px;
+  margin-bottom: 12px;
+  border: 1px dashed rgba(#1A2730, 0.2);
+}
+
+.src-form {
+  padding: 4px 0 8px;
+}
+
+.src-section {
+  padding: 12px 0 4px;
+  border-top: 1px solid rgba(#1A2730, 0.1);
+  margin-top: 4px;
+
+  &--inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+}
+
+.src-section-label {
+  font-family: $font-name-montserrat-semibold;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5A5040;
+  margin: 0 0 10px;
+}
+
+.src-section-optional {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(#5A5040, 0.6);
+  text-transform: none;
+  font-family: $font-name-montserrat-reg;
+}
+
+.src-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.src-field-label {
+  font-family: $font-name-montserrat-semibold;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(#5A5040, 0.8);
+}
+
+.src-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  background: #1A2730;
+  border: none;
+  border-radius: 8px;
+  color: $color-fg;
+  font-family: $font-name-montserrat-reg;
+  font-size: 13px;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: rgba($color-fg, 0.25);
+  }
+
+  &--mono {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+  }
+
+  &--short {
+    width: 110px;
+    flex-shrink: 0;
+  }
+}
+
+.src-test-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.src-test-result {
+  margin-top: 10px;
+  padding: 12px;
+  background: rgba(#1A2730, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(#1A2730, 0.15);
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #1A2730;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.src-cache-count {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #5A5040;
+  margin: 2px 0 0;
+}
+
+.src-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(#1A2730, 0.1);
+
+  .src-btn--save {
+    margin-left: auto;
+    background: $color-accent;
+    color: #fff;
+
+    &:hover { background: $color-accent-deep; }
+    &:active { background: $color-accent-deep; }
+  }
+
+  .src-btn--delete {
+    color: rgba(#1A2730, 0.45);
+  }
+
+  .src-btn--cancel {
+    color: rgba(#1A2730, 0.6);
+  }
+}
+
+// ─────────────────────────────────────────────────────────
 // react-toggle — on cream card (dark track on light bg)
 // ─────────────────────────────────────────────────────────
 
