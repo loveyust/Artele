@@ -449,6 +449,103 @@ export default class DataService {
     console.log('Done sent Image to Slack', res.data);
   }
 
+  saveSource(sourceData) {
+    const db = getDb();
+    const fields = {
+      name: sourceData.name || '',
+      active: sourceData.active ? 1 : 0,
+      accessToken: sourceData.accessToken || null,
+      departmentIDs: sourceData.departmentIDs || null,
+      departmentObjectAPI: sourceData.departmentObjectAPI || null,
+      departmentArray: sourceData.departmentArray || null,
+      departmentObjectField: sourceData.departmentObjectField || null,
+      objectAPI: sourceData.objectAPI || '',
+      imageField: sourceData.imageField || '',
+      titleField: sourceData.titleField || '',
+      artistField: sourceData.artistField || '',
+      dateField: sourceData.dateField || '',
+      mediumField: sourceData.mediumField || '',
+      objectIDs: sourceData.objectIDs || null,
+    };
+
+    if (sourceData.id) {
+      db.prepare(`
+        UPDATE sources SET
+          name=@name, active=@active, accessToken=@accessToken,
+          departmentIDs=@departmentIDs, departmentObjectAPI=@departmentObjectAPI,
+          departmentArray=@departmentArray, departmentObjectField=@departmentObjectField,
+          objectAPI=@objectAPI, imageField=@imageField, titleField=@titleField,
+          artistField=@artistField, dateField=@dateField, mediumField=@mediumField,
+          objectIDs=@objectIDs
+        WHERE id=@id
+      `).run({ ...fields, id: sourceData.id });
+
+      const idx = this.airTableData.findIndex(s => s.id === sourceData.id);
+      if (idx !== -1) {
+        this.airTableData[idx] = {
+          ...this.airTableData[idx], ...fields,
+          id: sourceData.id,
+          active: Boolean(fields.active),
+          objectIDsArray: fields.objectIDs ? fields.objectIDs.split(',').filter(Boolean) : this.airTableData[idx].objectIDsArray
+        };
+      }
+    } else {
+      const result = db.prepare(`
+        INSERT INTO sources
+          (name, active, accessToken, departmentIDs, departmentObjectAPI,
+           departmentArray, departmentObjectField, objectAPI, imageField,
+           titleField, artistField, dateField, mediumField, objectIDs)
+        VALUES
+          (@name, @active, @accessToken, @departmentIDs, @departmentObjectAPI,
+           @departmentArray, @departmentObjectField, @objectAPI, @imageField,
+           @titleField, @artistField, @dateField, @mediumField, @objectIDs)
+      `).run(fields);
+
+      this.airTableData.push({
+        id: result.lastInsertRowid,
+        ...fields,
+        active: Boolean(fields.active),
+        objectIDsArray: fields.objectIDs ? fields.objectIDs.split(',').filter(Boolean) : []
+      });
+    }
+    console.log('saveSource done:', sourceData.name);
+  }
+
+  deleteSource(id) {
+    const db = getDb();
+    db.prepare('DELETE FROM sources WHERE id = ?').run(id);
+    this.airTableData = this.airTableData.filter(s => s.id !== id);
+    console.log('deleteSource done:', id);
+  }
+
+  async testSource(objectAPI, sampleId, accessToken) {
+    try {
+      let url = objectAPI.replace('ObjectID', encodeURIComponent(sampleId));
+      if (accessToken) url = url.replace('AccessToken', accessToken);
+      console.log('testSource URL:', url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { ContentType: 'application/json' },
+        referrer: 'no-referrer'
+      });
+      return await response.json();
+    } catch (err) {
+      console.warn('testSource error:', err);
+      return { error: err.message };
+    }
+  }
+
+  clearSourceIds(id) {
+    const db = getDb();
+    db.prepare('UPDATE sources SET objectIDs = NULL WHERE id = ?').run(id);
+    const idx = this.airTableData.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      this.airTableData[idx].objectIDs = undefined;
+      this.airTableData[idx].objectIDsArray = [];
+    }
+    console.log('clearSourceIds done:', id);
+  }
+
   clearImageData() {
     console.log('data clearImageData');
     const db = getDb();

@@ -147,6 +147,30 @@ io.on("connection", socket => {
     data.saveImage();
   });
 
+  socket.on("request_save_source", (sourceData) => {
+    console.log('socket request_save_source: ' + JSON.stringify(sourceData));
+    data.saveSource(sourceData);
+    io.sockets.emit("send_museum_data", data.airTableData);
+  });
+
+  socket.on("request_delete_source", (id) => {
+    console.log('socket request_delete_source: ' + id);
+    data.deleteSource(id);
+    io.sockets.emit("send_museum_data", data.airTableData);
+  });
+
+  socket.on("request_test_source", async ({ objectAPI, sampleId, accessToken }) => {
+    console.log('socket request_test_source: ' + objectAPI + ' id:' + sampleId);
+    const result = await data.testSource(objectAPI, sampleId, accessToken);
+    socket.emit("send_test_result", result);
+  });
+
+  socket.on("request_clear_source_ids", (id) => {
+    console.log('socket request_clear_source_ids: ' + id);
+    data.clearSourceIds(id);
+    io.sockets.emit("send_museum_data", data.airTableData);
+  });
+
   // disconnect is fired when a client leaves the server
   socket.on("disconnect", () => {
     console.log("user disconnected");
