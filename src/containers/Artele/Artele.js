@@ -302,9 +302,14 @@ class Artele extends Component {
       <div className="card-surface">
         <p className="card-label card-label--left">SOURCES</p>
 
-        <button className="action-btn stretch" onClick={this.onAddSource}>
-          + ADD SOURCE
-        </button>
+        <div className="src-top-actions">
+          <button className="action-btn stretch" onClick={this.onAddSource}>
+            + ADD SOURCE
+          </button>
+          <button className="action-btn stretch" onClick={() => this.onUpdateImages()}>
+            UPDATE IMAGES
+          </button>
+        </div>
 
         {/* New source form */}
         {expandedSourceId === 'new' && (
@@ -340,25 +345,6 @@ class Artele extends Component {
         </div>
       </div>
     );
-  }
-
-  renderMuseumData() {
-    if (this.state.museumData !== undefined) {
-      return this.state.museumData.map(museum => (
-        <div className="museum-row" key={museum.id}>
-          <div className="museum-meta">
-            <p className="museum-name">{museum.name}</p>
-            <p className="museum-status">{museum.active ? "Visible in rotation" : "Hidden from rotation"}</p>
-          </div>
-          <ToggleSwitch
-            active={museum.active}
-            aria-label='No label tag'
-            id={museum.id}
-            onChange={() => this.toggleActive(!museum.active, museum.id)}
-            label={""} />
-        </div>
-      ));
-    }
   }
 
   render() {
@@ -432,31 +418,6 @@ class Artele extends Component {
                       <i className="si si-4"></i>
                     </span>
                   </button>
-                </div>
-              :
-                <div className="loading-state">Loading...</div>
-              }
-            </div>
-          </Tab>
-
-          {/* IMAGES ──────────────────────────────────── */}
-          <Tab title="IMAGES" className="mr-3">
-            <div className="mt-3">
-              { isLoaded ?
-                <div className="card-surface">
-                  <p className="card-label card-label--left">IMAGES</p>
-                  <button className="action-btn stretch" onClick={() => this.onUpdateImages()}>
-                    UPDATE IMAGES
-                  </button>
-                  <div className="museum-list-block">
-                    <div className="list-head">
-                      <span className="list-head-label">Museum</span>
-                      <span className="list-head-label">Active</span>
-                    </div>
-                    <div className="stacked-list">
-                      {this.renderMuseumData()}
-                    </div>
-                  </div>
                 </div>
               :
                 <div className="loading-state">Loading...</div>
