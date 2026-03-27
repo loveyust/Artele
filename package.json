@@ -35,7 +35,9 @@
     "dev": "concurrently --kill-others-on-fail --names \"web,socket\" --prefix-colors \"cyan,green\" \"yarn start\" \"yarn server\"",
     "predev": "lsof -ti :3000 -ti :3001 | xargs kill -9 2>/dev/null; exit 0",
     "build": "react-scripts --openssl-legacy-provider build",
-    "test": "echo \"No tests\""
+    "test": "echo \"No tests\"",
+    "setup-pi": "bash scripts/setup-pi.sh",
+    "deploy": "bash scripts/deploy.sh"
   },
   "eslintConfig": {
     "extends": "react-app"
