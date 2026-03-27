@@ -293,8 +293,10 @@ export default class DataService {
           textColor
         };
 
-        ColorThief.crossOrigin = 'Anonymous';
-        ColorThief.getPalette(image, 2)
+        // Fetch image into a Buffer so ColorThief (Jimp) can read it on Node.js
+        fetch(image, { method: 'GET', referrer: 'no-referrer' })
+          .then(res => res.arrayBuffer())
+          .then(arrayBuf => ColorThief.getPalette(Buffer.from(arrayBuf), 2))
           .then(color => {
             var hex = that.rgbToHex(color[1][0], color[1][1], color[1][2]);
             matColor = hex;
@@ -311,7 +313,7 @@ export default class DataService {
             }
           })
           .catch(err => {
-            console.log('ColorThiefError' + err);
+            console.log('ColorThiefError: ' + err);
             that.imageCallback();
           });
       }).catch(err => {
