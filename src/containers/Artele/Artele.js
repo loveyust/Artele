@@ -120,8 +120,13 @@ class Artele extends Component {
     socket.emit('request_set_paused', false);
   }
 
-  onReverse = () => {}
-  onForward = () => {}
+  onReverse = () => {
+    socket.emit('request_prev_image');
+  }
+
+  onForward = () => {
+    socket.emit('request_next_image');
+  }
 
   onSave = () => {
     socket.emit('request_save_image');

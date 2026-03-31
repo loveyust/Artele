@@ -142,6 +142,16 @@ io.on("connection", socket => {
     data.setPaused(paused);
   });
 
+  socket.on("request_prev_image", () => {
+    console.log('socket request_prev_image');
+    data.getPrevImage();
+  });
+
+  socket.on("request_next_image", () => {
+    console.log('socket request_next_image');
+    data.getNextImage();
+  });
+
   socket.on("request_save_image", () => {
     console.log('socket request_save_image: ' + JSON.stringify(data.curImageObject));
     data.saveImage();

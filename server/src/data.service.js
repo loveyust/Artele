@@ -57,6 +57,8 @@ export default class DataService {
       this.curObjectString = '';
       this.curImageObject = null;
       this.dataLoaded = false;
+      this.imageHistory = [];
+      this.historyIndex = -1;
 
       this.timePerArtworkMS = 10000;
       this.matColor = '#333333';
@@ -306,6 +308,7 @@ export default class DataService {
             that.curImageObject.matColor = matColor;
             that.curImageObject.textColor = textColor;
 
+            that._pushToHistory();
             that.imageCallback();
 
             if (!that.settings.paused) {
@@ -314,6 +317,7 @@ export default class DataService {
           })
           .catch(err => {
             console.log('ColorThiefError: ' + err);
+            that._pushToHistory();
             that.imageCallback();
           });
       }).catch(err => {
@@ -379,6 +383,38 @@ export default class DataService {
 
   stopImageTimer() {
     clearInterval(this.imageInterval);
+  }
+
+  _pushToHistory() {
+    // Truncate forward history if we branched mid-history
+    if (this.historyIndex < this.imageHistory.length - 1) {
+      this.imageHistory = this.imageHistory.slice(0, this.historyIndex + 1);
+    }
+    this.imageHistory.push({ ...this.curImageObject });
+    if (this.imageHistory.length > 30) this.imageHistory.shift();
+    else this.historyIndex++;
+  }
+
+  getPrevImage() {
+    if (this.historyIndex <= 0) return;
+    this.historyIndex--;
+    this.curImageObject = this.imageHistory[this.historyIndex];
+    this.stopImageTimer();
+    this.imageCallback();
+    if (!this.settings.paused) this.startImageTimer();
+  }
+
+  getNextImage() {
+    if (this.historyIndex < this.imageHistory.length - 1) {
+      this.historyIndex++;
+      this.curImageObject = this.imageHistory[this.historyIndex];
+      this.stopImageTimer();
+      this.imageCallback();
+      if (!this.settings.paused) this.startImageTimer();
+    } else {
+      this.stopImageTimer();
+      this.getRandomImage(false);
+    }
   }
 
   // ── Write methods ─────────────────────────────────────────
