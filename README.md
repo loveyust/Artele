@@ -6,7 +6,7 @@ App to display art museum content from various art museum and other content and 
 
 Experience Architecture:
 - **React app**: Runs the display interface (`/display`) and a mobile remote interface (`/`). Connected to the socket server via Socket.io.
-- **SQLite CMS**: Stores sources (museum/image APIs), cached object ID pools, and persistent settings (time per artwork, schedule, active sources). Replaces the original Airtable integration.
+- **SQLite CMS**: Stores sources (museum/image APIs), cached object ID pools, and persistent settings (time per artwork, schedule, active sources). Replaces the original Airtable integration. New sources can be added to the CMS using the UI.
 - **Socket/data service (Node.js)**: Loads sources from SQLite, fetches artwork from museum APIs, schedules device behavior, and emits data to clients over websockets.
 - **Raspberry Pi 4**: Runs the app in full screen, connected to a home A/V receiver for display on the TV. Communicates with an Onkyo TX-NR797 receiver to self-select as the source and turn on the TV on an automated schedule.
 
