@@ -334,12 +334,14 @@ class Artele extends Component {
                     <p className="museum-status">{source.active ? 'Active in rotation' : 'Hidden from rotation'}</p>
                   </div>
                   <div className="src-row-controls">
-                    <ToggleSwitch
-                      active={source.active}
-                      id={source.id}
-                      onChange={(e) => { e.stopPropagation(); this.toggleActive(!source.active, source.id); }}
-                      label=""
-                    />
+                    <div onClick={e => e.stopPropagation()}>
+                      <ToggleSwitch
+                        active={source.active}
+                        id={source.id}
+                        onChange={() => this.toggleActive(!source.active, source.id)}
+                        label=""
+                      />
+                    </div>
                     <span className={`src-chevron${isExpanded ? ' src-chevron--open' : ''}`}>▾</span>
                   </div>
                 </div>
