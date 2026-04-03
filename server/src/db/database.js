@@ -112,6 +112,22 @@ const SEED_SOURCES = [
     objectIDs: 'S69-39961,6900555,6900960,as11-44-6689,6901201,6900843,6902077,6900620,as11-45-6709,6900540,S69-39959,as11-36-5337,6900587,6974207,6900552,6900602,6901249,7012482,6900591,6975606,6900619,6901225,6900559,6900564,6902074,6903826,6900847,as11-45-6704,6901203,6901208,6900550,6900599,7562270,6900605,6900846,6901001,6901000,6900629,6900597,6900612,6900553,6901057,6900613,6900561,6900556,6900614,6900600,6900617,s69-21698,6901056,S69-39334,6902080,6902075,6900551,as11-40-5874,6900959,6900595,6903159,6902078,6900622,6900994,S69-32248,6900971,6900554,6900548,S69-32240,6900606,6900844,6900512,S69-39541,6900593,6900601,as11-40-5899,6901186,6974206,6900598,S69-32245,as11-45-6706,S69-38749,6902079,8903695,6900592,6900957,6900588,6900563,as11-44-6550,6900623,6900625,6900626,6900947,S69-32233,as11-45-6712,6900611,6900845,6901254,6901250,8909250,6900560,6901217,6900544'
   },
   {
+    name: 'Smithsonian NASM',
+    active: 1,
+    accessToken: null,
+    departmentIDs: '0,100,200,300,400,500,600,700,800,900',
+    departmentObjectAPI: 'https://api.si.edu/openaccess/api/v1.0/search?q=*&fq=unit_code:NASM&fq=online_media_type:Images&rows=100&start=DepartmentID&api_key=AccessToken',
+    departmentArray: 'response,rows',
+    departmentObjectField: 'content,descriptiveNonRepeating,record_ID',
+    objectAPI: 'https://api.si.edu/openaccess/api/v1.0/content/ObjectID?api_key=AccessToken',
+    imageField: 'response,content,descriptiveNonRepeating,online_media,media[],content',
+    titleField: 'response,content,descriptiveNonRepeating,title,content',
+    artistField: 'response,content,freetext,name[],content',
+    dateField: 'response,content,freetext,date[],content',
+    mediumField: 'response,content,freetext,physicalDescription[],content',
+    objectIDs: null
+  },
+  {
     name: 'NASA Aurora',
     active: 1,
     accessToken: null,
