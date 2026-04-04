@@ -249,7 +249,7 @@ export default class DataService {
       tempObjectID = this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum];
     }
 
-    var url = this.airTableData[curMuseumNum].objectAPI.replace('ObjectID', this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum]);
+    var url = this.airTableData[curMuseumNum].objectAPI.replace('ObjectID', encodeURIComponent(this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum]));
     if (this.airTableData[curMuseumNum].accessToken !== undefined) {
       url = url.replace('AccessToken', this.airTableData[curMuseumNum].accessToken);
     }
