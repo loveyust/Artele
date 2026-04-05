@@ -327,7 +327,8 @@ export default class DataService {
             that.imageCallback();
           });
       }).catch(err => {
-        console.warn('Something went wrong.', err);
+        console.warn('Something went wrong. Skipping to next image.', err.message);
+        that.getRandomImage(false);
       });
   }
 
@@ -432,9 +433,67 @@ export default class DataService {
         this.airTableData[i].active = active;
         const db = getDb();
         db.prepare('UPDATE sources SET active = ? WHERE id = ?').run(active ? 1 : 0, id);
+        if (active && this.airTableData[i].objectIDsArray.length === 0) {
+          this.reloadSourcePool(i);
+        }
         break;
       }
     }
+  }
+
+  reloadSourcePool(idx) {
+    const source = this.airTableData[idx];
+    if (!source || !source.departmentIDs) return;
+    console.log('reloadSourcePool: ' + source.name);
+
+    const departments = source.departmentIDs.split(',');
+    let deptNum = 0;
+    let objectString = '';
+    const that = this;
+
+    const loadDept = () => {
+      if (deptNum >= departments.length) {
+        that.saveObjectIDs(idx, objectString);
+        return;
+      }
+      let url = source.departmentObjectAPI.replace('DepartmentID', departments[deptNum]);
+      if (source.accessToken !== undefined) {
+        url = url.replace('AccessToken', source.accessToken);
+      }
+      fetch(url, { method: 'GET', headers: { ContentType: 'application/json' }, referrer: 'no-referrer' })
+        .then(r => r.json())
+        .then(data => {
+          const objectNameArray = source.departmentArray.split(',');
+          var objectArray = data;
+          objectNameArray.forEach(el => { objectArray = objectArray[el]; });
+
+          var objectFieldArray = [];
+          if (source.departmentObjectField) {
+            const fieldPath = source.departmentObjectField.split(',');
+            for (var i = 0; i < objectArray.length; i++) {
+              objectFieldArray[i] = that.processElementArray(that, objectArray[i], fieldPath, '');
+            }
+          } else {
+            objectFieldArray = objectArray;
+          }
+
+          for (let i = objectFieldArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * i);
+            [objectFieldArray[i], objectFieldArray[j]] = [objectFieldArray[j], objectFieldArray[i]];
+          }
+
+          objectString += objectFieldArray.slice(0, 100).join() + ',';
+          deptNum++;
+          loadDept();
+        })
+        .catch(err => {
+          console.warn('reloadSourcePool failed:', source.name, err.message);
+          deptNum++;
+          loadDept();
+        });
+    };
+
+    loadDept();
   }
 
   setArtTime(timeSecs) {
