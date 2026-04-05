@@ -116,7 +116,7 @@ const SEED_SOURCES = [
     active: 1,
     accessToken: null,
     departmentIDs: '0,100,200,300,400,500,600,700,800,900',
-    departmentObjectAPI: 'https://api.si.edu/openaccess/api/v1.0/search?q=*&fq=unit_code:NASM&fq=online_media_type:Images&rows=100&start=DepartmentID&api_key=AccessToken',
+    departmentObjectAPI: 'https://api.si.edu/openaccess/api/v1.0/search?q=unit_code%3ANASM%20AND%20online_media_type%3AImages&rows=100&start=DepartmentID&api_key=AccessToken',
     departmentArray: 'response,rows',
     departmentObjectField: 'content,descriptiveNonRepeating,record_ID',
     objectAPI: 'https://api.si.edu/openaccess/api/v1.0/content/ObjectID?api_key=AccessToken',

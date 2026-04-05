@@ -233,26 +233,20 @@ export default class DataService {
       return;
     }
 
-    var curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
-
-    while (this.airTableData[curMuseumNum] && !this.airTableData[curMuseumNum].active) {
-      curMuseumNum = Math.floor(Math.random() * this.airTableData.length);
-    }
-    if (!this.airTableData[curMuseumNum]) {
-      console.warn('getRandomImage: no active museums available');
+    const validSources = this.airTableData.filter(s => s.active && s.objectIDsArray && s.objectIDsArray.length > 0);
+    if (validSources.length === 0) {
+      console.warn('getRandomImage: no active sources with objects available');
       return;
     }
+    const source = validSources[Math.floor(Math.random() * validSources.length)];
+    const curMuseumNum = this.airTableData.indexOf(source);
 
-    var randomObjectNum = 0;
-    var tempObjectID = '';
-    while (tempObjectID === '' || tempObjectID === undefined) {
-      randomObjectNum = Math.floor(Math.random() * this.airTableData[curMuseumNum].objectIDsArray.length);
-      tempObjectID = this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum];
-    }
+    const randomObjectNum = Math.floor(Math.random() * source.objectIDsArray.length);
+    const tempObjectID = source.objectIDsArray[randomObjectNum];
 
-    var url = this.airTableData[curMuseumNum].objectAPI.replace('ObjectID', encodeURIComponent(this.airTableData[curMuseumNum].objectIDsArray[randomObjectNum]));
-    if (this.airTableData[curMuseumNum].accessToken !== undefined) {
-      url = url.replace('AccessToken', this.airTableData[curMuseumNum].accessToken);
+    var url = source.objectAPI.replace('ObjectID', encodeURIComponent(tempObjectID).replace(/%3A/gi, ':'));
+    if (source.accessToken !== undefined) {
+      url = url.replace('AccessToken', source.accessToken);
     }
 
     console.log('Object URL: ' + url);
@@ -271,7 +265,7 @@ export default class DataService {
           return String(val);
         };
 
-        var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
+        var imagePathArray = source.imageField.split(',');
         var image = that.processElementArray(that, data, imagePathArray, null);
         if (!image || typeof image !== 'string') {
           console.warn('getRandomImage: no image URL found, skipping to next');
@@ -279,17 +273,17 @@ export default class DataService {
           return;
         }
 
-        var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
+        var titlePathArray = source.titleField.split(',');
         var title = toStr(that.processElementArray(that, data, titlePathArray, ''));
 
-        var artistPathArray = that.airTableData[curMuseumNum].artistField.split(',');
+        var artistPathArray = source.artistField.split(',');
         var artist = toStr(that.processElementArray(that, data, artistPathArray, ''));
         if (!artist) artist = 'Unknown';
 
-        var datePathArray = that.airTableData[curMuseumNum].dateField.split(',');
+        var datePathArray = source.dateField.split(',');
         var date = toStr(that.processElementArray(that, data, datePathArray, ''));
 
-        var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
+        var mediumPathArray = source.mediumField.split(',');
         var medium = toStr(that.processElementArray(that, data, mediumPathArray, ''));
 
         var matColor = '#000000';
@@ -301,7 +295,7 @@ export default class DataService {
           artist,
           date,
           medium,
-          museumName: that.airTableData[curMuseumNum].name,
+          museumName: source.name,
           objectID: tempObjectID,
           matColor,
           textColor
@@ -367,12 +361,12 @@ export default class DataService {
   }
 
   returnElement(dataObj, element) {
-    if (element.substr(-2) === '[]') {
-      if (dataObj === undefined || dataObj[element.slice(0, -2)] === undefined) {
-        return;
-      } else {
-        return dataObj[element.slice(0, -2)][0];
-      }
+    const indexedMatch = element.match(/^(.+)\[(\d*)\]$/);
+    if (indexedMatch) {
+      const key = indexedMatch[1];
+      const idx = indexedMatch[2] === '' ? 0 : parseInt(indexedMatch[2]);
+      if (dataObj === undefined || dataObj[key] === undefined) return;
+      return dataObj[key][idx];
     } else {
       if (dataObj === undefined) return;
       return dataObj[element];
@@ -570,7 +564,7 @@ export default class DataService {
 
   async testSource(objectAPI, sampleId, accessToken) {
     try {
-      let url = objectAPI.replace('ObjectID', encodeURIComponent(sampleId));
+      let url = objectAPI.replace('ObjectID', encodeURIComponent(sampleId).replace(/%3A/gi, ':'));
       if (accessToken) url = url.replace('AccessToken', accessToken);
       console.log('testSource URL:', url);
       const response = await fetch(url, {
