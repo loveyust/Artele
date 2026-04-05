@@ -272,8 +272,12 @@ export default class DataService {
         };
 
         var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
-        var image = that.processElementArray(that, data, imagePathArray, 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg');
-        if (typeof image !== 'string') image = 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg';
+        var image = that.processElementArray(that, data, imagePathArray, null);
+        if (!image || typeof image !== 'string') {
+          console.warn('getRandomImage: no image URL found, skipping to next');
+          that.getRandomImage(false);
+          return;
+        }
 
         var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
         var title = toStr(that.processElementArray(that, data, titlePathArray, ''));
