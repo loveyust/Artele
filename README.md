@@ -140,3 +140,23 @@ pm2 restart artele
 ```
 
 App is accessible at `http://<PI_HOST>:3001`.
+
+
+## Roadmap
+
+### Smart Source Wizard (TODO)
+Currently, adding a new API source requires manually constructing URL templates and JSON field path strings — a technical process that assumes knowledge of the source API's response structure.
+
+**Goal**: Allow a user to paste an API documentation URL and have an LLM automatically discover and configure all field mappings, presented as a guided wizard:
+
+1. User pastes API docs URL
+2. LLM fetches the docs and proposes `departmentObjectAPI`, `objectAPI`, and field paths
+3. User enters a sample object ID and runs a test query (reuses the existing test flow)
+4. LLM inspects the test response, confirms or corrects the field mapping suggestions
+5. User saves the source
+
+**Considerations before building**:
+- Requires Claude API integration; field path syntax (`response,nested,array[n],field`) must be explained in the system prompt
+- The current data service only supports GET requests with URL placeholder substitution — APIs using GraphQL or POST request bodies won't work without extending the request model first
+- Auth handling varies widely (query param tokens, Bearer headers, OAuth) — the wizard needs to surface auth requirements and let the user supply credentials securely
+- The test button already exists in the Sources UI and can be reused as the validation step

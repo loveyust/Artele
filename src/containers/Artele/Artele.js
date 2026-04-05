@@ -26,6 +26,7 @@ class Artele extends Component {
       weekday: {},
       weekend: {},
       isLoaded: false,
+      imageLoading: false,
       // Sources tab
       expandedSourceId: null,
       editSource: {},
@@ -41,6 +42,7 @@ class Artele extends Component {
     socket.on("send_museum_data", this.getMuseumDataFromServer);
     socket.on("send_settings_data", this.getSettingsData);
     socket.on("send_test_result", this.onTestResult);
+    socket.on("send_random_image", this.onImageReceived);
     socket.emit("request_museum_data");
   }
 
@@ -66,6 +68,7 @@ class Artele extends Component {
     socket.off("send_museum_data", this.getMuseumData);
     socket.off("send_settings_data", this.getSettingsData);
     socket.off("send_test_result", this.onTestResult);
+    socket.off("send_random_image", this.onImageReceived);
   }
 
   toggleActive = (active, id) => {
@@ -120,11 +123,17 @@ class Artele extends Component {
     socket.emit('request_set_paused', false);
   }
 
+  onImageReceived = () => {
+    this.setState({ imageLoading: false });
+  }
+
   onReverse = () => {
+    this.setState({ imageLoading: true });
     socket.emit('request_prev_image');
   }
 
   onForward = () => {
+    this.setState({ imageLoading: true });
     socket.emit('request_next_image');
   }
 
@@ -401,14 +410,17 @@ class Artele extends Component {
                     <button
                       className="transport-btn"
                       onClick={() => this.onReverse()}
+                      disabled={this.state.imageLoading}
                     >
                       <span className="t-sym t-sym--arrow">&lt;</span>
                       <span className="t-dot t-dot--hidden"></span>
                       <span className="t-lbl">PREV</span>
                     </button>
+                    {this.state.imageLoading && <div className="transport-loader" />}
                     <button
                       className="transport-btn"
                       onClick={() => this.onForward()}
+                      disabled={this.state.imageLoading}
                     >
                       <span className="t-sym t-sym--arrow">&gt;</span>
                       <span className="t-dot t-dot--hidden"></span>

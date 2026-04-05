@@ -15,6 +15,7 @@ class Display extends Component {
       art_data: [],
       fadeClass: "fadedIn fade-out",
       ////// currentImage: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
+      loading: true,
       currentImageData: {
         image: "https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg",
         title: "title",
@@ -76,6 +77,7 @@ class Display extends Component {
     console.log("onImageData: " + JSON.stringify(imageData));
     // Wide Image Test imageData.image = 'https://images.metmuseum.org/CRDImages/aa/web-large/sfrl32.75.111_89269.jpg?'+Date.now();
     this.imageData = imageData;
+    if (this.state.loading) this.setState({ loading: false });
     this.fade();
   }
 
@@ -88,6 +90,7 @@ class Display extends Component {
     return (
       <>
         <div className="img-parent">
+          {this.state.loading && <div className="display-loader" />}
           <div className={this.state.fadeClass}></div>
           <FrameMat data={this.state.currentImageData} callback={this.onImageRendered} />
           <ArtInfo data={this.state.currentImageData} />

@@ -119,6 +119,23 @@ objectIDs               -- comma-separated cached IDs (null = needs pool refresh
 - Image: `response,content,descriptiveNonRepeating,online_media,media[],content`
 - Medium (Summary): `response,content,freetext,notes[1],content`
 
+## Planned Features / TODOs
+
+### Smart Source Wizard (not yet implemented)
+Allow a user to paste an API documentation URL and have an LLM automatically discover and configure all field mappings. Intended as a wizard flow with steps:
+1. User pastes API docs URL
+2. LLM fetches docs and suggests `departmentObjectAPI`, `objectAPI`, field paths
+3. User picks a sample object ID and runs a test query
+4. LLM inspects the test response and confirms or corrects field mappings
+5. User saves the source
+
+**Considerations**:
+- Requires an LLM API integration (Claude API recommended)
+- Field path syntax (`key,nested,array[],field`) must be explained to the LLM in the prompt
+- APIs using GraphQL or POST requests won't fit the current GET-only URL template system — the data service would need to support custom request bodies before the wizard can handle those
+- Rate limits and auth token types vary widely; wizard should probe the API and surface errors clearly
+- Test step is already in the UI (`testSource`) — wizard can reuse it
+
 ## Config (server/src/config.js)
 - `SOCKET_PORT` — default 3001
 - `CORS_ORIGINS` — default `http://localhost:3000`
