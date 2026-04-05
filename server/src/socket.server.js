@@ -54,6 +54,7 @@ app.get('/config', (req, res) => {
 function dataLoadedCallback () {
   console.log("dataLoaded Callback");
   schedulerController.setSchedule(data.settings);
+  io.sockets.emit("send_images_updated");
 }
 
 function callback () {

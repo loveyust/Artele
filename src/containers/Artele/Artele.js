@@ -27,6 +27,7 @@ class Artele extends Component {
       weekend: {},
       isLoaded: false,
       imageLoading: false,
+      poolLoading: false,
       // Sources tab
       expandedSourceId: null,
       editSource: {},
@@ -43,6 +44,7 @@ class Artele extends Component {
     socket.on("send_settings_data", this.getSettingsData);
     socket.on("send_test_result", this.onTestResult);
     socket.on("send_random_image", this.onImageReceived);
+    socket.on("send_images_updated", this.onImagesUpdated);
     socket.emit("request_museum_data");
   }
 
@@ -69,6 +71,7 @@ class Artele extends Component {
     socket.off("send_settings_data", this.getSettingsData);
     socket.off("send_test_result", this.onTestResult);
     socket.off("send_random_image", this.onImageReceived);
+    socket.off("send_images_updated", this.onImagesUpdated);
   }
 
   toggleActive = (active, id) => {
@@ -82,7 +85,13 @@ class Artele extends Component {
     this.setState({museumData: tempMuseumData});
   }
 
+  onImagesUpdated = () => {
+    this.setState({ poolLoading: false });
+    socket.emit("request_museum_data");
+  }
+
   onUpdateImages() {
+    this.setState({ poolLoading: true });
     socket.emit('request_images_update');
   }
 
@@ -320,8 +329,11 @@ class Artele extends Component {
           <button className="action-btn stretch" onClick={this.onAddSource}>
             + ADD SOURCE
           </button>
-          <button className="action-btn stretch" onClick={() => this.onUpdateImages()}>
-            UPDATE IMAGES
+          <button className="action-btn stretch" onClick={() => this.onUpdateImages()} disabled={this.state.poolLoading}>
+            {this.state.poolLoading
+              ? <><div className="pool-loader" /> UPDATING…</>
+              : 'UPDATE IMAGES'
+            }
           </button>
         </div>
 
