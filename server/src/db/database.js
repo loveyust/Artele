@@ -121,10 +121,10 @@ const SEED_SOURCES = [
     departmentObjectField: 'content,descriptiveNonRepeating,record_ID',
     objectAPI: 'https://api.si.edu/openaccess/api/v1.0/content/ObjectID?api_key=AccessToken',
     imageField: 'response,content,descriptiveNonRepeating,online_media,media[],content',
-    titleField: 'response,content,descriptiveNonRepeating,title,content',
+    titleField: 'response,title',
     artistField: 'response,content,freetext,name[],content',
     dateField: 'response,content,freetext,date[],content',
-    mediumField: 'response,content,freetext,physicalDescription[],content',
+    mediumField: 'response,content,freetext,notes[1],content',
     objectIDs: null
   },
   {
