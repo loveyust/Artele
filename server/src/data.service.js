@@ -263,24 +263,30 @@ export default class DataService {
       referrer: 'no-referrer'
     }).then(response => response.json())
       .then(data => {
+        const toStr = (val) => {
+          if (val === null || val === undefined) return '';
+          if (typeof val === 'string') return val;
+          if (Array.isArray(val)) return val.join(', ');
+          if (typeof val === 'object') return '';
+          return String(val);
+        };
+
         var imagePathArray = that.airTableData[curMuseumNum].imageField.split(',');
         var image = that.processElementArray(that, data, imagePathArray, 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg');
+        if (typeof image !== 'string') image = 'https://images.metmuseum.org/CRDImages/as/original/DP123239.jpg';
 
         var titlePathArray = that.airTableData[curMuseumNum].titleField.split(',');
-        var title = that.processElementArray(that, data, titlePathArray, '');
+        var title = toStr(that.processElementArray(that, data, titlePathArray, ''));
 
         var artistPathArray = that.airTableData[curMuseumNum].artistField.split(',');
-        var artist = that.processElementArray(that, data, artistPathArray, '');
-        if (artist === '' || artist === undefined) {
-          artist = 'Unknown';
-        }
+        var artist = toStr(that.processElementArray(that, data, artistPathArray, ''));
+        if (!artist) artist = 'Unknown';
 
         var datePathArray = that.airTableData[curMuseumNum].dateField.split(',');
-        var date = that.processElementArray(that, data, datePathArray, '');
+        var date = toStr(that.processElementArray(that, data, datePathArray, ''));
 
         var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
-        var mediumRaw = that.processElementArray(that, data, mediumPathArray, '');
-        var medium = Array.isArray(mediumRaw) ? mediumRaw.join(', ') : String(mediumRaw || '');
+        var medium = toStr(that.processElementArray(that, data, mediumPathArray, ''));
 
         var matColor = '#000000';
         var textColor = '#FFFFFF';
