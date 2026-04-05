@@ -174,8 +174,20 @@ export default class DataService {
           var objectArray = data;
           if (objectNameArray.length > 0) {
             objectNameArray.forEach(element => {
-              objectArray = objectArray[element];
+              if (objectArray != null) objectArray = objectArray[element];
             });
+          }
+
+          if (!Array.isArray(objectArray)) {
+            console.warn('loadObjectsByDepartment: unexpected response structure, skipping page', data);
+            that.curDepartmentNum += 1;
+            if (that.curDepartmentNum < that.curDepartments.length) {
+              that.loadObjectsByDepartment(curMuseumNum, that.curDepartmentNum);
+            } else {
+              that.saveObjectIDs(curMuseumNum, that.curObjectString);
+              that.loadNextMuseum();
+            }
+            return;
           }
 
           var objectFieldNameArray = [];
