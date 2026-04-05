@@ -211,6 +211,7 @@ export default class DataService {
         }
       }).catch(err => {
         console.warn('Something went wrong. loadObjectsByDepartment', err);
+        that.loadNextMuseum();
       });
   }
 
