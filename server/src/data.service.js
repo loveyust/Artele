@@ -279,7 +279,8 @@ export default class DataService {
         var date = that.processElementArray(that, data, datePathArray, '');
 
         var mediumPathArray = that.airTableData[curMuseumNum].mediumField.split(',');
-        var medium = that.processElementArray(that, data, mediumPathArray, '');
+        var mediumRaw = that.processElementArray(that, data, mediumPathArray, '');
+        var medium = Array.isArray(mediumRaw) ? mediumRaw.join(', ') : String(mediumRaw || '');
 
         var matColor = '#000000';
         var textColor = '#FFFFFF';
