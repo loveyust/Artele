@@ -54,6 +54,10 @@ app.get('/config', (req, res) => {
 function dataLoadedCallback () {
   console.log("dataLoaded Callback");
   schedulerController.setSchedule(data.settings);
+}
+
+function poolsLoadedCallback () {
+  console.log("poolsLoaded Callback");
   io.sockets.emit("send_images_updated");
 }
 
@@ -65,7 +69,7 @@ function callback () {
 // Data Service
 import DataService from './data.service.js';
 const data = new DataService();
-data.setCallback(callback, dataLoadedCallback);
+data.setCallback(callback, dataLoadedCallback, poolsLoadedCallback);
 
 // Schedule Controller
 import ScheduleController from './scheduler.controller.js';

@@ -24,9 +24,10 @@ export default class DataService {
     return this;
   }
 
-  setCallback(callback, dataLoadedCallback) {
+  setCallback(callback, dataLoadedCallback, poolsLoadedCallback) {
     this.imageCallback = callback;
     this.dataLoadedCallback = dataLoadedCallback;
+    this.poolsLoadedCallback = poolsLoadedCallback;
   }
 
   registerDataLoadCallback(self, callback) {
@@ -149,6 +150,7 @@ export default class DataService {
     } else {
       this.dataLoaded = true;
       this.makeRegisteredCallbacks();
+      if (this.poolsLoadedCallback) this.poolsLoadedCallback();
       this.getRandomImage(true);
     }
   }
